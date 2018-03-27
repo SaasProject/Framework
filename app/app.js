@@ -39,15 +39,6 @@
                 controllerAs: 'vm',
                 data: { activeTab: 'account' }
             })
-            
-            //parameter is always required
-            .state('fields' ,{
-                url: '/fields?name',
-                templateUrl: 'fields/index.html',
-                controller: 'Fields.IndexController',
-                controllerAs: 'vm',
-                data: {activeTab: 'fields'}
-            })
 
 
         // added by jeremy
