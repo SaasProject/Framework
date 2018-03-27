@@ -32,13 +32,6 @@
                 controllerAs: 'vm',
                 data: { activeTab: 'home' }
             })
-            .state('manageUsers', {
-                url: '/manageUsers',
-                templateUrl: 'manageUsers/index.html',
-                controller: 'ManageUsers.IndexController',
-                controllerAs: 'vm',
-                data: { activeTab: 'manageUsers' }
-            })
             .state('account', {
                 url: '/account',
                 templateUrl: 'account/index.html',
