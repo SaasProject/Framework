@@ -30,7 +30,7 @@ app.use('/login', require('./controllers/login.controller'));
 app.use('/app', require('./controllers/app.controller'));
 app.use('/api/users', require('./controllers/api/users.controller'));
 app.use('/api/languages',require('./controllers/api/language.controller'));
-app.use('/api/fields', require('./controllers/api/fields.controller'));
+app.use('/api/modules', require('./controllers/api/modules.controller'));
 
 //added by dyan0
 io.on('connection', function(socket){
@@ -39,9 +39,9 @@ io.on('connection', function(socket){
     socket.on('userChange', function(){
         io.emit('userChange');
     });
-    socket.on('fieldsChange', function(){
+    /* socket.on('fieldsChange', function(){
         io.emit('fieldsChange');
-    });
+    }); */
     socket.on('languageChange', function(option){
         io.emit('languageChange', option);
     });
