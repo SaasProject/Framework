@@ -27,7 +27,9 @@
                 <div class="collapse navbar-collapse navHeaderCollapse">
                     <ul class="nav navbar-nav">
                     <!--    <li ng-class="{active: activeTab === 'home'}"><a ui-sref="home"><span class="glyphicon glyphicon-home"></span> Home</a></li> -->
-                        <!--added by jeremy -->    
+                        <!--added by jeremy -->
+                        <li ng-class="{active: activeTab === 'manageUsers'}" ng-show="isAdmin"><a ui-sref="manageUsers"><span class="glyphicon glyphicon-tasks"></span> {{selectedLanguage.navBar.accounts}}</a></li>    
+						<li ng-class="{active: activeTab === 'fields'}" ng-show="isAdmin"><a ui-sref="fields"><span class="glyphicon glyphicon-th-list"></span> {{selectedLanguage.navBar.fields}}</a></li>
                                          
                     </ul>
                     
