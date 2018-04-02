@@ -32,12 +32,28 @@
                 controllerAs: 'vm',
                 data: { activeTab: 'home' }
             })
+            .state('manageUsers', {
+                url: '/manageUsers',
+                templateUrl: 'manageUsers/index.html',
+                controller: 'ManageUsers.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'manageUsers' }
+            })
             .state('account', {
                 url: '/account',
                 templateUrl: 'account/index.html',
                 controller: 'Account.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'account' }
+            })
+            
+            //parameter is always required
+            .state('fields' ,{
+                url: '/fields?name',
+                templateUrl: 'fields/index.html',
+                controller: 'Fields.IndexController',
+                controllerAs: 'vm',
+                data: {activeTab: 'fields'}
             })
 
 
