@@ -56,6 +56,13 @@
                 data: {activeTab: 'fields'}
             })
 
+            //SAMPLE added by jeremy
+            .state('modules', {
+                url: '/modules',
+                templateUrl: 'modules/index.html',
+                controller: 'Modules.IndexController',
+            });
+
 
         // added by jeremy
         // this is to intercept all errors. when 401 is received, must redirect to login
