@@ -70,13 +70,16 @@
             Parameter(s): none
             Return: none
         */
-        $scope.modalPic = '/nullPic.jpg';
-        if($rootScope.profilePic !== ''){
-            $scope.modalPic = $rootScope.profilePic;
-            $scope.isDelete = true;
+        function loadProfilePic(){
+            $scope.modalPic = '/nullPic.jpg';
+            if($rootScope.profilePic !== ''){
+                $scope.modalPic = $rootScope.profilePic;
+                $scope.isDelete = true;
+            }
+            $scope.tempPic = '';
+            $scope.profilePicUrl = $rootScope.profilePic;
         }
-        $scope.tempPic = '';
-        $scope.profilePicUrl = $rootScope.profilePic;
+        loadProfilePic();
 
         $scope.isSave = false;
 
@@ -111,7 +114,8 @@
             UserService.GetCurrent().then(function (user) {
                 vm.user = user;
                 $scope.aUsers = user;
-                //$scope.profilePicUrl = $rootScope.profilePic;
+
+                loadProfilePic();
 
                 angular.forEach($scope.fields, function(value, key){
                     //initialize if the dropdown is required

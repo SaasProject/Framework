@@ -20,8 +20,14 @@
         service.UploadFile = UploadFile;
         service.deleteProfilePic = deleteProfilePic;
         service.saveLanguage = saveLanguage;
+        service.readProfilePicFile = readProfilePicFile;
  
         return service;
+
+        function readProfilePicFile(urlFile){
+            return $http({url: '/api/users/readProfilePicFile', 
+                method: "GET", params: {urlFile: urlFile}}).then(handleSuccess, handleError);
+        }
         
         function saveLanguage(option, user){
             user.option = option;
