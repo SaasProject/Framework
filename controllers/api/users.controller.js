@@ -17,8 +17,23 @@ router.delete('/:_id', deleteUser);
 router.post('/upload', uploadPic);
 router.put('/deleteProfilePic/:_id', deleteProfilePic);
 router.put('/saveLanguage/:_id', saveLanguage);
+router.get('/readProfilePicFile', readProfilePicFile);
  
 module.exports = router;
+
+function readProfilePicFile(req, res) {
+    userService.readProfilePicFile(req, res)
+        .then(function (url) {
+            if (url) {
+                res.send(url);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
 
 function saveLanguage(req, res) {
     userService.saveLanguage(req, res)

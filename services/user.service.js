@@ -48,8 +48,22 @@ service.delete = _delete;
 service.uploadPic = uploadPic; //glenn
 service.deleteProfilePic = deleteProfilePic; //glenn
 service.saveLanguage = saveLanguage; //glenn
+service.readProfilePicFile = readProfilePicFile; //glenn
  
 module.exports = service;
+
+function readProfilePicFile(req, res){
+    var deferred = Q.defer();
+    var found = false;
+    try{
+        var file=fs.readFileSync('profile_pictures/'+req.query.urlFile);
+        deferred.resolve('true');
+    }catch(err){
+        //if file of profile picture is not found
+        deferred.resolve('false');
+    }
+    return deferred.promise;
+}
 
 function saveLanguage(req, res){
     var deferred = Q.defer();
@@ -94,9 +108,16 @@ function deleteProfilePic(req, res){
             db.users.update({email: req.body.email}, {$set: { profilePicUrl: ''}}, function(err){
                 if(err) deferred.reject(err);
                 //If no errors, send it back to the client
-                fs.unlink('profile_pictures/'+user.profilePicUrl, function (err) {
-                  if (err) deferred.reject(err);
-                });
+                try{
+                    var file=fs.readFileSync('profile_pictures/'+user.profilePicUrl); //catch error here if file not found
+                    fs.unlink('profile_pictures/'+user.profilePicUrl, function (err) {
+                        if (err) deferred.reject(err);
+                    });
+                    deferred.resolve();
+                }catch(err){
+                    //if file of profile picture is not found
+                    deferred.resolve();
+                }
                 deferred.resolve();
             });
         } else {

@@ -264,7 +264,18 @@
                     $rootScope.initials = initials.toUpperCase();
 
                     //get user profile pic
-                    $rootScope.profilePic = '/' + user.profilePicUrl;
+                    var profilePicPath = '/' + user.profilePicUrl;
+                    $rootScope.profilePic = '';// '/' + user.profilePicUrl;
+                    UserService.readProfilePicFile(profilePicPath).then(function(res) {
+                        if(res == 'false'){
+                            $rootScope.profilePic = '';
+                        } else if(res == 'true'){
+                            $rootScope.profilePic = '/' + user.profilePicUrl;
+                        }
+                    })
+                    .catch(function (error) {
+                    });
+
                     if(user.profilePicUrl == undefined || user.profilePicUrl == ''){
                         $rootScope.profilePic = '';
                     }
