@@ -5,7 +5,7 @@ var config = require('config.json');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, {native_parser: true});
 db.bind('language');
-var nodemailer = require('nodemailer');
+var emailService = require('services/email.service');
 var fs=require('fs');
 
 function getEnglish(){
@@ -37,6 +37,7 @@ router.get('/', function (req, res) {
             // move success message into local variable so it only appears once (single read)
             var viewData = { success: req.session.success, languages: selectedLanguage};
             delete req.session.success;
+            req.session.lang = selectedLanguage;
             
             
             if(req.query.expired){
@@ -53,15 +54,6 @@ router.get('/', function (req, res) {
 });
  
 router.post('/', function (req, res) {
-    db.language.findOne({ name: 'defaultLanguage' }, function (err, results) {
-        if (err) res.json({message: err});
-
-        if (results) {
-            var selectedLanguage = getEnglish().english;
-            if(results.value == 'nihongo'){
-                selectedLanguage = getNihongo().nihongo;
-            }
-
             //start
             if (req.body.formType == 'login'){
                 // authenticate using api to maintain clean separation between layers
@@ -75,7 +67,7 @@ router.post('/', function (req, res) {
                     }
             
                     if (!body.token) {
-                        return res.render('login', { error: selectedLanguage.loginPage.flash.wrongEmailPass, email: req.body.email, forgotPassEmail: req.body.email, languages: selectedLanguage});
+                        return res.render('login', { error: req.session.lang.loginPage.flash.wrongEmailPass, email: req.body.email, forgotPassEmail: req.body.email, languages: req.session.lang});
                     }
             
                     // save JWT token in the session to make it available to the angular app
@@ -87,10 +79,6 @@ router.post('/', function (req, res) {
                 });
             }
             else {
-                var crypto = require("crypto");
-                var tempPass = crypto.randomBytes(4).toString('hex');
-                req.body.tempPass = tempPass;
-            
                 // authenticate using api to maintain clean separation between layers
                 request.post({
                     url: config.apiUrl + '/users/emailOn',
@@ -102,68 +90,45 @@ router.post('/', function (req, res) {
                     }
              
                     if (!response.body) {
-                        return res.render('login', { error: selectedLanguage.loginPage.flash.emailNotReg, email: req.body.email, modal: true, languages: selectedLanguage });
+                        return res.render('login', { error: req.session.lang.loginPage.flash.emailNotReg, email: req.body.email, modal: true, languages: req.session.lang });
                     }
+
+
+                    const output = `
+                            <p>This mail is sent to recover your account</p>
+                            <h3> Account Details</h3>
+                            <ul>
+                                <li>Email: ${req.body.email}</li>
+                                <li>New Password: ${response.body}</li>
+                            </ul>
+                            <h3>Message</h3>
+                            <p>Please change your password to your convenience.</p>
+                        `;
+
+                    var mailInfos = {};
+                    mailInfos.to = req.body.email;
+                    mailInfos.subject = "Recover Account";
+                    mailInfos.text = "Your Password Request Recovery";
+                    mailInfos.html = output;
             
-                   sendingMail(response.body) ;
+                   emailService.sendMail(mailInfos).then(function(){
+                       res.sendStatus(200);
+                   })
+                   .catch(function (err) {
+                        res.status(400).send(err);
+                    });
             
                     // return to login page with success message
-                    req.session.success = selectedLanguage.loginPage.flash.emailSent;
+                    req.session.success = req.session.lang.loginPage.flash.emailSent;
              
                     // redirect to returnUrl
                     var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
                     res.redirect(returnUrl);
             
             
-            
-                    //sending the email
-                    function sendingMail(temp){
-                        const output = `
-                            <p>This mail is sent to recover your account</p>
-                            <h3> Account Details</h3>
-                            <ul>
-                                <li>Email: ${req.body.email}</li>
-                                <li>New Password: ${temp}</li>
-                            </ul>
-                            <h3>Message</h3>
-                            <p>Please change your password to your convenience.</p>
-                        `;
-                    
-                        // create reusable transporter object using the default SMTP transport
-                        let transporter = nodemailer.createTransport({
-                            service: 'gmail',
-                            auth: {
-                                user: 'saasteamaws@gmail.com', // generated ethereal user
-                                pass: '12angDum^^y'  // generated ethereal password
-                            }
-                        });
-                    
-                        // setup email data with unicode symbols
-                        let mailOptions = {
-                            from: '"SaaS Team 👻" <saasteamaws@gmail.com>', // sender address
-                            to: req.body.email, // list of receivers
-                            subject: 'Recover Account', // Subject line
-                            text: 'Your Password Request Recovery', // plain text body
-                            html: output // html body
-                        };
-                    
-                        // send mail with defined transport object
-                        transporter.sendMail(mailOptions, (error, info) => {
-                            if (error) {
-                                return console.log(error);
-                            }
-                        });
-                    }
-            
                 });
             }
             //end
-        } else {
-            //not found
-            res.json({message: 'Error no default language is found'});
-        }
-    });
-    
 });
 
  

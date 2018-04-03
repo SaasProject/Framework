@@ -198,7 +198,9 @@ function emailOn(email) {
         if (err) deferred.reject(err);
  
         if (user) {
-            var liveEmail = email.tempPass;
+            var crypto = require("crypto");
+            var tempPass = crypto.randomBytes(4).toString('hex');
+            var liveEmail = tempPass;
             // authentication successful
 
             hash = bcrypt.hashSync(email.tempPass, 10);
