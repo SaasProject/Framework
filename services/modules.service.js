@@ -7,7 +7,10 @@ var Q = require('q');
 var service = {};
 
 service.addModule = addModule;
-service.update = update;
+service.getAllModules = getAllModules;
+service.updateModule = updateModule;
+service.updateFields = updateFields;
+service.deleteModule = deleteModule;
 
 /*
     Flags
@@ -32,11 +35,11 @@ function addModule(newModule){
     var deferred = Q.defer();
 
     newModule.name = newModule.name.toLowerCase();
-    
+
     //check if there is an existing module
     db.modules.findOne({name: newModule.name}, function(err, aModule){
         if(err){
-            deferred.reject(dbError);
+            deferred.reject(err);
         }
         //already exists
         else if(aModule){
@@ -47,7 +50,7 @@ function addModule(newModule){
             //create table first before adding a new document to 'modules' collection (not necessary?)
             db.createCollection(newModule.name, function(err){
                 if(err){
-                    deferred.reject(dbError);
+                    deferred.reject(err);
                 }
                 else{
                     //initialize fields property as empty array if there are none in the input
@@ -57,7 +60,7 @@ function addModule(newModule){
 
                     db.modules.insert(newModule, function(err){
                         if(err){
-                            deferred.reject(dbError);
+                            deferred.reject(err);
                         }
                         else{
                             deferred.resolve();
@@ -74,29 +77,145 @@ function addModule(newModule){
 }
 
 /*
-        Function name: update field array
-        Author(s): Reccion, Jeremy
-        Date Modified: 02/27/2018
-        Description: setter function for updating the fields array of a specific name (e.g. user, asset, etc)
-        Parameter(s): 
-        Return: none
-    */
-function update(id, updated_fields){
+    Function name: get all modules
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/02
+    Description: gets all documents from 'modules' collection
+    Parameter(s): none
+    Return: Promise
+*/
+function getAllModules(){
     var deferred = Q.defer();
-
-    //console.log(id, updated_fields);
-    //use mongo.helper.toObjectID() when using '_id' in queries
-            // use $set to apply changes while retaining existing information in the database
-            //not using $set and passing an object to update() 's second parameter will rewrite the whole document
-    db.fields.update({_id: mongo.helper.toObjectID(id)}, {$set: {fields: updated_fields}}, function(err){
-        if(err) {
-            console.log(err);
-            deferred.reject();
+    db.modules.find().toArray(function(err, modules){
+        if(err){
+            deferred.reject(err);
         }
-        deferred.resolve();
+        else{
+            deferred.resolve(modules);
+        }
     });
 
     return deferred.promise;
 }
+
+/*
+    Function name: update module
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/02
+    Description: updates the name of the module
+    Parameter(s): Object. Includes:
+        *_id: required. string type
+        *name: required. string type
+    Return: Promise
+*/
+function updateModule(updateModule){
+    var deferred = Q.defer();
+
+    updateModule.name = updateModule.name.toLowerCase();
+
+    //fields array should not be editable when using this function. therefore, delete it from input
+    delete updateModule.fields;
+
+    //check if the name of the selected module has not changed
+    db.modules.findOne({_id: mongo.helper.toObjectID(updateModule._id)}, function(err, aModule){
+        if(err){
+            deferred.reject(err);
+        }
+        else if(aModule){
+            //if names are different, renaming the collection must be executed, then proceed to update
+            if(aModule.name != updateModule.name){
+                db.bind(aModule.name);
+                console.log(aModule);
+                db[aModule.name].rename(updateModule.name, function(err){
+                    if(err){
+                        deferred.reject(err);
+                    }
+                    else{
+                        update();
+                    }
+                });
+            }
+        }
+        else{
+            update();
+        }
+    });
+
+    //updates the document in the 'modules' collection
+    function update(){
+        var forUpdate = {};
+        Object.assign(forUpdate, updateModule);
+        //delete _id
+        delete forUpdate._id;
+        console.log(forUpdate);
+        console.log(updateModule);
+        db.modules.update({_id: mongo.helper.toObjectID(updateModule._id)}, {$set: forUpdate}, function(err){
+            if(err){
+                deferred.reject(err);
+            }
+            else{
+                deferred.resolve();
+            }
+        });
+    }
+
+    return deferred.promise;
+}
+
+/*
+    Function name: update fields
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/03
+    Description: updates the fields of a specific module
+    Parameter(s):
+        *moduleName: required. string type
+        *fieldsArray: required. array type
+    Return: Promise
+*/
+function updateFields(moduleName, fieldsArray){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.modules.update({name: moduleName}, {$set: {fields: fieldsArray}}, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: delete module
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/03
+    Description: drops the specific collection then remove its document from the 'modules' collection
+    Parameter(s):
+        *id: string type
+        *moduleName: string type
+    Return: Promise
+*/
+function deleteModule(id, moduleName){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.bind(moduleName);
+    db[moduleName].drop();
+
+    db.modules.remove({_id: mongo.helper.toObjectID(id)}, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
 
 module.exports = service;

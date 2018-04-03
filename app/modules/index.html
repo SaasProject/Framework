@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-md-3">
+        Module
+        <form class="form-inline" ng-submit="submit()">
+            <input type="text" class="form-control" ng-model="newModule.name">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <hr>
+        Fields
+        <div>
+            <form class="form-inline" ng-submit="updateFields()">
+                <input type="text" class="form-control" ng-model="newField">
+                <button type="submit" class="btn btn-primary">Add Field</button>
+            </form>
+            <div ng-repeat="field in newModule.fields">
+                {{field}}
+                <button class="btn btn-danger" ng-click="deleteField(field)">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <table class="table">
+            <thead>
+                <th>Name</th>
+                <th>Fields</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="module in modules">
+                    <td ng-bind="module.name"></td>
+                    <td>
+                        <div ng-repeat="field in module.fields">
+                            {{field}}
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-default" ng-click="editModule(module)">Edit</button>
+                        <button class="btn btn-danger" ng-click="deleteModule(module)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
