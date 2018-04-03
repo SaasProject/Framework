@@ -12,6 +12,8 @@ service.updateModule = updateModule;
 service.updateFields = updateFields;
 service.deleteModule = deleteModule;
 
+service.getModuleByName = getModuleByName;
+
 /*
     Flags
 */
@@ -125,7 +127,6 @@ function updateModule(updateModule){
             //if names are different, renaming the collection must be executed, then proceed to update
             if(aModule.name != updateModule.name){
                 db.bind(aModule.name);
-                console.log(aModule);
                 db[aModule.name].rename(updateModule.name, function(err){
                     if(err){
                         deferred.reject(err);
@@ -147,8 +148,7 @@ function updateModule(updateModule){
         Object.assign(forUpdate, updateModule);
         //delete _id
         delete forUpdate._id;
-        console.log(forUpdate);
-        console.log(updateModule);
+ 
         db.modules.update({_id: mongo.helper.toObjectID(updateModule._id)}, {$set: forUpdate}, function(err){
             if(err){
                 deferred.reject(err);
@@ -176,6 +176,7 @@ function updateFields(moduleName, fieldsArray){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
+    //set only the fields properties as the whole fieldsArray
     db.modules.update({name: moduleName}, {$set: {fields: fieldsArray}}, function(err){
         if(err){
             deferred.reject(err);
@@ -202,9 +203,11 @@ function deleteModule(id, moduleName){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
+    //drop the collection
     db.bind(moduleName);
     db[moduleName].drop();
 
+    //remove document from 'modules' collection
     db.modules.remove({_id: mongo.helper.toObjectID(id)}, function(err){
         if(err){
             deferred.reject(err);
@@ -217,5 +220,29 @@ function deleteModule(id, moduleName){
     return deferred.promise;
 }
 
+/*
+    Function name: get a specific module
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/03
+    Description: retrieves a specific module by its name
+    Parameter(s):
+        *moduleName: string type
+    Return: Promise
+*/
+function getModuleByName(moduleName){
+    var deferred= Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.modules.findOne({name: moduleName}, function(err, aModule){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve(aModule);
+        }
+    });
+
+    return deferred.promise;
+}
 
 module.exports = service;

@@ -5,11 +5,11 @@ var ModulesService = require('services/modules.service');
 //declare routes that are to be called from the client (angular)
 router.post('/addModule', addModule);
 router.get('/getAllModules', getAllModules);
-/* router.get('/getModuleByName/:name', getModuleByName);
- */
 router.put('/updateModule', updateModule);
 router.put('/updateModuleFields', updateModuleFields);
 router.delete('/deleteModule/:id/:name', deleteModule);
+
+router.get('/getModuleByName/:name', getModuleByName);
 
 function addModule(req, res){
     ModulesService.addModule(req.body).then(function(){
@@ -46,6 +46,14 @@ function updateModuleFields(req, res){
 function deleteModule(req, res){
     ModulesService.deleteModule(req.params.id, req.params.name).then(function(){
         res.status(200).send();
+    }).catch(function(err){
+        res.status(400).send();
+    });
+}
+
+function getModuleByName(req, res){
+    ModulesService.getModuleByName(req.params.name).then(function(aModule){
+        res.status(200).send(aModule);
     }).catch(function(err){
         res.status(400).send();
     });

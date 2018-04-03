@@ -61,6 +61,11 @@
                 url: '/modules',
                 templateUrl: 'modules/index.html',
                 controller: 'Modules.IndexController',
+            })
+            .state('perModule', {
+                url: '/perModule/:moduleName',
+                templateUrl: 'modules/permodule.html',
+                controller: 'Modules.PerModuleController'
             });
 
 

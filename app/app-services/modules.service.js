@@ -14,6 +14,8 @@
         service.updateFields = updateFields;
         service.deleteModule = deleteModule;
 
+        service.getModuleByName = getModuleByName;
+
         return service;
 
         function addModule(newModule){
@@ -34,6 +36,10 @@
         
         function deleteModule(deleteModule){
             return $http.delete('/api/modules/deleteModule/' + deleteModule._id + '/' + deleteModule.name).then(handleSuccess, handleError);
+        }
+
+        function getModuleByName(moduleName){
+            return $http.get('/api/modules/getModuleByName/' + moduleName).then(handleSuccess, handleError);
         }
 
         function handleSuccess(res) {
