@@ -108,7 +108,7 @@
         Parameter(s): $http, $rootScope, $window, UserService, $state (dependencies)
         Return: none
     */
-    function run($http, $rootScope, $window, UserService, LanguageService, $state, socket) {
+    function run($http, $rootScope, $window, UserService, UploadService, LanguageService, $state, socket) {
         //initialize
         $rootScope.user = {};
         $rootScope.selectedLanguage = {};
@@ -270,8 +270,9 @@
 
                     //get user profile pic
                     var profilePicPath = '/' + user.profilePicUrl;
-                    $rootScope.profilePic = '';// '/' + user.profilePicUrl;
-                    UserService.readProfilePicFile(profilePicPath).then(function(res) {
+                    $rootScope.profilePic = '';
+                    var pathUsed = 'profile_pictures';
+                    UploadService.readFile(pathUsed+profilePicPath).then(function(res) {
                         if(res == 'false'){
                             $rootScope.profilePic = '';
                         } else if(res == 'true'){

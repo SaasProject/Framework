@@ -20,7 +20,7 @@
             };
         }]);
  
-    function Controller($window, UserService, FlashService, $scope, FieldsService, $rootScope, $timeout) {
+    function Controller($window, UserService, UploadService, FlashService, $scope, FieldsService, $rootScope, $timeout) {
         var vm = this;
  
         vm.user = null;
@@ -623,7 +623,7 @@
             Return: none
         */
         $scope.Submit = function() {
-            UserService.UploadFile($scope.file, vm.user)
+            UploadService.uploadFile($scope.file, vm.user)
             .then(function(res) {
                 $scope.uploading = false;
                 $scope.file = {};
@@ -707,7 +707,7 @@
         */
         $scope.deletePic = function(){
             if (confirm($rootScope.selectedLanguage.accountSettings.flashMessages.profilePicDeleteSure)){
-                UserService.deleteProfilePic(vm.user)
+                UploadService.deleteFile(vm.user)
                 .then(function(res) {
                     FlashService.Success($rootScope.selectedLanguage.accountSettings.flashMessages.profilePicDeleted);
                     $scope.profilePicUrl = '';

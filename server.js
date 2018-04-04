@@ -31,6 +31,7 @@ app.use('/app', require('./controllers/app.controller'));
 app.use('/api/users', require('./controllers/api/users.controller'));
 app.use('/api/languages',require('./controllers/api/language.controller'));
 app.use('/api/modules', require('./controllers/api/modules.controller'));
+app.use('/api/uploadFile', require('./controllers/api/uploadFile.controller'));
 
 //added by dyan0
 io.on('connection', function(socket){

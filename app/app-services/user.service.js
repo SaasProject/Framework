@@ -17,52 +17,13 @@
         service.Update = Update;
         service.Delete = Delete;
         service.Insert = Insert;
-        service.UploadFile = UploadFile;
-        service.deleteProfilePic = deleteProfilePic;
         service.saveLanguage = saveLanguage;
-        service.readProfilePicFile = readProfilePicFile;
  
         return service;
-
-        function readProfilePicFile(urlFile){
-            return $http({url: '/api/users/readProfilePicFile', 
-                method: "GET", params: {urlFile: urlFile}}).then(handleSuccess, handleError);
-        }
         
         function saveLanguage(option, user){
             user.option = option;
             return $http.put('/api/users/saveLanguage/' + user._id, user).then(handleSuccess, handleError);
-        }
-
-        /*
-            Function name: Delete profile picture
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/03/08
-            Description: returns http update on deleting the user profile picture
-            Parameter(s): user
-            Return: http post response
-        */
-        function deleteProfilePic(user) {
-            return $http.put('/api/users/deleteProfilePic/' + user._id, user).then(handleSuccess, handleError);
-        }
-
-        /*
-            Function name: User App Service Upload File
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/03/01
-            Description: appends current user id and email and input file to form data and
-                sends it to controllers/user.controller.js to return correct http response
-            Parameter(s): input file, user scope
-            Return: http post response
-        */
-        function UploadFile(file, user) {
-            var fd = new FormData();
-            fd.append('id', user._id);
-            fd.append('email', user.email);
-            fd.append('myfile', file.upload);
-            return $http.post('/api/users/upload', fd, {
-                transformRequest: angular.identity,
-                headers: { 'Content-Type': undefined}}).then(handleSuccess, handleError);
         }
         
         /*
