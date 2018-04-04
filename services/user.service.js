@@ -284,21 +284,32 @@ function insert(userParam){
  
             if (user) {
                 // email already exists
-                deferred.reject(userParam.preferedLanguage.manageAccounts.flashMessages.emIAT1 + '"' + userParam.email + '"' + userParam.preferedLanguage.manageAccounts.flashMessages.emIAT2);
+                 deferred.reject("Already exists");
             } else {
                 insertUser();
             }
         });
     function insertUser() {
 
+		var user = userParam;
+		var crypto = require("crypto");
+        var password = crypto.randomBytes(4).toString('hex');
+        user.hash = bcrypt.hashSync(password, 10);
+			
+		
+		db.collection('language').findOne({name:"defaultLanguage"}, function(err, language) {
+			if (err) deferred.reject(err);
+			
+			if(language) {
+				user.preferredLanguage = language.value;
+				saveUser();
+			}
+			else {
+				saveUser();
+			}
+		});
 
-        // set user object to userParam without the cleartext password
-        var user = _.omit(userParam, 'password');
- 
-        // add hashed password to user object
-        user.hash = bcrypt.hashSync(userParam.password, 10);
-
- 
+		function saveUser() {
         db.users.insert(
             user,
             function (err, doc) {
@@ -306,6 +317,9 @@ function insert(userParam){
  
                 deferred.resolve();
             });
+		}
+		
+		deferred.resolve(password);
     }
  
     return deferred.promise;

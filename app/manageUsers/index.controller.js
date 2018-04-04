@@ -79,7 +79,7 @@
 
         // Scope for users data
         $scope.aUsers = {};
-        $scope.aUsers.password = "";
+    //    $scope.aUsers.password = "";
 
         $scope.btnchc = "Edit";
         $scope.shw = false;
@@ -175,7 +175,7 @@
         function resetAUsers () {
             $scope.aUsers = {};
             $scope.aUsers.email = "";
-            $scope.aUsers.password = "";
+         //   $scope.aUsers.password = "";
             selected = [];
             $scope.confirmPassword = {};
 
@@ -240,7 +240,7 @@
             });
         };
         
-        getAllFields();
+     //   getAllFields();
 
         /*
             Function name: Show different field types
@@ -640,56 +640,54 @@
             Description: Adds New User and Assigns a Temporary Password to the New User
         */
         $scope.addUser = function(){
-            
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for (var i = 0; i < 10; i++){
-                $scope.aUsers.password += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            $scope.showAddFlash = true;
+			
+            console.log($scope.aUsers);
+			
+             $scope.showAddFlash = true;
 
-            var requiredTextField=0;
-            var forDataBase=0;
+            // var requiredTextField=0;
+            // var forDataBase=0;
 
 
-            for(var h in $scope.fields){
-                if($scope.fields[h].required==true){
-                    requiredTextField++;
-                    if($scope.aUsers[$scope.fields[h].name]===undefined || $scope.aUsers[$scope.fields[h].name]===null){
-                        FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
-                        break;
-                    }else{
-                        forDataBase++;
-                    }
-                }
-            }
-            if(!checkEmails()){
-                FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-            }else if(!checkNumbers()){
-                FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-            }else if(!checkPasswords()){
-                FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-            }else if(!checkConfirmPasswords()){
-                FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
-            }else{
-                if(forDataBase===requiredTextField){
-                    $scope.showAddFlash = false;
-                    $scope.aUsers.preferedLanguage = $rootScope.selectedLanguage;
-                    UserService.Insert($scope.aUsers)
-                        .then(function () {
-                                initController();
-                                $('#myModal').modal('hide');
-                                FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userAdded);
-                                resetModalFlash();
-                                resetAUsers();
-                            }).catch(function (error) {
-                                $scope.showAddFlash = true;
-                                FlashService.Error(error);
-                            });
-                            initController();
+            // for(var h in $scope.fields){
+                // if($scope.fields[h].required==true){
+                    // requiredTextField++;
+                    // if($scope.aUsers[$scope.fields[h].name]===undefined || $scope.aUsers[$scope.fields[h].name]===null){
+                        // FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
+                        // break;
+                    // }else{
+                        // forDataBase++;
+                    // }
+                // }
+            // }
+            // if(!checkEmails()){
+                // FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
+            // }else if(!checkNumbers()){
+                // FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
+            // }else if(!checkPasswords()){
+                // FlashService.Error($rootScope.selectedLanguage.commons.containPass);
+            // }else if(!checkConfirmPasswords()){
+                // FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
+            // }else{
+                // if(forDataBase===requiredTextField){
+                    // $scope.showAddFlash = false;
+                    // $scope.aUsers.preferedLanguage = $rootScope.selectedLanguage;
+                     UserService.Insert($scope.aUsers)
+                         .then(function () {
+                                 initController();
+                                 $('#myModal').modal('hide');
+                                 FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userAdded);
+                                 resetModalFlash();
+                                 resetAUsers();
+                             }).catch(function (error) {
+                                 $scope.showAddFlash = true;
+                                 FlashService.Error(error);
+                             });
+                             initController();
                              
                             
-                }
-            }
+                // }
+            // }
         };
 
         /*

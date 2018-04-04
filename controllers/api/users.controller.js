@@ -1,6 +1,6 @@
 var config = require('config.json');
 var express = require('express');
-var nodemailer = require('nodemailer');
+var emailService = require('services/email.service');
 var router = express.Router();
 var userService = require('services/user.service');
  
@@ -128,8 +128,8 @@ function emailOn(req, res) {
 
 function addUser(req, res) {
     userService.insert(req.body)
-        .then(function () {
-            sendingMail();
+        .then(function (password) {
+            sendingMail(password);
             res.sendStatus(200);
         })
         .catch(function (err) {
@@ -137,45 +137,33 @@ function addUser(req, res) {
         });
 
         //sending the email
-        function sendingMail(){
+        function sendingMail(password){
+            console.log(req.body.email);
+			console.log(password);
+			
             const output = `
-                <p>This mail contains your account's details</p>
-                <h3> Account Details</h3>
-                <ul>
-                   <li>Email: ${req.body.email}</li>
-                    <li>First name: ${req.body.firstName}</li>
-                    <li>Last name: ${req.body.lastName}</li>
-                    <li>Password: ${req.body.password}</li>
-                </ul>
-                <h3>IMPORTANT!</h3>
-                <p>Please change your password as soon as possible.</p>
-                <p>You are registered as ${req.body.role}</p>
-            `;
-        
-            // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'saasteamaws@gmail.com', // generated ethereal user
-                    pass: '12angDum^^y'  // generated ethereal password
-                }
-            });
-        
-            // setup email data with unicode symbols
-            let mailOptions = {
-                from: '"SaaS Team 👻" <saasteamaws@gmail.com>', // sender address
-                to: req.body.email, // list of receivers
-                subject: 'Account Registered ✔', // Subject line
-                text: 'Welcome to SaaS Project', // plain text body
-                html: output // html body
-            };
-        
-            // send mail with defined transport object
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    return console.log(error);
-                }
-            });
+                            <p>You have been registered to the Saas App</p>
+                            <h3> Account Details</h3>
+                            <ul>
+                                <li>Email: ${req.body.email}</li>
+                                <li>Password: ${password}</li>
+                            </ul>
+                            <h3>Message</h3>
+                            <p>Please change your password to your convenience.</p>
+                        `;
+
+                    var mailInfos = {};
+                    mailInfos.to = req.body.email;
+                    mailInfos.subject = "Account Registered";
+                    mailInfos.text = "Welcome to Saas Project";
+                    mailInfos.html = output;
+            
+                   emailService.sendMail(mailInfos).then(function(){
+                       res.sendStatus(200);
+                   })
+                   .catch(function (err) {
+                        res.status(400).send(err);
+                    });
         }
 }
 

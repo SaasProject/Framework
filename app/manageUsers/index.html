@@ -20,68 +20,64 @@
           <h4 class="modal-title">{{selectedLanguage.manageAccounts.labels.modalTitleAdd}}</h4>
         </div>
 		        <div class="modal-body">
-		          <!--<form name = "userAddForm" novalidate>
-				    <label for="firstName">First Name: </label>
-				    <input id="firstName" type="text" ng-model="aUsers.firstName" class="form-control"><br>
-				    <label for="lastName">Last Name: </label>
-				    <input id="lastName" type="text" ng-model="aUsers.lastName" class="form-control"><br>
-				    <label for="email">Email: </label>
-				    <input id="email" type="email" ng-model="aUsers.email" class="form-control"><br>
-				    <label for="role">Role </label>
-				    <select id="role" type="text" ng-model="aUsers.role" class="form-control">
-				    	<option value="Admin">Admin</option>
-				    	<option value="User">User</option>
-				    </select><br>
-
-					<button class="btn btn-primary" ng-click="addUser(userAddForm.$valid)" data-dismiss = "modal">Add User</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-		          </form>-->
+				
 		          <div ng-show="showAddFlash" class="flash-message" ng-if="flash">
         				<div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
 					</div>
 		          <form name = "userAddForm">
-					<div ng-repeat="field in fields" ng-if="field.name != 'password'">
+					<!-- <div ng-repeat="field in fields" ng-if="field.name != 'password'">
 			          	<label for="{{field.name}}" style="text-transform: capitalize;">{{field.name}}:</label>
 			          	<span style = "color:red" ng-if="field.required">*</span>
-
+					-->
 			          	<!--show textbox-->
-			          	<input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
-
+			        <!--  	<input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
+					-->
 			          	<!-- show email -->
-			          	<input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
-
+			        <!--  	<input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
+					-->
 			          	<!-- show number -->
-			          	<input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
-
+			         <!-- 	<input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
+					-->
 			          	<!-- show password -->
-			          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
-
+			         <!-- 	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
+					-->
 			          	<!-- show confirm password -->
-			          	<label ng-show="showPassword(field.type)" for=field.name>{{selectedLanguage.commons.confirm}} {{field.name}}: </label>
+			         <!-- 	<label ng-show="showPassword(field.type)" for=field.name>{{selectedLanguage.commons.confirm}} {{field.name}}: </label>
 			          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control">
-
+					-->
 			          	<!-- show text area -->
-  			          	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
-
+  			         <!-- 	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+					-->
 			          	<!-- show checkbox -->
-			          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
+			         <!-- 	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
 			          		<input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" data="{{option}}" ng-click="pushToAUsers(field.name, option)">{{option}}<br>
 			          	</div>
-
+					-->
 			          	<!-- show radio -->
-			          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
+			        <!--  	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
 			          		<input class="{{option}}" type="radio" name="userRadioButton" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 			          	</div>
-
+					-->
 			          	<!-- show date -->
-			          	<input data="{{field.type}}" type="date" ng-show="showDate(field.type)" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
-
+			         <!-- 	<input data="{{field.type}}" type="date" ng-show="showDate(field.type)" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
+					-->
 			          	<!-- show dropdown -->
-			          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aUsers[field.name]">
+			         <!-- 	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aUsers[field.name]">
 							<option value="" ng-if="!field.required"></option>
 							<option ng-repeat="option in field.options">{{option}}</option>
 						</select>
+					
 		          	</div>
+					
+					-->
+					
+					<label for="firstName">First Name: </label>
+				    <input id="firstName" type="text" ng-model="aUsers.firstName" class="form-control"><br>
+				    <label for="lastName">Last Name: </label>
+				    <input id="lastName" type="text" ng-model="aUsers.lastName" class="form-control"><br>
+				    <label for="email">Email: </label>
+				    <input id="email" type="text" ng-model="aUsers.email" class="form-control"><br>
+					
 					<small><i>{{selectedLanguage.commons.requiredLabel1}}<span style = "color:red">*</span> {{selectedLanguage.commons.requiredLabel2}}</i></small>
 		        	<br>
 		          </form>
