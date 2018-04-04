@@ -1,6 +1,5 @@
 var config = require('config.json');
 var express = require('express');
-var emailService = require('services/email.service');
 var router = express.Router();
 var userService = require('services/user.service');
  
@@ -73,43 +72,13 @@ function emailOn(req, res) {
 
 function addUser(req, res) {
     userService.insert(req.body)
-        .then(function (password) {
-            sendingMail(password);
+        .then(function () {
             res.sendStatus(200);
         })
         .catch(function (err) {
             res.status(400).send(err);
         });
 
-        //sending the email
-        function sendingMail(password){
-            console.log(req.body.email);
-			console.log(password);
-			
-            const output = `
-                            <p>You have been registered to the Saas App</p>
-                            <h3> Account Details</h3>
-                            <ul>
-                                <li>Email: ${req.body.email}</li>
-                                <li>Password: ${password}</li>
-                            </ul>
-                            <h3>Message</h3>
-                            <p>Please change your password to your convenience.</p>
-                        `;
-
-                    var mailInfos = {};
-                    mailInfos.to = req.body.email;
-                    mailInfos.subject = "Account Registered";
-                    mailInfos.text = "Welcome to Saas Project";
-                    mailInfos.html = output;
-            
-                   emailService.sendMail(mailInfos).then(function(){
-                       res.sendStatus(200);
-                   })
-                   .catch(function (err) {
-                        res.status(400).send(err);
-                    });
-        }
 }
 
 function registerUser(req, res) {

@@ -6,6 +6,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 var fs=require('fs');
+var emailService = require('services/email.service');
 db.bind('users');
 
 var fs = require('fs');
@@ -162,14 +163,46 @@ function insert(userParam){
                 // email already exists
                  deferred.reject("Already exists");
             } else {
-                insertUser();
+                sendMail();
             }
         });
-    function insertUser() {
+		
+		function sendMail(){
+			
+			var email = userParam.email;
+			
+			var crypto = require("crypto");
+			var password = crypto.randomBytes(4).toString('hex');
+			
+            const output = `
+                            <p>You have been registered to the Saas App</p>
+                            <h3> Account Details</h3>
+                            <ul>
+                                <li>Email: ${email}</li>
+                                <li>Password: ${password}</li>
+                            </ul>
+                            <h3>Message</h3>
+                            <p>Please change your password to your convenience.</p>
+                        `;
+
+                    var mailInfos = {};
+                    mailInfos.to = email;
+                    mailInfos.subject = "Account Registered";
+                    mailInfos.text = "Welcome to Saas Project";
+                    mailInfos.html = output;
+            
+                   emailService.sendMail(mailInfos).then(function(){
+                       insertUser(password);
+                   })
+                   .catch(function (err) {
+                        deferred.reject("invalid email");
+                    });
+        }
+    function insertUser(password) {
 
 		var user = userParam;
-		var crypto = require("crypto");
-        var password = crypto.randomBytes(4).toString('hex');
+		
+		console.log(password);
         user.hash = bcrypt.hashSync(password, 10);
 			
 		
@@ -194,8 +227,6 @@ function insert(userParam){
                 deferred.resolve();
             });
 		}
-		
-		deferred.resolve(password);
     }
  
     return deferred.promise;
