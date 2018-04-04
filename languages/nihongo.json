@@ -35,7 +35,8 @@
 				"atEmail": "「＠」を含めてください。メールに「＠」がない",
 				"wrongEmailPass": "メールまたはパスワードが間違った",
 				"emailNotReg": "メールが　登録されていない。",
-				"emailSent": "メールが送られた。"
+				"emailSent": "メールが送られた。",
+				"emailInvalid": "無効なメール"
 			}
 		},
 		"navBar" : {

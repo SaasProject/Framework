@@ -80,7 +80,7 @@ function emailOn(email) {
             var liveEmail = tempPass;
             // authentication successful
 
-            hash = bcrypt.hashSync(email.tempPass, 10);
+            hash = bcrypt.hashSync(tempPass, 10);
 
             db.users.update({email: email.email}, 
                 {$set:{hash: hash}}, 

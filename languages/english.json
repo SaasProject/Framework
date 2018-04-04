@@ -35,7 +35,8 @@
 				"atEmail": "Please include an '@' in the email address. '[email]' is missing an '@'.",
 				"wrongEmailPass": "Email or password is incorrect",
 				"emailNotReg": "Email address is not registered",
-				"emailSent": "Email sent"
+				"emailSent": "Email sent",
+				"emailInvalid": "Invalid email"
 			}
 		},
 		"navBar" : {

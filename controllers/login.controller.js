@@ -112,20 +112,17 @@ router.post('/', function (req, res) {
                     mailInfos.html = output;
             
                    emailService.sendMail(mailInfos).then(function(){
-                       res.sendStatus(200);
+                       // return to login page with success message
+                        req.session.success = req.session.lang.loginPage.flash.emailSent;
+                
+                        // redirect to returnUrl
+                        var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
+                        res.redirect(returnUrl);
                    })
                    .catch(function (err) {
-                        res.status(400).send(err);
+                        return res.render('login', { error: req.session.lang.loginPage.flash.emailInvalid, email: req.body.email, modal: true, languages: req.session.lang });
                     });
-            
-                    // return to login page with success message
-                    req.session.success = req.session.lang.loginPage.flash.emailSent;
-             
-                    // redirect to returnUrl
-                    var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
-                    res.redirect(returnUrl);
-            
-            
+                    
                 });
             }
             //end
