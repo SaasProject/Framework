@@ -13,68 +13,13 @@ router.post('/addUser', addUser);
 router.post('/register', registerUser);
 router.get('/current', getCurrentUser);
 router.put('/:_id', updateUser);
-router.delete('/:_id', deleteUser);
-router.post('/upload', uploadPic);
-router.put('/deleteProfilePic/:_id', deleteProfilePic);
+router.delete('/:_id', deleteUser);;
 router.put('/saveLanguage/:_id', saveLanguage);
-router.get('/readProfilePicFile', readProfilePicFile);
  
 module.exports = router;
 
-function readProfilePicFile(req, res) {
-    userService.readProfilePicFile(req, res)
-        .then(function (url) {
-            if (url) {
-                res.send(url);
-            } else {
-                res.sendStatus(404);
-            }
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
 function saveLanguage(req, res) {
     userService.saveLanguage(req, res)
-       .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-/*
-    Function name: User Controller Delete Profile Picture
-    Author(s): Flamiano, Glenn
-    Date Modified: 2018/03/08
-    Update Date: 2018/03/08
-    Description: current user parameters is received and sends it to backend service
-    Parameter(s): request, response
-    Return: response.status
-*/
-function deleteProfilePic(req, res) {
-    userService.deleteProfilePic(req, res)
-       .then(function () {
-            res.sendStatus(200);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-
-/*
-    Function name: User Controller Upload Picture
-    Author(s): Flamiano, Glenn
-    Date Modified: 2018/03/01
-    Description: input file is received as req and uploadPic function from services/user.service.js
-        is called to begin the upload using multer
-    Parameter(s): request, response
-    Return: response.status
-*/
-function uploadPic(req, res) {
-    userService.uploadPic(req, res)
        .then(function () {
             res.sendStatus(200);
         })
