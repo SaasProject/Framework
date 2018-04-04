@@ -13,6 +13,10 @@ service.updateFields = updateFields;
 service.deleteModule = deleteModule;
 
 service.getModuleByName = getModuleByName;
+service.addModuleDoc = addModuleDoc;
+service.getAllModuleDocs = getAllModuleDocs;
+service.updateModuleDoc = updateModuleDoc;
+service.deleteModuleDoc = deleteModuleDoc;
 
 /*
     Flags
@@ -144,9 +148,10 @@ function updateModule(updateModule){
 
     //updates the document in the 'modules' collection
     function update(){
+
+        //create another object and copy. then delete the '_id' property of the new copy
         var forUpdate = {};
         Object.assign(forUpdate, updateModule);
-        //delete _id
         delete forUpdate._id;
  
         db.modules.update({_id: mongo.helper.toObjectID(updateModule._id)}, {$set: forUpdate}, function(err){
@@ -239,6 +244,124 @@ function getModuleByName(moduleName){
         }
         else{
             deferred.resolve(aModule);
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: add document
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/04
+    Description: add a document in a specific collection
+    Parameter(s):
+        *moduleName: string type
+        *newDoc: object type. //fields must be the specific module's 'fields' in 'modules' collection
+    Return: Promise
+*/
+function addModuleDoc(moduleName, newDoc){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.bind(moduleName);
+
+    db[moduleName].insert(newDoc, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: get documents of a module
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/04
+    Description: get all documents of a specific module
+    Parameter(s):
+        *moduleName: string type
+    Return: Promise
+*/
+function getAllModuleDocs(moduleName){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.bind(moduleName);
+
+    db[moduleName].find().toArray(function(err, moduleDocs){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve(moduleDocs);
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: update a module document
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/04
+    Description: update a document of a specific module
+    Parameter(s):
+        *moduleName: string type
+        *updateDoc: object type. includes:
+            *_id: required. string type
+            * //fields must be the specific module's 'fields' in 'modules' collection
+    Return: Promise
+*/
+function updateModuleDoc(moduleName, updateDoc){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.bind(moduleName);
+
+    //create another object and copy. then delete the '_id' property of the new copy
+    var forUpdate = {};
+    Object.assign(forUpdate, updateDoc);
+    delete forUpdate._id;
+
+    db[moduleName].update({_id: mongo.helper.toObjectID(updateDoc._id)}, {$set: forUpdate}, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: delete a module document
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/04
+    Description: delete a document of a specific module
+    Parameter(s):
+        *moduleName: string type
+        *id: string type. //id of the specific document
+    Return: Promise
+*/
+function deleteModuleDoc(moduleName, id){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.bind(moduleName);
+
+    db[moduleName].remove({_id: mongo.helper.toObjectID(id)}, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
         }
     });
 

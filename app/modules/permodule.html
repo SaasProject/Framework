@@ -17,8 +17,10 @@
                         {{doc[field]}}
                     </td>
                     <td>
-                        <button class="btn btn-default">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
+                        <button class="btn btn-default" 
+                        data-toggle="modal" data-target="#moduleDocModal"
+                        ng-click="editModuleDoc(doc)">Edit</button>
+                        <button class="btn btn-danger" ng-click="deleteModuleDoc(doc._id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -30,7 +32,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">{{aModule.name}}</div>
-            <form>
+            <form ng-submit="submit()">
             <div class="modal-body">
                 <div ng-repeat="field in aModule.fields">
                     <label>{{field}}</label>

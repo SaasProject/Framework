@@ -15,6 +15,10 @@
         service.deleteModule = deleteModule;
 
         service.getModuleByName = getModuleByName;
+        service.addModuleDoc = addModuleDoc;
+        service.getAllModuleDocs = getAllModuleDocs;
+        service.updateModuleDoc = updateModuleDoc;
+        service.deleteModuleDoc = deleteModuleDoc;
 
         return service;
 
@@ -40,6 +44,22 @@
 
         function getModuleByName(moduleName){
             return $http.get('/api/modules/getModuleByName/' + moduleName).then(handleSuccess, handleError);
+        }
+
+        function addModuleDoc(newModuleDoc){
+            return $http.post('/api/modules/addModuleDoc', newModuleDoc).then(handleSuccess, handleError);
+        }
+
+        function getAllModuleDocs(moduleName){
+            return $http.get('/api/modules/getAllModuleDocs/' + moduleName).then(handleSuccess, handleError);
+        }
+
+        function updateModuleDoc(updateModuleDoc){
+            return $http.put('/api/modules/updateModuleDoc', updateModuleDoc).then(handleSuccess, handleError);
+        }
+
+        function deleteModuleDoc(deleteDoc){
+            return $http.delete('/api/modules/deleteModuleDoc/' + deleteDoc.moduleName + '/' + deleteDoc.id).then(handleSuccess, handleError);
         }
 
         function handleSuccess(res) {
