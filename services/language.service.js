@@ -8,9 +8,8 @@ var fs=require('fs');
 var service = {};
 
 service.saveDefaultLanguage = saveDefaultLanguage;
-service.getEnglishLanguage = getEnglishLanguage;
-service.getNihongoLanguage = getNihongoLanguage;
 service.getDefaultLanguage = getDefaultLanguage;
+service.getSpecificLanguage = getSpecificLanguage;
 
 module.exports = service;
 
@@ -24,41 +23,45 @@ function saveDefaultLanguage(req, res){
     return deferred.promise;
 }
 
-function getEnglishLanguage(req, res) {
-    var deferred = Q.defer();
-    
-    var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
-    var languages=JSON.parse(file);
-
-    deferred.resolve(languages);
-    
-    return deferred.promise;
-}
-
-function getNihongoLanguage(req, res) {
-    var deferred = Q.defer();
-    
-    var file=fs.readFileSync(__dirname + '/../languages/nihongo.json', 'utf8');
-    var languages=JSON.parse(file);
-
-    deferred.resolve(languages);
-    
-    return deferred.promise;
-}
-
 function getDefaultLanguage(req, res){
 	var deferred = Q.defer();
  
     db.language.findOne({ name: 'defaultLanguage' }, function (err, results) {
-        if (err) deferred.reject(err);
- 
-        if (results) {
-            deferred.resolve(results);
-        } else {
-            //not found
-            deferred.resolve();
+        //console.log(results.value);
+        if(err){
+            var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
+            var languages=JSON.parse(file);
+            deferred.resolve(languages);
+        }else{
+            if (fs.existsSync(__dirname + '/../languages/'+results.value+'.json')) {
+                var file=fs.readFileSync(__dirname + '/../languages/'+results.value+'.json', 'utf8');
+                var languages=JSON.parse(file);
+                deferred.resolve(languages);
+            }else{
+                var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
+                var languages=JSON.parse(file);
+                deferred.resolve(languages);
+            }
         }
     });
-    
+    return deferred.promise;
+}
+
+
+function getSpecificLanguage(req,res){
+    var deferred = Q.defer();
+
+    //console.log(req.session.user.setLanguage);
+
+    if (fs.existsSync(__dirname + '/../languages/'+req.session.user.setLanguage+'.json')) {
+        var file=fs.readFileSync(__dirname + '/../languages/'+req.session.user.setLanguage+'.json', 'utf8');
+        var languages=JSON.parse(file);
+        deferred.resolve(languages);
+    }else{
+        var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
+        var languages=JSON.parse(file);
+        deferred.resolve(languages);
+    }
+
     return deferred.promise;
 }

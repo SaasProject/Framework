@@ -175,22 +175,14 @@
         });
 
         //get languages
-        LanguageService.getEnglishLanguage()
+        LanguageService.getSpecificLanguage()
             .then(function(res) {
-                $rootScope.englishLanguage = res;
+                $rootScope.selectedLanguage = res;
+                console.log($rootScope.selectedLanguage);
             })
             .catch(function (error) {
                 FlashService.Error(error);
             });
-
-        LanguageService.getNihongoLanguage()
-            .then(function(res) {
-                $rootScope.nihongoLanguage = res;
-            })
-            .catch(function (error) {
-                FlashService.Error(error);
-            });
-
         //get default language
         LanguageService.getDefaultLanguage()
             .then(function(res) {

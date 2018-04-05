@@ -8,20 +8,16 @@
     function Service($http, $q) {
         var service = {};
  
-        service.getEnglishLanguage = getEnglishLanguage;
-        service.getNihongoLanguage = getNihongoLanguage;
+        service.getSpecificLanguage = getSpecificLanguage;
         service.getDefaultLanguage = getDefaultLanguage;
         service.saveDefaultLanguage = saveDefaultLanguage;
  
         return service;
         
-        function getEnglishLanguage() {
-            return $http.get('/api/languages/getEnglishLanguage').then(handleSuccess, handleError);
+        function getSpecificLanguage() {
+            return $http.get('/api/languages/getSpecificLanguage').then(handleSuccess, handleError);
         }
 
-        function getNihongoLanguage() {
-            return $http.get('/api/languages/getNihongoLanguage').then(handleSuccess, handleError);
-        }
 
         function getDefaultLanguage() {
             return $http.get('/api/languages/getDefaultLanguage').then(handleSuccess, handleError);
