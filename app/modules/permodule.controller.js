@@ -51,12 +51,8 @@
         }
 
         $scope.deleteModuleDoc = function(id){
-            var forDelete = {
-                moduleName: $stateParams.moduleName,
-                id: id
-            }
             if(confirm('delete this document?')){
-                ModulesService.deleteModuleDoc(forDelete).then(function(){
+                ModulesService.deleteModuleDoc($stateParams.moduleName, id).then(function(){
                     alert('deleted');
                 }).catch(function(err){
                     alert('cannot delete');

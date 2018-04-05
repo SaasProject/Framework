@@ -6,8 +6,12 @@ var ModulesService = require('services/modules.service');
 router.post('/addModule', addModule);
 router.get('/getAllModules', getAllModules);
 router.put('/updateModule', updateModule);
-router.put('/updateModuleFields', updateModuleFields);
 router.delete('/deleteModule/:id/:name', deleteModule);
+
+router.put('/addModuleField', addModuleField);
+router.put('/updateModuleField', updateModuleField);
+router.put('/deleteModuleField/:name/:id', deleteModuleField);
+
 
 router.get('/getModuleByName/:name', getModuleByName);
 router.post('/addModuleDoc', addModuleDoc);
@@ -39,16 +43,32 @@ function updateModule(req, res){
     });
 }
 
-function updateModuleFields(req, res){
-    ModulesService.updateFields(req.body.name, req.body.fields).then(function(){
+function deleteModule(req, res){
+    ModulesService.deleteModule(req.params.id, req.params.name).then(function(){
         res.status(200).send();
     }).catch(function(err){
         res.status(400).send();
     });
 }
 
-function deleteModule(req, res){
-    ModulesService.deleteModule(req.params.id, req.params.name).then(function(){
+function addModuleField(req, res){
+    ModulesService.addModuleField(req.body.moduleName, req.body.field).then(function(){
+        res.status(200).send();
+    }).catch(function(err){
+        res.status(400).send();
+    });
+}
+
+function updateModuleField(req, res){
+    ModulesService.updateModuleField(req.body.moduleName, req.body.field).then(function(){
+        res.status(200).send();
+    }).catch(function(err){
+        res.status(400).send();
+    });
+}
+
+function deleteModuleField(req, res){
+    ModulesService.deleteModuleField(req.params.name, req.params.id).then(function(){
         res.status(200).send();
     }).catch(function(err){
         res.status(400).send();

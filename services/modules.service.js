@@ -4,13 +4,19 @@ var db = mongo.db(config.connectionString, {native_parser: true});
 db.bind('modules');
 var Q = require('q');
 
+//sample
+var ObjectID = require('mongodb').ObjectID;
+
 var service = {};
 
 service.addModule = addModule;
 service.getAllModules = getAllModules;
 service.updateModule = updateModule;
-service.updateFields = updateFields;
 service.deleteModule = deleteModule;
+
+service.addModuleField = addModuleField;
+service.updateModuleField = updateModuleField;
+service.deleteModuleField = deleteModuleField;
 
 service.getModuleByName = getModuleByName;
 service.addModuleDoc = addModuleDoc;
@@ -168,33 +174,6 @@ function updateModule(updateModule){
 }
 
 /*
-    Function name: update fields
-    Author: Reccion, Jeremy
-    Date Modified: 2018/04/03
-    Description: updates the fields of a specific module
-    Parameter(s):
-        *moduleName: required. string type
-        *fieldsArray: required. array type
-    Return: Promise
-*/
-function updateFields(moduleName, fieldsArray){
-    var deferred = Q.defer();
-    moduleName = moduleName.toLowerCase();
-
-    //set only the fields properties as the whole fieldsArray
-    db.modules.update({name: moduleName}, {$set: {fields: fieldsArray}}, function(err){
-        if(err){
-            deferred.reject(err);
-        }
-        else{
-            deferred.resolve();
-        }
-    });
-
-    return deferred.promise;
-}
-
-/*
     Function name: delete module
     Author: Reccion, Jeremy
     Date Modified: 2018/04/03
@@ -215,6 +194,94 @@ function deleteModule(id, moduleName){
     //remove document from 'modules' collection
     db.modules.remove({_id: mongo.helper.toObjectID(id)}, function(err){
         if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: add module field
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/05
+    Description: insert a new field object to the specific module's fields array
+    Parameter(s):
+        *moduleName: required. string type
+        *fieldObject: required. object type
+    Return: Promise
+*/
+function addModuleField(moduleName, fieldObject){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    //create a new objectID to used as query for updates and delete
+    fieldObject.id = new ObjectID();
+
+    db.modules.update({name: moduleName}, {$push: {fields: fieldObject}}, function(err){
+        if(err){
+            console.log(err);
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: update module field
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/05
+    Description:  update a field object from the specific module's fields array
+    Parameter(s):
+        *moduleName: required. string type
+        *fieldObject: required. object type
+    Return: Promise
+*/
+function updateModuleField(moduleName, fieldObject){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    console.log(fieldObject);
+
+    fieldObject.id = new ObjectID(fieldObject.id);
+    
+    db.modules.update({name: moduleName, fields: {$elemMatch: {id: fieldObject.id}}}, {$set: {'fields.$': fieldObject}}, function(err){
+        if(err){
+            console.log(err);
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: delete module field
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/05
+    Description:  delete a field object from the specific module's fields array
+    Parameter(s):
+        *moduleName: required. string type
+        *fieldID: required. string type
+    Return: Promise
+*/
+function deleteModuleField(moduleName, fieldID){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+    
+    db.modules.update({name: moduleName}, {$pull: {fields: {id: mongo.helper.toObjectID(fieldID)}}}, function(err){
+        if(err){
+            console.log(err);
             deferred.reject(err);
         }
         else{

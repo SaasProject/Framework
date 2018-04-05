@@ -11,8 +11,11 @@
         service.addModule = addModule;
         service.getAllModules = getAllModules;
         service.updateModule = updateModule;
-        service.updateFields = updateFields;
         service.deleteModule = deleteModule;
+
+        service.addModuleField = addModuleField;
+        service.updateModuleField = updateModuleField;
+        service.deleteModuleField = deleteModuleField;
 
         service.getModuleByName = getModuleByName;
         service.addModuleDoc = addModuleDoc;
@@ -33,13 +36,21 @@
         function updateModule(updateModule){
             return $http.put('/api/modules/updateModule', updateModule).then(handleSuccess, handleError);
         }
-
-        function updateFields(updateModule){
-            return $http.put('/api/modules/updateModuleFields', updateModule).then(handleSuccess, handleError);
-        }
         
-        function deleteModule(deleteModule){
-            return $http.delete('/api/modules/deleteModule/' + deleteModule._id + '/' + deleteModule.name).then(handleSuccess, handleError);
+        function deleteModule(moduleID, moduleName){
+            return $http.delete('/api/modules/deleteModule/' + moduleID + '/' + moduleName).then(handleSuccess, handleError);
+        }
+
+        function addModuleField(addModuleField){
+            return $http.put('/api/modules/addModuleField', addModuleField).then(handleSuccess, handleError);
+        }
+
+        function updateModuleField(updateModuleField){
+            return $http.put('/api/modules/updateModuleField', updateModuleField).then(handleSuccess, handleError);
+        }
+
+        function deleteModuleField(moduleName, moduleFieldID){
+            return $http.put('/api/modules/deleteModuleField/' + moduleName + '/' + moduleFieldID).then(handleSuccess, handleError);
         }
 
         function getModuleByName(moduleName){
@@ -58,8 +69,8 @@
             return $http.put('/api/modules/updateModuleDoc', updateModuleDoc).then(handleSuccess, handleError);
         }
 
-        function deleteModuleDoc(deleteDoc){
-            return $http.delete('/api/modules/deleteModuleDoc/' + deleteDoc.moduleName + '/' + deleteDoc.id).then(handleSuccess, handleError);
+        function deleteModuleDoc(moduleName, moduleDocID){
+            return $http.delete('/api/modules/deleteModuleDoc/' + moduleName + '/' + moduleDocID).then(handleSuccess, handleError);
         }
 
         function handleSuccess(res) {

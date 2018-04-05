@@ -6,7 +6,7 @@
         <table class="table">
             <thead>
                 <th ng-repeat="field in aModule.fields">
-                    {{field}}
+                    {{field.name}}
                 </th>
                 <th>
                 </th>
@@ -14,7 +14,7 @@
             <tbody>
                 <tr ng-repeat="doc in moduleDocs">
                     <td ng-repeat="field in aModule.fields">
-                        {{doc[field]}}
+                        {{doc[field.name]}}
                     </td>
                     <td>
                         <button class="btn btn-default" 
@@ -35,8 +35,8 @@
             <form ng-submit="submit()">
             <div class="modal-body">
                 <div ng-repeat="field in aModule.fields">
-                    <label>{{field}}</label>
-                    <input type="text" class="form-control" ng-model="moduleDocForm[field]">
+                    <label>{{field.name}}</label>
+                    <input type="{{field.type}}" class="form-control" ng-model="moduleDocForm[field.name]" ng-required="field.required">
                 </div>
             </div>
             <div class="modal-footer">
