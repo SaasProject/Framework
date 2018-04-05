@@ -6,7 +6,7 @@ var languageService = require('services/language.service');
  
 // routes
 router.get('/getDefaultLanguage', getDefaultLanguage);
-router.get('/getSpecificLanguage', getSpecificLanguage);
+router.get('/getSpecificLanguage/:user', getSpecificLanguage);
 router.post('/saveDefaultLanguage', saveDefaultLanguage);
 
 module.exports = router;

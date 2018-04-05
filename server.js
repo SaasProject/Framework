@@ -44,6 +44,7 @@ io.on('connection', function(socket){
         io.emit('fieldsChange');
     }); */
     socket.on('languageChange', function(option){
+        console.log("gumagana ba?")
         io.emit('languageChange', option);
     });
 

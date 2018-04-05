@@ -47,14 +47,6 @@
                 data: { activeTab: 'account' }
             })
             
-            //parameter is always required
-            .state('fields' ,{
-                url: '/fields?name',
-                templateUrl: 'fields/index.html',
-                controller: 'Fields.IndexController',
-                controllerAs: 'vm',
-                data: {activeTab: 'fields'}
-            })
 
             //SAMPLE added by jeremy
             .state('modules', {
@@ -179,27 +171,18 @@
             //change active tab for the nav bar
             $rootScope.activeTab = toState.data.activeTab;
         });
-
-        //get languages
-        LanguageService.getSpecificLanguage()
-            .then(function(res) {
-                $rootScope.selectedLanguage = res;
-            })
-            .catch(function (error) {
-                FlashService.Error(error);
-            });
-        //get default language
-        LanguageService.getDefaultLanguage()
-            .then(function(res) {
-                //console.log(res);
-                $rootScope.defaultLanguage = res;
-            })
-            .catch(function (error) {
-                FlashService.Error(error);
-            });
-      
+            //get default language
+            LanguageService.getDefaultLanguage()
+                .then(function(res) {
+                    //console.log(res);
+                    $rootScope.defaultLanguage = res;
+                })
+                .catch(function (error) {
+                    FlashService.Error(error);
+                });
         //execute when loaded
         getUserInfos();
+        
 
         $rootScope.changeLanguage = function(option) {
             changeLang(option);
@@ -207,15 +190,18 @@
         }
 
         function changeLang(option){
-            if(option == 'nihongo'){
-                $rootScope.selectedLanguage = $rootScope.nihongoLanguage.nihongo;
-                $rootScope.hiUser = "こんにちは, "+$rootScope.user.firstName+"さん!";
-            } else if (option == 'english') {
-                $rootScope.selectedLanguage = $rootScope.englishLanguage.english;
-                $rootScope.hiUser = "Hi "+$rootScope.user.firstName+"!";
-            }
+            
             //save selected language to database
             UserService.saveLanguage(option, $rootScope.user);
+            LanguageService.getSpecificLanguage(option)
+                .then(function(res){
+                    $rootScope.selectedLanguage = res[Object.keys(res)[0]];
+                    //console.log($rootScope.selectedLanguage);
+                })
+                .catch(function (error) {
+                    FlashService.Error(error);
+            });
+            
         }
 
         socket.on('languageChange', function(option){
@@ -244,19 +230,17 @@
                 $rootScope.user = user;
                 $rootScope.fName = user.firstName;
 
-                //get language settings from current user
-                var setLanguage = user.setLanguage;
-                if(setLanguage == undefined){
-                    setLanguage = $rootScope.defaultLanguage.value;
-                }
+                LanguageService.getSpecificLanguage($rootScope.user.setLanguage)
+                .then(function(res) {
+                    $rootScope.selectedLanguage = res[Object.keys(res)[0]];
+                })
+                .catch(function (error) {
+                    FlashService.Error(error);
+                });
 
-                if(setLanguage == 'nihongo'){
-                    $rootScope.selectedLanguage = $rootScope.nihongoLanguage.nihongo;
-                    $rootScope.hiUser = "こんにちは, "+user.firstName+"さん!";
-                } else if (setLanguage == 'english') {
-                    $rootScope.selectedLanguage = $rootScope.englishLanguage.english;
-                    $rootScope.hiUser = "Hi "+user.firstName+"!";
-                }
+
+
+
 
                 if (user.firstName == null){
                     $rootScope.initials = "new";

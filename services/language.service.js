@@ -51,10 +51,10 @@ function getDefaultLanguage(req, res){
 function getSpecificLanguage(req,res){
     var deferred = Q.defer();
 
-    //console.log(req.session.user.setLanguage);
+    //console.log(req.params.user)
 
-    if (fs.existsSync(__dirname + '/../languages/'+req.session.user.setLanguage+'.json')) {
-        var file=fs.readFileSync(__dirname + '/../languages/'+req.session.user.setLanguage+'.json', 'utf8');
+    if (fs.existsSync(__dirname + '/../languages/'+req.params.user+'.json')) {
+        var file=fs.readFileSync(__dirname + '/../languages/'+req.params.user+'.json', 'utf8');
         var languages=JSON.parse(file);
         deferred.resolve(languages);
     }else{

@@ -14,8 +14,8 @@
  
         return service;
         
-        function getSpecificLanguage() {
-            return $http.get('/api/languages/getSpecificLanguage').then(handleSuccess, handleError);
+        function getSpecificLanguage(user) {
+            return $http.get('/api/languages/getSpecificLanguage/'+user).then(handleSuccess, handleError);
         }
 
 
