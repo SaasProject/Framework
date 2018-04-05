@@ -152,6 +152,12 @@
                 $state.transitionTo('home');
             }
 
+
+            //redirect to manageUsers when /perModule/users
+            if(toState.name == 'perModule' && toParams.moduleName == 'users'){
+                $state.transitionTo('manageUsers');
+            }
+
             //get token from server every route change to determine if session in server is still alive
             $http.get('/app/token').then(function(res){
                 //console.log(res);
