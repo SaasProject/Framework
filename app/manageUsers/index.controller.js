@@ -49,7 +49,7 @@
             };
         });
  
-    function Controller(UserService, $scope, FlashService, FieldsService, socket, $rootScope) {
+    function Controller(UserService, $scope, FlashService, ModulesService, socket, $rootScope) {
         var vm = this;
  
         vm.user = [];
@@ -216,7 +216,7 @@
 
         $scope.id = "";
         $scope.fields = [];
-        $scope.name = 'user';
+        $scope.name = 'users';
 		
         /*
             Function name: Get all user fields 
@@ -228,7 +228,7 @@
         */
         function getAllFields(){
 			
-            FieldsService.GetAll($scope.name).then(function(response){
+            ModulesService.getModuleByName($scope.name).then(function(response){
     
                $scope.fields = response.fields;
                $scope.id = response._id;

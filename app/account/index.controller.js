@@ -20,7 +20,7 @@
             };
         }]);
  
-    function Controller($window, UserService, UploadService, FlashService, $scope, FieldsService, $rootScope, $timeout) {
+    function Controller($window, UserService, UploadService, FlashService, $scope, ModulesService, $rootScope, $timeout) {
         var vm = this;
  
         vm.user = null;
@@ -485,9 +485,9 @@
 
         $scope.id = "";
         $scope.fields = [];
-        $scope.name = 'user';
+        $scope.name = 'users';
         function getAllFields(){
-            FieldsService.GetAll($scope.name).then(function(response){
+            ModulesService.getModuleByName($scope.name).then(function(response){
     
                 $scope.fields = response.fields;
                 $scope.id = response._id;
