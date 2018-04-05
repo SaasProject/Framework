@@ -184,7 +184,6 @@
         LanguageService.getSpecificLanguage()
             .then(function(res) {
                 $rootScope.selectedLanguage = res;
-                console.log($rootScope.selectedLanguage);
             })
             .catch(function (error) {
                 FlashService.Error(error);
