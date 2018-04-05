@@ -7,26 +7,6 @@ var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 var multer = require('multer');
 var fs=require('fs');
-db.bind('users');
-
-var fs = require('fs');
-
-/*
-    Function name: Upload File Service Multer Storage
-    Author(s): Flamiano, Glenn
-    Date Modified: 2018/03/01
-    Description: Configuration for saving uploaded image file
-    Parameter(s): request, file, cb
-    Return: cb
-*/
-var storage = multer.diskStorage({
-    destination: './profile_pictures',
-    filename: function(req, file, cb) {
-        return cb(null, req.body.email +'.'+ file.mimetype.toString().slice(6));
-    }
-});
-
-var upload = multer({storage: storage}).single("myfile");
  
 var service = {};
 
@@ -58,24 +38,27 @@ function readFile(req, res){
     Author(s): Flamiano, Glenn
     Date Modified: 2018/03/08
     Update Date: 2018/04/03
-    Description: Deletes the user profile picture url in the database and profile picture file in the server
+    Description: Deletes the file url in the database and profile picture file in the server
     Parameter(s): none
     Return: none
 */
 function deleteFile(req, res){
+    db.bind(req.body.dbName);
+    //console.log(req.body.dbName);
+    //console.log(db.collection(req.body.dbName));
     var deferred = Q.defer();
 
     //update db
-    db.users.findOne({ email: req.body.email }, function (err, user) {
+    db.collection(req.body.dbName).findById(req.body._id, function (err, result) {
         if (err) deferred.reject(err);
  
-        if (user) {
-            db.users.update({email: req.body.email}, {$set: { profilePicUrl: ''}}, function(err){
+        if (result) {
+            db.collection(req.body.dbName).update({_id: mongo.helper.toObjectID(req.body._id)}, {$set: { fileUrl: ''}}, function(err){
                 if(err) deferred.reject(err);
                 //If no errors, send it back to the client
                 try{
-                    var file=fs.readFileSync('profile_pictures/'+user.profilePicUrl); //catch error here if file not found
-                    fs.unlink('profile_pictures/'+user.profilePicUrl, function (err) {
+                    var file=fs.readFileSync(req.body.pathUsed+result.fileUrl); //catch error here if file not found
+                    fs.unlink(req.body.pathUsed+result.fileUrl, function (err) {
                         if (err) deferred.reject(err);
                     });
                     //console.log('file deleted');
@@ -101,15 +84,37 @@ function deleteFile(req, res){
     Function name: Upload File Service Upload Profile Picture
     Author(s): Flamiano, Glenn
     Date Modified: 2018/03/01
-    Update Date: 2018/04/03
-    Description: Updates profile picture url in user collection and saves image request to profile pictures folder
+    Update Date: 2018/04/05
+    Description: Updates file url in collection and saves file
         within the workspace
     Parameter(s): none
     Return: none
 */
 function uploadFile(req, res){
+    db.bind(req.query.dbName);
+    //console.log(req.query.dbName);
+    //console.log(db.collection(req.query.dbName));
+
+    /*
+    Function name: Upload File Service Multer Storage
+    Author(s): Flamiano, Glenn
+    Date Modified: 2018/03/01
+    Description: Configuration for saving uploaded image file
+    Parameter(s): request, file, cb
+    Return: cb
+    */
+    var storage = multer.diskStorage({
+        destination: './'+req.query.pathUsed,
+        filename: function(req, file, cb) {
+            return cb(null, req.body.id +'.'+ file.mimetype.toString().slice(6));
+        }
+    });
+
+    var upload = multer({storage: storage}).single("myfile");
+
     var deferred = Q.defer();
     upload(req, res, function (err) {
+        //console.log(req.file);
         if (err) {
             deferred.reject(err)
         } else {
@@ -117,11 +122,11 @@ function uploadFile(req, res){
                 deferred.reject(err)
             } else {
                 //update db
-                db.users.findOne({ email: req.body.email }, function (err, user) {
+                db.collection(req.query.dbName).findById(req.body.id, function (err, result) {
                     if (err) deferred.reject(err);
              
-                    if (user) {
-                        db.users.update({email: req.body.email}, {$set: { profilePicUrl: req.file.filename}}, function(err){
+                    if (result) {
+                        db.collection(req.query.dbName).update({_id: mongo.helper.toObjectID(req.body.id)}, {$set: { fileUrl: req.file.filename}}, function(err){
                             if(err) deferred.reject(err);
                             //If no errors, send it back to the client
                             deferred.resolve();

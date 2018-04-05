@@ -623,7 +623,9 @@
             Return: none
         */
         $scope.Submit = function() {
-            UploadService.uploadFile($scope.file, vm.user)
+            var pathUsed = 'profile_pictures';
+            var dbName = 'users';
+            UploadService.uploadFile($scope.file, vm.user, pathUsed, dbName)
             .then(function(res) {
                 $scope.uploading = false;
                 $scope.file = {};
@@ -707,7 +709,9 @@
         */
         $scope.deletePic = function(){
             if (confirm($rootScope.selectedLanguage.accountSettings.flashMessages.profilePicDeleteSure)){
-                UploadService.deleteFile(vm.user)
+                var pathForDelete = 'profile_pictures/';
+                var dbName = 'users';
+                UploadService.deleteFile(vm.user, pathForDelete, dbName)
                 .then(function(res) {
                     FlashService.Success($rootScope.selectedLanguage.accountSettings.flashMessages.profilePicDeleted);
                     $scope.profilePicUrl = '';

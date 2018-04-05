@@ -35,7 +35,9 @@
             Parameter(s): user
             Return: http post response
         */
-        function deleteFile(user) {
+        function deleteFile(user, pathUsed, dbName) {
+            user.pathUsed = pathUsed;
+            user.dbName = dbName;
             return $http.put('/api/uploadFile/deleteFile/' + user._id, user).then(handleSuccess, handleError);
         }
 
@@ -48,14 +50,15 @@
             Parameter(s): input file, user scope
             Return: http post response
         */
-        function uploadFile(file, user) {
+        function uploadFile(file, user, pathUsed, dbName) {
             var fd = new FormData();
             fd.append('id', user._id);
             fd.append('email', user.email);
+            //fd.append('pathUsed', pathUsed);
             fd.append('myfile', file.upload);
             return $http.post('/api/uploadFile/uploadFile', fd, {
                 transformRequest: angular.identity,
-                headers: { 'Content-Type': undefined}}).then(handleSuccess, handleError);
+                headers: { 'Content-Type': undefined}, params: {pathUsed:pathUsed,dbName:dbName}}).then(handleSuccess, handleError);
         }
  
         // private functions

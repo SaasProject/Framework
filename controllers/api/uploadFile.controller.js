@@ -1,7 +1,7 @@
 var config = require('config.json');
 var express = require('express');
 var router = express.Router();
-var userService = require('services/uploadFile.service');
+var uploadService = require('services/uploadFile.service');
  
 // routes
 router.post('/uploadFile', uploadFile);
@@ -20,7 +20,7 @@ module.exports = router;
     Return: response.status
 */
 function readFile(req, res) {
-    userService.readFile(req, res)
+    uploadService.readFile(req, res)
         .then(function (url) {
             if (url) {
                 res.send(url);
@@ -43,7 +43,7 @@ function readFile(req, res) {
     Return: response.status
 */
 function deleteFile(req, res) {
-    userService.deleteFile(req, res)
+    uploadService.deleteFile(req, res)
        .then(function () {
             res.sendStatus(200);
         })
@@ -56,13 +56,14 @@ function deleteFile(req, res) {
     Function name: Upload File Controller Upload File
     Author(s): Flamiano, Glenn
     Date Modified: 2018/03/01
+    Update Date: 2018/04/04
     Description: input file is received as req and uploadPic function from services/user.service.js
         is called to begin the upload using multer
     Parameter(s): request, response
     Return: response.status
 */
 function uploadFile(req, res) {
-    userService.uploadFile(req, res)
+    uploadService.uploadFile(req, res)
        .then(function () {
             res.sendStatus(200);
         })

@@ -269,20 +269,20 @@
                     $rootScope.initials = initials.toUpperCase();
 
                     //get user profile pic
-                    var profilePicPath = '/' + user.profilePicUrl;
+                    var profilePicPath = '/' + user.fileUrl;
                     $rootScope.profilePic = '';
                     var pathUsed = 'profile_pictures';
                     UploadService.readFile(pathUsed+profilePicPath).then(function(res) {
                         if(res == 'false'){
                             $rootScope.profilePic = '';
                         } else if(res == 'true'){
-                            $rootScope.profilePic = '/' + user.profilePicUrl;
+                            $rootScope.profilePic = '/' + user.fileUrl;
                         }
                     })
                     .catch(function (error) {
                     });
 
-                    if(user.profilePicUrl == undefined || user.profilePicUrl == ''){
+                    if(user.fileUrl == undefined || user.fileUrl == ''){
                         $rootScope.profilePic = '';
                     }
                 }
