@@ -1,0 +1,177 @@
+Modules Service Documentation
+
+Author: Jeremy Reccion
+Date Created: April 06, 2018
+Last Updated: April 06, 2018
+
+Description: Provides methods for managing collections and the fields of each collection
+
+Prerequisitie npm packages:
+- mongoskin
+- mongodb
+- q
+
+Other prerequisites:
+- config.json @ root directory
+- connectionString property with value <db path> 
+
+Optional:
+- collection named 'modules'
+
+Methods:
+- addModule
+- getAllModules
+- updateModule
+- deleteModule
+- addModuleField
+- updateModuleField
+- deleteModuleField
+- getModuleByName
+- addModuleDoc
+- getAllModuleDocs
+- updateModuleDocs
+- deleteModuleDoc
+
+How to use:
+var service = require(path of 'modules.service.js');
+
+//if method returns nothing
+service.method(parameters).then(function(){
+    //do something on success
+}).catch(function(err){
+    //do something on error
+});
+
+//if method returns something
+service.method(parameters).then(function(result){
+    //do something on success
+}).catch(function(err){
+    //do something on error
+});
+
+--------------------------------------------------------------------------------------------------
+- addModule(newModule)
+
+Parameters:
+    newModule - Object. contains the collection's details. Must have 'name' property.
+
+Description:
+    creates a new collection then inserts the object to the 'modules' collection.
+
+Returns:
+    if successful, returns nothing. 
+    if there is a document with the same name, returns an error object with 'exists' 
+    property set to true.
+    otherwise, returns the error object (from MongoDB)
+
+--------------------------------------------------------------------------------------------------
+- getAllModules()
+
+Parameters:
+    none
+
+Description:
+    retrieves all documents from the 'modules' collection.
+
+Returns:
+    if successful, returns empty array (if no documents) or array of objects. 
+    otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- updateModule(updateModule)
+
+Parameters:
+    updateModule - Object. contains the collection's details. Must have 'name' and '_id' property.
+
+Description:
+    updates the details of the specific module. 
+    if the name has changed, it renames its specific collection.
+    it does not update the 'fields' property.
+
+Returns:
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- deleteModule(id, moduleName)
+
+Parameters:
+    id - String. The '_id' property of the module
+    moduleName - String. The 'name' property of the module
+
+Description:
+    drops the specific collection then removes the specific module document from the 'modules'
+    collection.
+
+Returns:
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- addModuleField(moduleName, fieldObject)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    fieldObject - Object. contains a field's details. Must have 'name' property.
+
+Description:
+    pushes the object to the specific module's 'fields' property.
+
+Returns:
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- updateModuleField(moduleName, fieldObject)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    fieldObject - Object. contains a field's details. Must have 'name' and 'id' property.
+
+Description:
+    updates the specific field from the specific module.
+
+Returns:
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- deleteModuleField(moduleName, fieldID)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    fieldID - String. the 'id' property of the field.
+
+Description:
+    removes the field from the module's 'fields' property.
+
+Returns:
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- getModuleByName(moduleName)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+
+Description:
+    gets the specific module document from the 'modules' collection.
+
+Returns:
+    if successful, returns the module object. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- addModuleDoc(moduleName, newDoc)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    newDoc - Object. its keys/properties should be the same as the field names 
+    from the specific module.
+
+Description:
+    inserts the object to the specific collection. it does not check the correspondence between
+    its keys/properties with the field names of the specific module. it also does not check for
+    uniqueness nor null values.
+
+Returns:
+    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+
+

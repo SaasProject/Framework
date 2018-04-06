@@ -211,7 +211,8 @@ function deleteModule(id, moduleName){
     Description: insert a new field object to the specific module's fields array
     Parameter(s):
         *moduleName: required. string type
-        *fieldObject: required. object type
+        *fieldObject: required. object type. includes:
+            *name: string type
     Return: Promise
 */
 function addModuleField(moduleName, fieldObject){
@@ -223,7 +224,6 @@ function addModuleField(moduleName, fieldObject){
 
     db.modules.update({name: moduleName}, {$push: {fields: fieldObject}}, function(err){
         if(err){
-            console.log(err);
             deferred.reject(err);
         }
         else{
@@ -248,13 +248,10 @@ function updateModuleField(moduleName, fieldObject){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
-    console.log(fieldObject);
-
     fieldObject.id = new ObjectID(fieldObject.id);
     
     db.modules.update({name: moduleName, fields: {$elemMatch: {id: fieldObject.id}}}, {$set: {'fields.$': fieldObject}}, function(err){
         if(err){
-            console.log(err);
             deferred.reject(err);
         }
         else{
@@ -281,7 +278,6 @@ function deleteModuleField(moduleName, fieldID){
     
     db.modules.update({name: moduleName}, {$pull: {fields: {id: mongo.helper.toObjectID(fieldID)}}}, function(err){
         if(err){
-            console.log(err);
             deferred.reject(err);
         }
         else{
