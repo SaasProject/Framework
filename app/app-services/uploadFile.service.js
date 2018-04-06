@@ -18,7 +18,8 @@
             Function name: Read profile picture file
             Author(s): Flamiano, Glenn
             Date Modified: 2018/04/03
-            Description: returns http update on deleting the user profile picture
+            Update Date: 2018/04/06
+            Description: returns http response as boolean for reading the file
             Parameter(s): urlFile
             Return: http get response
         */
@@ -28,33 +29,33 @@
         }
 
         /*
-            Function name: Delete profile picture
+            Function name: Delete file
             Author(s): Flamiano, Glenn
             Date Modified: 2018/04/03
+            Update Date: 2018/04/06
             Description: returns http update on deleting the file
-            Parameter(s): user
+            Parameter(s): scope, pathUsed, dbName
             Return: http post response
         */
-        function deleteFile(user, pathUsed, dbName) {
-            user.pathUsed = pathUsed;
-            user.dbName = dbName;
-            return $http.put('/api/uploadFile/deleteFile/' + user._id, user).then(handleSuccess, handleError);
+        function deleteFile(scope, pathUsed, dbName) {
+            scope.pathUsed = pathUsed;
+            scope.dbName = dbName;
+            return $http.put('/api/uploadFile/deleteFile/' + scope._id, scope).then(handleSuccess, handleError);
         }
 
         /*
-            Function name: User App Service Upload File
+            Function name: App Service Upload File
             Author(s): Flamiano, Glenn
             Date Modified: 2018/03/01
-            Description: appends current user id and email and input file to form data and
-                sends it to controllers/user.controller.js to return correct http response
-            Parameter(s): input file, user scope
+            Update Date: 2018/04/06
+            Description: appends current unique id of the field and input file to form data and
+                sends it to controllers/uploadFile.controller.js to return correct http response
+            Parameter(s): input file, scope, pathUsed, dbName
             Return: http post response
         */
-        function uploadFile(file, user, pathUsed, dbName) {
+        function uploadFile(file, scope, pathUsed, dbName) {
             var fd = new FormData();
-            fd.append('id', user._id);
-            fd.append('email', user.email);
-            //fd.append('pathUsed', pathUsed);
+            fd.append('id', scope._id);
             fd.append('myfile', file.upload);
             return $http.post('/api/uploadFile/uploadFile', fd, {
                 transformRequest: angular.identity,

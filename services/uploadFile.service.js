@@ -17,6 +17,15 @@ service.readFile = readFile; //glenn
  
 module.exports = service;
 
+/*
+    Function name: Upload File Service Read File
+    Author(s): Flamiano, Glenn
+    Date Modified: 2018/04/??
+    Update Date: 2018/04/06
+    Description: Reads a file in the server directory
+    Parameter(s): req, res
+    Return: deferred.promise
+*/
 function readFile(req, res){
     //console.log(req.query);
     var deferred = Q.defer();
@@ -34,13 +43,13 @@ function readFile(req, res){
 }
 
 /*
-    Function name: Upload File Service Delete Profile Picture
+    Function name: Upload File Service Delete File
     Author(s): Flamiano, Glenn
     Date Modified: 2018/03/08
-    Update Date: 2018/04/03
-    Description: Deletes the file url in the database and profile picture file in the server
-    Parameter(s): none
-    Return: none
+    Update Date: 2018/04/06
+    Description: Deletes the file url in the database and file in the server directory
+    Parameter(s): req, res
+    Return: deferred.promise
 */
 function deleteFile(req, res){
     db.bind(req.body.dbName);
