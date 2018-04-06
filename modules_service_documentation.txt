@@ -32,6 +32,10 @@ Methods:
 - updateModuleDocs
 - deleteModuleDoc
 
+Notes:
+- provide the correct order of parameters (for 2 or more), correct types (string, object, etc.) 
+    and required keys/properties (for objects) with non-null or defined values when using a method.
+
 How to use:
 var service = require(path of 'modules.service.js');
 
@@ -173,5 +177,48 @@ Returns:
     if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
+- getAllModuleDocs(moduleName)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+
+Description:
+    retrieves all the documents from the specific collection.
+
+Returns:
+    if successful, returns empty array (if no documents) or array of objects. 
+    otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- updateModuleDoc(moduleName, updateDoc)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    updateDoc - Object. its keys/properties should be the same as the field names 
+    from the specific module. must have '_id' property.
+
+Description:
+    updates the specific document from the specific collection.
+
+Returns:
+    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- deleteModuleDoc(moduleName, id)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    id - String. the '_id' property of the specific document.
+
+Description:
+    deletes the specific document from the specific collection
+
+Returns:
+    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+
+
+
 
 
