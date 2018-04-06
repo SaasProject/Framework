@@ -680,9 +680,16 @@
                                  resetModalFlash();
                                  resetAUsers();
                              }).catch(function (error) {
-                                 $scope.showAddFlash = true;
-                                 FlashService.Error(error);
-                             });
+								if(error.exists){
+									FlashService.Error("email already exists");
+								}
+								else if(error.invalid){
+									FlashService.Error("invalid email");
+								}
+								else{
+									FlashService.Error(error);
+								}
+							});
                              initController();
                              
                             
@@ -734,35 +741,7 @@
             Description: Update User
         */
 		vm.updateUser = function() {
-            $scope.aUsers.password="qwe";
-            var requiredTextField=0;
-            var forDataBase=0;
-
-            $scope.showEditFlash = true;
-            for(var h in $scope.fields){
-                if($scope.fields[h].required==true){
-                    requiredTextField++;
-                    if($scope.aUsers[$scope.fields[h].name]===undefined){
-                        FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
-                    }else{
-                        forDataBase++;
-                    }
-                }
-            }
-
-            if(!checkEmails()){
-                FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-            }else if(!checkNumbers()){
-                FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-            }else if(!checkPasswords()){
-                FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-            }else if(!checkConfirmPasswords()){
-                FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
-            }else{
-                if(forDataBase===requiredTextField){
-                    delete $scope.aUsers.password;
-                    //console.log($scope.aUsers);
-                    UserService.Update($scope.aUsers)
+			 UserService.Update($scope.aUsers)
                         .then(function () {
                             initController();
                             $scope.btnchc = "Edit";
@@ -775,9 +754,7 @@
                         $scope.btnchc = "Edit";
                         $scope.shw = false;
                         resetAUsers();
-                        resetModalFlash();
-                }
-            }
+                        resetModalFlash();     
         }		
 		
 		/*

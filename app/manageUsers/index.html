@@ -138,59 +138,12 @@
     					<div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
 					</div>
 					<form name = "userEditForm" novalidate>
-						<div ng-repeat="field in fields" ng-if="field.name !='password'">
-	          				<label for="{{field.name}}" style="text-transform: capitalize;">{{field.name}}:</label>
-	          				<span style = "color:red" ng-if="field.required">*</span>
-	          				<!--<div ng-show="showCheckBox(field.type)" ng-repeat="options in aUsers[field.name] track by $index" style="float:left">
-	          					{{options}}.&nbsp;
-	          				</div><br ng-show="showCheckBox(field.type)">
-	          				<p ng-show="showCheckBox(field.type)" ng-model="aUsers[field.name]">{{aUsers[field.name]}}</p>
-	          				<p ng-show="showRadio(field.type)" ng-model="aUsers[field.name]">{{aUsers[field.name]}}</p>-->
-	          				<p ng-show="showDate(field.type) && !shw" ng-model="aUsers[field.name]">{{aUsers[field.name]}}</p>
-	          				<!--<input id="{{field.name}}" type="text" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>-->
-
-	          				<!--show textbox-->
-				          	<input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>
-
-				          	<!-- show email -->
-				          	<input name="{{field.type}}" data="{{field.type}}" type="email" pattern="[^ @]*@[^ @]*" ng-show="showEmail(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>
-
-				          	<!-- show number -->
-				          	<input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>
-
-				          	<!-- show password -->
-				          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>
-
-				          	<!-- show confirm password -->
-				          	<label ng-show="showPassword(field.type)" for=field.name>{{selectedLanguage.commons.confirm}} {{field.name}}: </label>
-				          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'">
-
-				          	<!-- show text area -->
-	  			          	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required rows="4" cols="50"></textarea>
-
-				          	<!-- show checkbox -->
-				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
-				          		<div ng-hide="field.name == 'email'">
-				          			<input class="{{'edit '+option}}" type="checkbox" name="{{'edit '+option}}" ng-model="optionSelected" ng-disabled="!shw" ng-checked="isChecked(field.name, option, field.type)" data="{{option}}" ng-click="pushEditToAUsers(field.name, option, data)">{{option}}<br>
-				          		</div>
-				          	</div>
-
-				          	<!-- show radio -->
-				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
-				          		<div ng-hide="field.name == 'email'">
-				          			<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="!shw" value="{{option}}" ng-hide="field.name == 'email'" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
-				          		</div>
-				          	</div>
-
-				          	<!-- show date -->
-				          	<input data="{{field.type}}" type="date" ng-show="showDate(field.type) && shw==true" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-readonly="shw==false || field.name == 'email'" ng-required=field.required>
-
-				          	<!-- show dropdown -->
-				          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aUsers[field.name]" ng-disabled="shw==false || field.name == 'email'">
-								<option value="" ng-if="!field.required"></option>
-								<option ng-repeat="option in field.options">{{option}}</option>
-							</select>
-          				</div>
+						<label for="fName">First Name: </label>
+						<input id="fName" type="text" ng-model="aUsers.firstName" class="form-control"><br>
+						<label for="lName">Last Name: </label>
+						<input id="lName" type="text" ng-model="aUsers.lastName" class="form-control"><br>
+						<label for="mail">Email: </label>
+						<input id="mail" type="text" ng-model="aUsers.email" class="form-control"><br>
 						<small><i>{{selectedLanguage.commons.requiredLabel1}}<span style = "color:red">*</span> {{selectedLanguage.commons.requiredLabel2}}</i></small>
         				<br>
           			</form>

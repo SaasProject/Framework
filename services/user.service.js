@@ -161,7 +161,7 @@ function insert(userParam){
  
             if (user) {
                 // email already exists
-                 deferred.reject("Already exists");
+                 deferred.reject({exists:true});
             } else {
                 sendMail();
             }
@@ -195,7 +195,7 @@ function insert(userParam){
                        insertUser(password);
                    })
                    .catch(function (err) {
-                        deferred.reject("invalid email");
+                        deferred.reject({invalid:true});
                     });
         }
     function insertUser(password) {
@@ -210,7 +210,7 @@ function insert(userParam){
 			if (err) deferred.reject(err);
 			
 			if(language) {
-				user.preferredLanguage = language.value;
+				user.setLanguage = language.value;
 				saveUser();
 			}
 			else {
