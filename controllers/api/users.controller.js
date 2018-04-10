@@ -6,8 +6,6 @@ var userService = require('services/user.service');
 // routes
 router.get('/isAdmin', getAdminUser);
 router.get('/all', getAllUsers);
-router.post('/authenticate', authenticateUser);
-router.post('/emailOn', emailOn);       // added by dyan0
 router.post('/addUser', addUser);
 router.post('/register', registerUser);
 router.get('/current', getCurrentUser);
@@ -40,35 +38,6 @@ function getAllUsers(req, res) {
             res.status(400).send(err);
         });
 }
- 
-function authenticateUser(req, res) {
-    userService.authenticate(req.body.email, req.body.password)
-        .then(function (token) {
-            if (token) {
-                // authentication successful
-                res.send({ token: token });
-            } else {
-                // authentication failed
-                res.sendStatus(401);
-            }
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
- 
-// added by dyan0
-function emailOn(req, res) {
-    userService.emailOn(req.body)
-        .then(function (emailDBstat) {
-            res.status(200).send(emailDBstat);
-        })
-        .catch(function (err) {
-            res.status(400).send(err);
-        });
-}
-// end of add - dyan0
-
 
 function addUser(req, res) {
     userService.insert(req.body)

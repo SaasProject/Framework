@@ -21,16 +21,16 @@
             Author(s): Omugtong, Jano
             Date Modified: December 2017
             Description: all input types are valid: email, number, password and confirm password
-            Parameter(s): commons(the error messages), fields, aDevices, confirmPassword
+            Parameter(s): commons(the error messages), fields, allEntry, confirmPassword
             Return: Array
 
             eg of usage:
-            if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.aDevices, $scope.confirmPassword)){
+            if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.allEntry, $scope.confirmPassword)){
                 
             }
 
         */
-        function AllValid(commons, fields, aDevices, confirmPassword) {
+        function AllValid(commons, fields, allEntry, confirmPassword) {
             var everythingValid = true;
             if(!CheckEmails()){
                 everythingValid = false;

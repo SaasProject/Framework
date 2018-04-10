@@ -17,7 +17,7 @@ var service = {};
 service.getAll = getAll;
 
 service.authenticate = authenticate;
-service.emailOn = emailOn;      // added by dyan0
+service.resetPass = resetPass;      
 service.getById = getById;
 service.insert = insert;    // macku
 service.update = update;
@@ -68,21 +68,19 @@ function authenticate(email, password) {
     return deferred.promise;
 }
 
-// added by dyan0
-function emailOn(email) {
+function resetPass(email) {
     var deferred = Q.defer();
-    db.users.findOne({ email: email.email }, function (err, user) {
+    db.users.findOne({ email: email }, function (err, user) {
         if (err) deferred.reject(err);
  
         if (user) {
             var crypto = require("crypto");
             var tempPass = crypto.randomBytes(4).toString('hex');
-            var liveEmail = tempPass;
             // authentication successful
 
             hash = bcrypt.hashSync(tempPass, 10);
 
-            db.users.update({email: email.email}, 
+            db.users.update({email: email}, 
                 {$set:{hash: hash}}, 
                 function(err, task){
                     if (err) deferred.reject(err);
@@ -90,7 +88,7 @@ function emailOn(email) {
                     deferred.resolve();
             });
 
-            deferred.resolve(liveEmail);
+            deferred.resolve(tempPass);
         } else {
             // authentication failed
             deferred.resolve();
@@ -99,7 +97,6 @@ function emailOn(email) {
  
     return deferred.promise;
 }
-// end of add - dyan0
 
 function getById(_id) {
     var deferred = Q.defer();

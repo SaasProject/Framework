@@ -1,5 +1,4 @@
 var Q = require('q');
-var _ = require('lodash');
 var nodemailer = require('nodemailer');
 
 var service = {};

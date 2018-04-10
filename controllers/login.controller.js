@@ -5,6 +5,7 @@ var config = require('config.json');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, {native_parser: true});
 db.bind('language');
+var userService = require('services/user.service');
 var emailService = require('services/email.service');
 var fs=require('fs');
 
@@ -57,72 +58,64 @@ router.post('/', function (req, res) {
             //start
             if (req.body.formType == 'login'){
                 // authenticate using api to maintain clean separation between layers
-                request.post({
-                    url: config.apiUrl + '/users/authenticate',
-                    form: req.body,
-                    json: true
-                }, function (error, response, body) {
-                    if (error) {
-                        return res.render('login', { error: 'An error occurred' });
-                    }
-            
-                    if (!body.token) {
+                userService.authenticate(req.body.email, req.body.password)
+                .then(function (token) {
+                    if (token) {
+                        // authentication successful
+                        // save JWT token in the session to make it available to the angular app
+                        req.session.token = token.token;
+                        req.session.user = token.user;
+                        // redirect to returnUrl
+                        var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
+                        res.redirect(returnUrl);
+                    } else {
+                        // authentication failed
                         return res.render('login', { error: req.session.lang.loginPage.flash.wrongEmailPass, email: req.body.email, forgotPassEmail: req.body.email, languages: req.session.lang});
                     }
-            
-                    // save JWT token in the session to make it available to the angular app
-                    req.session.token = body.token.token;
-                    req.session.user = body.token.user;
-                    // redirect to returnUrl
-                    var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
-                    res.redirect(returnUrl);
+                })
+                .catch(function (err) {
+                    return res.render('login', { error: 'An error occurred' });
                 });
             }
             else {
-                // authenticate using api to maintain clean separation between layers
-                request.post({
-                    url: config.apiUrl + '/users/emailOn',
-                    form: req.body,
-                    json: true
-                }, function (error, response, body) {
-                    if (error) {
-                        return res.render('login', { error: 'An error occurred' });
-                    }
-             
-                    if (!response.body) {
-                        return res.render('login', { error: req.session.lang.loginPage.flash.emailNotReg, email: req.body.email, modal: true, languages: req.session.lang });
-                    }
-
-
-                    const output = `
+                // check email using api to maintain clean separation between layers
+                userService.resetPass(req.body.email)
+                .then(function (newPass) {
+                    if (newPass){
+                            const output = `
                             <p>This mail is sent to recover your account</p>
                             <h3> Account Details</h3>
                             <ul>
                                 <li>Email: ${req.body.email}</li>
-                                <li>New Password: ${response.body}</li>
+                                <li>New Password: ${newPass}</li>
                             </ul>
                             <h3>Message</h3>
                             <p>Please change your password to your convenience.</p>
-                        `;
+                            `;
 
-                    var mailInfos = {};
-                    mailInfos.to = req.body.email;
-                    mailInfos.subject = "Recover Account";
-                    mailInfos.text = "Your Password Request Recovery";
-                    mailInfos.html = output;
-            
-                   emailService.sendMail(mailInfos).then(function(){
-                       // return to login page with success message
-                        req.session.success = req.session.lang.loginPage.flash.emailSent;
-                
-                        // redirect to returnUrl
-                        var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
-                        res.redirect(returnUrl);
-                   })
-                   .catch(function (err) {
-                        return res.render('login', { error: req.session.lang.loginPage.flash.emailInvalid, email: req.body.email, modal: true, languages: req.session.lang });
-                    });
+                            var mailInfos = {};
+                            mailInfos.to = req.body.email;
+                            mailInfos.subject = "Recover Account";
+                            mailInfos.text = "Your Password Request Recovery";
+                            mailInfos.html = output;
                     
+                        emailService.sendMail(mailInfos).then(function(){
+                            // return to login page with success message
+                                req.session.success = req.session.lang.loginPage.flash.emailSent;
+                        
+                                // redirect to returnUrl
+                                var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
+                                res.redirect(returnUrl);
+                        })
+                        .catch(function (err) {
+                                return res.render('login', { error: req.session.lang.loginPage.flash.emailInvalid, email: req.body.email, modal: true, languages: req.session.lang });
+                            });
+                    } else {
+                        return res.render('login', { error: req.session.lang.loginPage.flash.emailNotReg, email: req.body.email, modal: true, languages: req.session.lang });
+                    }
+                })
+                .catch(function (err) {
+                    return res.render('login', { error: 'An error occurred' });
                 });
             }
             //end
