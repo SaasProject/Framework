@@ -32,6 +32,7 @@ Methods:
 - updateModuleDocs
 - deleteModuleDoc
 - findDuplicateDoc
+- updateFieldArray
 
 Notes:
 - provide the correct order of parameters (for 2 or more), correct types (string, object, etc.) 
@@ -118,7 +119,8 @@ Parameters:
     fieldObject - Object. contains a field's details. Must have 'name' property.
 
 Description:
-    pushes the object to the specific module's 'fields' property.
+    pushes the object to the specific module's 'fields' property. it also does not check for
+    uniqueness of its name.
 
 Returns:
     if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
@@ -131,7 +133,8 @@ Parameters:
     fieldObject - Object. contains a field's details. Must have 'name' and 'id' property.
 
 Description:
-    updates the specific field from the specific module.
+    updates the specific field from the specific module. it also does not check for
+    uniqueness of its name.
 
 Returns:
     if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
@@ -231,6 +234,21 @@ Description:
 Returns:
     if successful, returns nothing. 
     if a unique value exists, returns an error object with 'exists' set to true.
+    otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- updateFieldArray(moduleName, fieldArray)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    fieldArray - Array. this is the array of fields, ASSUMED to be sorted by angular's 
+    ui-sortable.
+
+Description:
+    sets the 'fields' property of a module to the array.
+
+Returns:
+    if successful, returns nothing. 
     otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
