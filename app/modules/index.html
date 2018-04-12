@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <!-- Module
         <form class="form-inline" ng-submit="submit()">
             <input type="text" class="form-control" ng-model="newModule.name">
@@ -19,12 +19,20 @@
                 <input type="checkbox" ng-model="newField.required"> <b>{{selectedLanguage.fields.labels.required}}</b>
                 <input type="checkbox" ng-model="newField.unique"> <b>{{selectedLanguage.fields.labels.unique}}</b>
                 <select class="form-control" ng-model="newField.type">
-                    <option>text</option>
-                    <option>password</option>
-                    <option>email</option>
-                    <option>number</option>
-                    <option>date</option>
+                    <option value="text">{{selectedLanguage.fields.labels.text}}</option>
+                    <option value="number">{{selectedLanguage.fields.labels.number}}</option>
+                    <option value="email">{{selectedLanguage.fields.labels.email}}</option>
+                    <option value="password">{{selectedLanguage.fields.labels.password}}</option>
+                    <option value="textarea">{{selectedLanguage.fields.labels.textarea}}</option>
+                    <option value="checkbox">{{selectedLanguage.fields.labels.checkbox}}</option>
+                    <option value="dropdown">{{selectedLanguage.fields.labels.dropdown}}</option>
+                    <option value="radio">{{selectedLanguage.fields.labels.radio}}</option>
+                    <option value="date">{{selectedLanguage.fields.labels.date}}</option>
                 </select>
+                <div ng-if="hasOptions()">
+                    {{selectedLanguage.fields.labels.note1}}<br>
+                    <textarea class="form-control" rows="4" cols="50" ng-model="fieldOptions"></textarea>
+                </div>
                 <button type="submit" class="btn btn-primary">{{selectedLanguage.commons.save}}</button>
             </form>
         </div>
@@ -43,7 +51,7 @@
                     <td ng-bind="field.name"></td>
                     <td>{{selectedLanguage.fields.labels[(field.required) ? 'required' : 'notRequired']}}</td>
                     <td>{{selectedLanguage.fields.labels[(field.unique) ? 'unique' : 'notUnique']}}</td>
-                    <td></td>
+                    <td ng-bind="field.type"></td>
                     <td>
                         <div class="pull-right">
                             <a style = "cursor:pointer"><i class="fa fa-list-alt" aria-hidden="true" ng-click="editField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.edit}}"></i><a>

@@ -17,6 +17,11 @@
             unique: false,
             type: 'text'
         }
+        $scope.fieldOptions = '';
+
+        $scope.hasOptions = function(){
+            return ($scope.newField.type == 'dropdown' || $scope.newField.type == 'checkbox' || $scope.newField.type == 'radio') ? true : false;
+        }
 
         $scope.getModuleByName = function(){
             ModulesService.getModuleByName($scope.module.name).then(function(aModule){
@@ -62,21 +67,40 @@
 
         $scope.editField = function(aField){
             angular.copy(aField, $scope.newField);
+            if($scope.hasOptions()){
+                $scope.fieldOptions = aField.options.toString();
+            }
+            else{
+                $scope.fieldOptions = '';
+            }
         }
 
         $scope.saveField = function(){
             //change this check
-
-            var doesExists = $scope.newModule.fields.findIndex(function(x){
-                return x.name == $scope.newField.name && x.id != $scope.newField.id;
-            });
+            var doesExists = -1;
+            if($scope.newField.id){
+                doesExists = $scope.module.fields.findIndex(function(x){
+                    return x.name == $scope.newField.name && x.id != $scope.newField.id;
+                });
+            }
+            else{
+                doesExists = $scope.module.fields.findIndex(function(x){
+                    return x.name == $scope.newField.name;
+                });
+            }
 
             if(doesExists == -1){
                 //sample
                 var forSave = {
-                    moduleName: $scope.newModule.name,
+                    moduleName: $scope.module.name,
                     field: $scope.newField
                 }
+                if($scope.fieldOptions != ''){
+                    forSave.field.options = $scope.fieldOptions.split(',');
+                }
+
+                console.log($scope.fieldOptions);
+
                 if($scope.newField.id == undefined){
                     ModulesService.addModuleField(forSave).then(function(){
                         alert('field added');
@@ -98,7 +122,7 @@
         }
 
         $scope.deleteField = function(fieldObject){
-            ModulesService.deleteModuleField($scope.newModule.name, fieldObject.id).then(function(){
+            ModulesService.deleteModuleField($scope.module.name, fieldObject.id).then(function(){
                 alert('field deleted');
             }).catch(function(err){
                 alert('cannot delete field');

@@ -88,9 +88,11 @@ function addModuleDoc(req, res){
         ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
             res.status(200).send();
         }).catch(function(err){
+            console.log(err);
             res.status(400).send();
         });
     }).catch(function(err){
+        console.log(err);
         res.status(400).send();
     });
 }
