@@ -116,7 +116,7 @@ var server = http.listen(5000, function () {
             */
             MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
                     dbo.collection("devices").findOne({device_id: assetParam.device_id}, 
                         function(err, result) {
                             if (err) throw err;
@@ -142,7 +142,7 @@ var server = http.listen(5000, function () {
             function searchForAssets(){
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
                     dbo.collection("assets").findOne({asset_tag: assetParam.asset_tag}, 
                         function(err, result) {
                             if (err) throw err;
@@ -167,7 +167,7 @@ var server = http.listen(5000, function () {
             function checkAssetforAdd(){
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
 
                     dbo.collection("devices").findOne({device_id: assetParam.device_id}, 
                             function(err, deviceResult) {
@@ -198,7 +198,7 @@ var server = http.listen(5000, function () {
             function checkAssetforUpdate(){
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
                     dbo.collection("devices").findOne({device_id: assetParam.device_id}, 
                             function(err, deviceResult) {
                                 if (err) throw err;
@@ -256,7 +256,7 @@ var server = http.listen(5000, function () {
 
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
                     dbo.collection("devices").findOne({device_id: assetParam.device_id}, 
                             function(err, deviceResult) {
                                 if (err) throw err;
@@ -290,7 +290,7 @@ var server = http.listen(5000, function () {
                 
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("SaasDatabaseRealProj");
+                    var dbo = db.db("SaasDatabase");
                     dbo.collection("assets").findOne({asset_tag: assetParam.asset_tag},function(err,assetResultfind){
                         if(err) throw err;
                         var fromWarehouse = assetResultfind.location
