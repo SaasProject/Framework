@@ -6,7 +6,11 @@
         .controller('Modules.IndexController', Controller)
  
     function Controller($scope, ModulesService){
-        $scope.newModule = {};
+        //$scope.newModule = {};
+        $scope.module = {
+            name: 'assets',
+            fields: []
+        }
         $scope.newField = {
             name: '',
             required: false,
@@ -14,13 +18,23 @@
             type: 'text'
         }
 
-        ModulesService.getAllModules().then(function(modules){
+        $scope.getModuleByName = function(){
+            ModulesService.getModuleByName($scope.module.name).then(function(aModule){
+                $scope.module = aModule;
+            }).catch(function(err){
+
+            });
+        }
+
+        $scope.getModuleByName();
+
+        /* ModulesService.getAllModules().then(function(modules){
             $scope.modules = modules;
         }).catch(function(err){
             alert(err);
-        });
+        }); */
 
-        $scope.submit = function(){
+        /* $scope.submit = function(){
             console.log($scope.newModule);
             if($scope.newModule.name == 'users'){
                 alert('cannot have "users" collection');
@@ -40,11 +54,11 @@
                 });
             }
             
-        }
+        } */
 
-        $scope.editModule = function(aModule){
+        /* $scope.editModule = function(aModule){
             angular.copy(aModule, $scope.newModule);
-        }
+        } */
 
         $scope.editField = function(aField){
             angular.copy(aField, $scope.newField);
@@ -91,7 +105,7 @@
             });
         }
 
-        $scope.deleteModule = function(aModule){
+        /* $scope.deleteModule = function(aModule){
             if(aModule.name == 'users'){
                 alert('cannot delete "users" collection')
             }
@@ -105,6 +119,6 @@
                     });
                 }
             }
-        }
+        } */
     }
 })();

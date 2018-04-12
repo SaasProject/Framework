@@ -182,6 +182,8 @@
                 "addField": "ここにフィールドを追加する",
 				"required": "必要",
 				"notRequired": "不要",
+				"unique": "一意",
+				"notUnique": "一意くない",
                 "type": "フィールドの種類を選択",
                 "text": "テキスト",
                 "number": "数字",
