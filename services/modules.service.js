@@ -25,7 +25,7 @@ service.updateModuleDoc = updateModuleDoc;
 service.deleteModuleDoc = deleteModuleDoc;
 
 service.findDuplicateDoc = findDuplicateDoc;
-
+service.updateFieldArray = updateFieldArray;
 /*
     Flags
 */
@@ -501,6 +501,32 @@ function findDuplicateDoc(moduleName, moduleDoc){
         
     }).catch(function(err){
         deferred.reject(err);
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: update fields array
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/12
+    Description: sets the 'fields' property of the specific module to the inputted array.
+    Parameter(s):
+        *moduleName: required. string type
+        *fieldArray: required. array type. //this array is from angular's UI-SORTABLE
+    Return: Promise
+*/
+function updateFieldArray(moduleName, fieldArray){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    db.modules.update({name: moduleName}, {$set: {fields: fieldArray}}, function(err){
+        if(err){
+            deferred.reject(err);
+        }
+        else{
+            deferred.resolve();
+        }
     });
 
     return deferred.promise;
