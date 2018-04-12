@@ -23,6 +23,8 @@
         service.updateModuleDoc = updateModuleDoc;
         service.deleteModuleDoc = deleteModuleDoc;
 
+        service.updateFieldArray = updateFieldArray;
+
         return service;
 
         function addModule(newModule){
@@ -71,6 +73,10 @@
 
         function deleteModuleDoc(moduleName, moduleDocID){
             return $http.delete('/api/modules/deleteModuleDoc/' + moduleName + '/' + moduleDocID).then(handleSuccess, handleError);
+        }
+
+        function updateFieldArray(fieldArray){
+            return $http.put('/api/modules/updateFieldArray', fieldArray).then(handleSuccess, handleError);
         }
 
         function handleSuccess(res) {

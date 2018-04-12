@@ -49,7 +49,7 @@
             };
         });
  
-    function Controller(UserService, $scope, FlashService, ModulesService, socket, $rootScope) {
+    function Controller(UserService, $scope, FlashService, ModulesService, TableSortService, socket, $rootScope) {
         var vm = this;
  
         vm.user = [];
@@ -116,24 +116,21 @@
         */
         $scope.sortColumn = function(col){
             $scope.column = col;
-            if($scope.reverse){
-                $scope.reverse = false;
-                $scope.reverseclass = 'arrow-up';
-            }else{
-                $scope.reverse = true;
-                $scope.reverseclass = 'arrow-down';
-            }
+            $scope.reverse = TableSortService.sortSelectedColumn($scope.reverse, col).result;
+            $scope.reverseclass = TableSortService.sortSelectedColumn($scope.reverse, col).reverseclass;
         };
 
         /*
             Function name: Sort Class
             Author(s): Flamiano, Glenn
-            Date Modified: December 2018
+            Date Modified: December 2017
             Description: To change column sort arrow UI when user clicks the column
             Parameter(s): column
             Return: none
         */
         $scope.sortClass = function(col){
+            return TableSortService.sortSelectedClass($scope.reverse, col, $scope.column);
+            /*
             if($scope.column == col ){
                 if($scope.reverse){
                     return 'arrow-down'; 
@@ -142,7 +139,7 @@
                 }
             }else{
                 return 'arrow-dormant';
-            }
+            }*/
         } 
         // End of Table Functions
 
@@ -175,7 +172,7 @@
         function resetAUsers () {
             $scope.aUsers = {};
             $scope.aUsers.email = "";
-         //   $scope.aUsers.password = "";
+            //$scope.aUsers.password = "";
             selected = [];
             $scope.confirmPassword = {};
 
