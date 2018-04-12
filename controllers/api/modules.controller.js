@@ -84,8 +84,12 @@ function getModuleByName(req, res){
 }
 
 function addModuleDoc(req, res){
-    ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-        res.status(200).send();
+    ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+        ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+            res.status(200).send();
+        }).catch(function(err){
+            res.status(400).send();
+        });
     }).catch(function(err){
         res.status(400).send();
     });
@@ -100,8 +104,12 @@ function getAllModuleDocs(req, res){
 }
 
 function updateModuleDoc(req, res){
-    ModulesService.updateModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-        res.status(200).send();
+    ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+        ModulesService.updateModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+            res.status(200).send();
+        }).catch(function(err){
+            res.status(400).send();
+        });
     }).catch(function(err){
         res.status(400).send();
     });

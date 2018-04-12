@@ -2,7 +2,7 @@ Modules Service Documentation
 
 Author: Jeremy Reccion
 Date Created: April 06, 2018
-Last Updated: April 06, 2018
+Last Updated: April 12, 2018
 
 Description: Provides methods for managing collections and the fields of each collection
 
@@ -31,6 +31,7 @@ Methods:
 - getAllModuleDocs
 - updateModuleDocs
 - deleteModuleDoc
+- findDuplicateDoc
 
 Notes:
 - provide the correct order of parameters (for 2 or more), correct types (string, object, etc.) 
@@ -174,7 +175,7 @@ Description:
     uniqueness nor null values.
 
 Returns:
-    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - getAllModuleDocs(moduleName)
@@ -201,7 +202,7 @@ Description:
     updates the specific document from the specific collection.
 
 Returns:
-    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - deleteModuleDoc(moduleName, id)
@@ -214,7 +215,23 @@ Description:
     deletes the specific document from the specific collection
 
 Returns:
-    if successful, returns the nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+
+--------------------------------------------------------------------------------------------------
+- findDuplicateDoc(moduleName, moduleDoc)
+
+Parameters:
+    moduleName - String. the name of the specific module.
+    moduleDoc - Object. its keys/properties should be the same as the field names 
+    from the specific module. may have '_id' property.
+
+Description:
+    checks if the module document's values have duplicates based from the specific module's fields
+
+Returns:
+    if successful, returns nothing. 
+    if a unique value exists, returns an error object with 'exists' set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 

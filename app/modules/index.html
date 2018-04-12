@@ -10,7 +10,8 @@
         <div>
             <form class="form-group" ng-submit="saveField()">
                 <input type="text" class="form-control" ng-model="newField.name">
-                <input type="checkbox" ng-model="newField.required" ng-init="newField.required"> <b>required</b>
+                <input type="checkbox" ng-model="newField.required"> <b>required</b>
+                <input type="checkbox" ng-model="newField.unique"> <b>unique</b>
                 <select class="form-control" ng-model="newField.type" ng-init="newField.type = 'text'">
                     <option>text</option>
                     <option>password</option>

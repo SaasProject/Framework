@@ -24,6 +24,8 @@ service.getAllModuleDocs = getAllModuleDocs;
 service.updateModuleDoc = updateModuleDoc;
 service.deleteModuleDoc = deleteModuleDoc;
 
+service.findDuplicateDoc = findDuplicateDoc;
+
 /*
     Flags
 */
@@ -207,12 +209,13 @@ function deleteModule(id, moduleName){
 /*
     Function name: add module field
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/05
+    Date Modified: 2018/04/12
     Description: insert a new field object to the specific module's fields array
     Parameter(s):
         *moduleName: required. string type
         *fieldObject: required. object type. includes:
-            *name: string type
+            *name: required. string type
+            *unique: required. boolean type 
     Return: Promise
 */
 function addModuleField(moduleName, fieldObject){
@@ -426,6 +429,71 @@ function deleteModuleDoc(moduleName, id){
         else{
             deferred.resolve();
         }
+    });
+
+    return deferred.promise;
+}
+
+/*
+    Function name: find duplicate values
+    Author: Reccion, Jeremy
+    Date Modified: 2018/04/12
+    Description: check for duplicate values according to one or more unique fields
+    Parameter(s):
+        *moduleName: required. string type
+        *moduleDoc: required. object type. includes:
+            *_id: optional. string type //if this exists, the document is being updated
+    Return: Promise
+*/
+function findDuplicateDoc(moduleName, moduleDoc){
+    var deferred = Q.defer();
+    moduleName = moduleName.toLowerCase();
+
+    //get the fields of the specific module
+    service.getModuleByName(moduleName).then(function(aModule){
+        //initialize array & object for querying
+        var uniqueFields = [];
+        var tempObj;
+
+        //push the value of the document when a field is unique
+        aModule.fields.forEach(function(field){
+            if(field.unique){
+                tempObj = {};
+                tempObj[field.name] = moduleDoc[field.name];
+                uniqueFields.push(tempObj);
+            }
+        });
+
+        //use $or for checking each field for uniqueness, not their combination
+        db[moduleName].findOne({$or: uniqueFields}, function(err, duplicateDoc){
+            if(err){
+                deferred.reject(err);
+            }
+            //a duplicate exists, but needs further checking
+            else if(duplicateDoc){
+                //updating a module document
+                if(moduleDoc._id){
+                    //different module documents with similar unique values
+                    if(moduleDoc._id != duplicateDoc._id){
+                        deferred.reject(exists);
+                    }
+                    //since it is the same document, it is not duplicate
+                    else{
+                        deferred.resolve();
+                    }
+                }
+                //adding new module documennt
+                else{
+                    deferred.reject(exists);
+                }
+            }
+            //does not exist
+            else{
+                deferred.resolve();
+            }
+        });
+    }).catch(function(err){
+        deferred.reject(err);
     });
 
     return deferred.promise;

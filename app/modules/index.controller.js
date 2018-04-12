@@ -10,6 +10,7 @@
         $scope.newField = {
             name: '',
             required: false,
+            unique: false,
             type: 'text'
         }
 
