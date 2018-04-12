@@ -464,34 +464,41 @@ function findDuplicateDoc(moduleName, moduleDoc){
             }
         });
 
-        //use $or for checking each field for uniqueness, not their combination
-        db[moduleName].findOne({$or: uniqueFields}, function(err, duplicateDoc){
-            if(err){
-                deferred.reject(err);
-            }
-            //a duplicate exists, but needs further checking
-            else if(duplicateDoc){
-                //updating a module document
-                if(moduleDoc._id){
-                    //different module documents with similar unique values
-                    if(moduleDoc._id != duplicateDoc._id){
+        if(uniqueFields.length == 0){
+            deferred.resolve();
+        }
+        else{
+            //use $or for checking each field for uniqueness, not their combination
+            db[moduleName].findOne({$or: uniqueFields}, function(err, duplicateDoc){
+                if(err){
+                    deferred.reject(err);
+                }
+                    //a duplicate exists, but needs further checking
+                    else if(duplicateDoc){
+                        //updating a module document
+                        if(moduleDoc._id){
+                            //different module documents with similar unique values
+                        if(moduleDoc._id != duplicateDoc._id){
+                            deferred.reject(exists);
+                        }
+                        //since it is the same document, it is not duplicate
+                        else{
+                            deferred.resolve();
+                        }
+                    }
+                    //adding new module documennt
+                    else{
                         deferred.reject(exists);
                     }
-                    //since it is the same document, it is not duplicate
-                    else{
-                        deferred.resolve();
-                    }
                 }
-                //adding new module documennt
+                //does not exist
                 else{
-                    deferred.reject(exists);
+                    deferred.resolve();
                 }
-            }
-            //does not exist
-            else{
-                deferred.resolve();
-            }
-        });
+            });
+        }
+
+        
     }).catch(function(err){
         deferred.reject(err);
     });

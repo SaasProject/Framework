@@ -95,9 +95,11 @@ function addModuleDoc(req, res){
                 res.status(400).send();
             });
         }).catch(function(err){
+            console.log(err);
             res.status(400).send();
         });
     }).catch(function(err){
+        console.log(err);
         res.status(400).send();
     });
 }
