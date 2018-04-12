@@ -9,14 +9,13 @@ var userService = require('services/user.service');
 var emailService = require('services/email.service');
 var fs=require('fs');
 
-function getEnglish(){
-    var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
-    var languages=JSON.parse(file);
-    return languages;
-}
-
-function getNihongo(){
-    var file=fs.readFileSync(__dirname + '/../languages/nihongo.json', 'utf8');
+function getLanguage(language){
+    try{
+        var file=fs.readFileSync(__dirname + '/../languages/'+language+'.json', 'utf8');
+    }catch(err){
+        //if default language matched filename not found. get english
+        var file=fs.readFileSync(__dirname + '/../languages/english.json', 'utf8');
+    }
     var languages=JSON.parse(file);
     return languages;
 }
@@ -30,10 +29,8 @@ router.get('/', function (req, res) {
             delete req.session.token;
             delete req.session.user;
 
-            var selectedLanguage = getEnglish().english;
-            if(results.value == 'nihongo'){
-                selectedLanguage = getNihongo().nihongo;
-            }
+            var selectedLanguage = getLanguage(results.value);
+            selectedLanguage = selectedLanguage[Object.keys(selectedLanguage)[0]];
          
             // move success message into local variable so it only appears once (single read)
             var viewData = { success: req.session.success, languages: selectedLanguage};

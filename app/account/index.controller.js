@@ -20,7 +20,7 @@
             };
         }]);
  
-    function Controller($window, UserService, UploadService, FlashService, $scope, ModulesService, $rootScope, $timeout) {
+    function Controller($window, UserService, UploadService, FlashService, $scope, ModulesService, LanguageService, $rootScope, $timeout) {
         var vm = this;
  
         vm.user = null;
@@ -39,8 +39,33 @@
 
         $scope.showLangChangeFlash = false;
 
+        function getLanguages(){
+            //get default language
+            LanguageService.getDefaultLanguage()
+                .then(function(res) {
+                    $scope.dropDefLangSel = Object.keys(res)[0];
+                })
+                .catch(function (error) {
+                });
+        }
+
+        getLanguages();
+
+        $scope.changeDefaultLanguage = function(option) {
+            //save selected default language to database
+            LanguageService.saveDefaultLanguage(vm.user, option);
+            $scope.defaultOption = option;
+            //add this conditions when adding new language json files
+            if(option == 'nihongo'){
+                $scope.dropDefLangSel = '日本語';
+            } else if (option == 'english') {
+                $scope.dropDefLangSel = 'English';
+            }
+        }
+
         $scope.defaultLanguageChangeSuccess = function(language){
             var lang = '';
+            //add this conditions when adding new language json files
             if(language == 'nihongo'){
                 lang = '日本語';
             } else if(language == 'english') {

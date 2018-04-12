@@ -104,6 +104,7 @@
         //initialize
         $rootScope.user = {};
         $rootScope.selectedLanguage = {};
+        $rootScope.defaultLanguage = {};
         $rootScope.greet = false;
 		$rootScope.changePasswordModal = false;
 
@@ -197,6 +198,7 @@
                 .then(function(res){
                     $rootScope.selectedLanguage = res[Object.keys(res)[0]];
                     //console.log($rootScope.selectedLanguage);
+                    $rootScope.dropLangSel = Object.keys(res)[0];
                 })
                 .catch(function (error) {
                     FlashService.Error(error);
@@ -229,10 +231,13 @@
                 var str = user._id;
                 $rootScope.user = user;
                 $rootScope.fName = user.firstName;
+                $rootScope.dropLangSel = '';
+                $rootScope.dropDefLangSel = '';
 
                 LanguageService.getSpecificLanguage($rootScope.user.setLanguage)
                 .then(function(res) {
                     $rootScope.selectedLanguage = res[Object.keys(res)[0]];
+                    $rootScope.dropLangSel = Object.keys(res)[0];
                 })
                 .catch(function (error) {
                     FlashService.Error(error);
