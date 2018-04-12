@@ -16,8 +16,8 @@ var net = require('net'),
     JsonSocket = require('json-socket');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://192.168.223.65:27017/";
-var ObjectID = require('mongodb').ObjectID;
-var fs = require('fs');
+var ObjectID = require('mongodb').ObjectID
+;var fs = require('fs');
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
