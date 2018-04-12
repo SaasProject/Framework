@@ -87,7 +87,7 @@
             <div class="avatar-circle-big" ng-style="bgColor" ng-show="profilePicUrl == ''">
                 <span class="initials-big noselect" ng-show="profilePicUrl == ''">{{initials}}</span>
             </div>
-            <img class="avatar-image-big" ng-src="{{profilePicUrl}}" ng-show="profilePicUrl !== ''">
+            <img class="avatar-image-big" ng-src="{{profilePic}}" ng-show="profilePicUrl !== ''">
             <br><br>
             <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                 <span class="glyphicon glyphicon-pencil"></span> {{selectedLanguage.accountSettings.buttons.changeProfilePicture}}</button>

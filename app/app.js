@@ -256,7 +256,7 @@
 
                     //get user profile pic
                     var profilePicPath = '/' + user.fileUrl;
-                    $rootScope.profilePic = '';
+                    //$rootScope.profilePic = '';
                     var pathUsed = 'profile_pictures';
                     UploadService.readFile(pathUsed+profilePicPath).then(function(res) {
                         if(res == 'false'){
