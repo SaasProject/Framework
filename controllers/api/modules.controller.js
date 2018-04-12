@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var ModulesService = require('services/modules.service');
+var logsService = require('services/logs.service');
 
 //declare routes that are to be called from the client (angular)
 router.post('/addModule', addModule);
@@ -88,7 +89,13 @@ function getModuleByName(req, res){
 function addModuleDoc(req, res){
     ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
         ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-            res.status(200).send();
+            logsService.addModuleDocLog(req.body.moduleName, req.body.moduleDoc, "add module document")
+            .then(function(){
+                res.status(200).send();
+            })
+            .catch(function(){
+                res.status(400).send();
+            });
         }).catch(function(err){
             console.log(err);
             res.status(400).send();
