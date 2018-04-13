@@ -197,6 +197,8 @@
                 .then(function(res){
                     $rootScope.selectedLanguage = res[Object.keys(res)[0]];
                     //console.log($rootScope.selectedLanguage);
+                    $rootScope.hiUser = $rootScope.selectedLanguage.commons.hiUser1+$rootScope.user.firstName
+                    +$rootScope.selectedLanguage.commons.hiUser2;
                     $rootScope.dropLangSel = Object.keys(res)[0];
                 })
                 .catch(function (error) {
@@ -236,6 +238,8 @@
                 LanguageService.getSpecificLanguage($rootScope.user.setLanguage)
                 .then(function(res) {
                     $rootScope.selectedLanguage = res[Object.keys(res)[0]];
+                    $rootScope.hiUser = $rootScope.selectedLanguage.commons.hiUser1+user.firstName
+                        +$rootScope.selectedLanguage.commons.hiUser2;
                     $rootScope.dropLangSel = Object.keys(res)[0];
                 })
                 .catch(function (error) {

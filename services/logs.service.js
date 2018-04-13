@@ -60,38 +60,26 @@ function moduleLogs(user,moduleName,moduleDoc,functionName){
             insertLog(log);
         });
     }else if(functionName=== "delete module field"){
-        var MongoClient = require('mongodb').MongoClient;
-        var url = "mongodb://192.168.223.65:27017/";
-        var ObjectID = require('mongodb').ObjectID
 
-        MongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            var dbo = db.db("SaasDatabase");
-            dbo.collection("modules").findOne({name: moduleName,fields:{$elemMatch:{id:moduleDoc}}}, 
-                function(err, result) {
-                    if (err) throw err;
-                    console.log(result)
-                    db.close();
-                    });
-        });
-
-        /*db.bind('modules')
-
-        //{name: moduleName, fields: {$elemMatch: {id: fieldObject.id}}}
+        db.bind('modules')
     
-        db.modules.findOne({name:moduleName},{'fields.id': moduleDoc },function (err, result) {
+        db.modules.findOne({name:moduleName},function (err, result) {
             if (err) deferred.reject(err);
+
+            var kahitanongpangalan = result.fields.find(function(kahitanongpangalan){
+                return kahitanongpangalan.id==moduleDoc
+            })
 
             log = {
                 performedBy:""+ user.firstName+" "+user.lastName+"",
                 event:functionName,
                 date:displayDate,
-                details:"deleted "+moduleDoc
-            }*/
-            //console.log(result)
+                details:kahitanongpangalan
+            }
+            
 
-           //insertLog(log);
-        //});
+           insertLog(log);
+        });
     }else{
         log = {
             performedBy:""+ user.firstName+" "+user.lastName+"",
