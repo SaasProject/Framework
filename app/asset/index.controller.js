@@ -29,7 +29,7 @@
             };
         });
  
-    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableSortService, $stateParams, $rootScope) {
+    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableSortService, InputValidationService, $stateParams, $rootScope) {
  
         /* Initialization of scope variables */
 		
@@ -462,113 +462,6 @@
         };
 
         /*
-            Function name: Validate email inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: Check all email inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkEmails(){
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var myRows = document.getElementsByName('email');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(!re.test(myRows[i].value.toLowerCase())){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate number inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all number inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkNumbers(){
-            var myRows = document.getElementsByName('number');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(isNaN(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate password strength
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check password if it contains a lowercase, uppercase, number, and is 8 characters
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswordChars(password){
-            var points = 0;
-            var valid = false;
-
-            // Validate lowercase letters
-            var lowerCaseLetters = /[a-z]/g;
-            if(password.match(lowerCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate capital letters
-            var upperCaseLetters = /[A-Z]/g;
-            if(password.match(upperCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate numbers
-            var numbers = /[0-9]/g;
-            if(password.match(numbers)) {  
-                points += 1;
-            }
-
-            // Validate length
-            if(password.length >= 8) {
-                points += 1;
-            }
-
-            // if points = 4 return true
-            if(points == 4){
-                valid = true;
-            }
-            
-            return valid;
-        }
-
-        /*
-            Function name: Validate password inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswords(){
-            var myRows = document.getElementsByName('password');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(!checkPasswordChars(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
             Function name: Get all checkbox elements
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/31
@@ -602,33 +495,6 @@
             //console.log(option);
             $scope.newAsset[fieldName] = option;
         }
-
-        /*
-            Function name: Validate confirm passwords
-            Author(s): Flamiano, Glenn
-                       Reccion, Jeremy
-            Date Modified: 2018/02/01
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkConfirmPasswords(){
-            var allValid = true;
-            for(var i in $scope.fields){
-                var currentField = $scope.fields[i];
-                
-                //validation for password
-                if(currentField.type == 'password'){
-                    if($scope.confirmPassword[currentField.name] == undefined){
-                        $scope.confirmPassword[currentField.name] = '';
-                    }
-                    if($scope.newAsset[currentField.name] != $scope.confirmPassword[currentField.name]){
-                        allValid = false;
-                    }
-                }
-            }
-            return allValid;
-        };
 
         /*
             Function name: isChecked
@@ -705,6 +571,7 @@
             Function name: Asset - add
             Author(s):  Flamiano, Glenn
                         Reccion, Jeremy
+                        Omugtong, Jano
             Date Modified: 03/13/2018
             Description: performs validation when adding an asset. Serves also has function to toggle readonly property
             Paramter(s): none
@@ -731,14 +598,7 @@
 				    $scope.isNull = false;
 				} else {
                     $scope.showAddFlash = true;
-                    if(!checkEmails()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-                    }else if(!checkNumbers()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-                    }else if(!checkPasswords()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-                    }else if(!checkConfirmPasswords()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
+                    if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
                     }else{
                         $scope.newAsset.created_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
                         $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -810,14 +670,7 @@
 					
 			} else {
                     $scope.showAddFlash = true;
-                    if(!checkEmails()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-                    }else if(!checkNumbers()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-                    }else if(!checkPasswords()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-                    }else if(!checkConfirmPasswords()){
-                        FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
+                    if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
                     }else{
                         $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");                        
                             ModulesService.updateModuleDoc({moduleName: 'assets', moduleDoc: $scope.newAsset}).then(function(){

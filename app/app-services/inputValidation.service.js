@@ -41,7 +41,7 @@
             }else if(!CheckPasswords()){
                 everythingValid = false;
                 FlashService.Error(commons.containPass);
-            }else if(!CheckConfirmPasswords(fields, aDevices, confirmPassword)){
+            }else if(!CheckConfirmPasswords(fields, allEntry, confirmPassword)){
                 everythingValid = false;
                 FlashService.Error(commons.confirmPass);
             }
@@ -49,6 +49,14 @@
             return everythingValid;
         }
 
+        /*
+            Function name: Validate email inputs
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/25
+            Description: Check all email inputs in add/edit modal
+            Parameter(s): none
+            Return: boolean
+        */
         function CheckEmails() {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             var myRows = document.getElementsByName('email');
@@ -65,6 +73,14 @@
             return allValid;
         }
  
+        /*
+            Function name: Validate number inputs
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/26
+            Description: Check all number inputs in add/edit modal
+            Parameter(s): none
+            Return: boolean
+        */
         function CheckNumbers() {
             var myRows = document.getElementsByName('number');
             var allValid = true;
@@ -78,6 +94,14 @@
             return allValid;
         }
  
+        /*
+            Function name: Validate password inputs
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/26
+            Description: Check all password inputs in add/edit modal
+            Parameter(s): none
+            Return: boolean
+        */
         function CheckPasswords() {
             var myRows = document.getElementsByName('password');
             var allValid = true;
@@ -91,6 +115,15 @@
             return allValid;            
         }
 
+        /*
+            Function name: Validate confirm passwords
+            Author(s): Flamiano, Glenn
+                       Reccion, Jeremy
+            Date Modified: 2018/02/01
+            Description: Check all password inputs in add/edit modal
+            Parameter(s): none
+            Return: boolean
+        */
         function CheckConfirmPasswords(fields, aDevices, confirmPassword) {
             var allValid = true;
             for(var i in fields){
@@ -109,6 +142,14 @@
             return allValid;
         }
 
+        /*
+            Function name: Validate password strength
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/26
+            Description: Check password if it contains a lowercase, uppercase, number, and is 8 characters
+            Parameter(s): none
+            Return: boolean
+        */
         function checkPasswordChars(password){
             var points = 0;
             var valid = false;
