@@ -1,8 +1,10 @@
 /*
-    Name: Devices Controller
+    Name: Manage Users Controller
     Date Created: 01/03/2018
+	Date Modified: April 2018
     Author(s): Sanchez, Macku
                Flamiano, Glenn  
+			   Ayala, Jenny
 */
 
 (function () {
@@ -49,13 +51,15 @@
             };
         });
  
-    function Controller(UserService, $scope, FlashService, ModulesService, TableSortService, socket, $rootScope) {
-        var vm = this;
- 
-        vm.user = [];
+    function Controller(UserService, $scope, FlashService, ModulesService, TableSortService, socket, $rootScope, InputValidationService) {
+       
+		//scope for users
+		$scope.allUsers = {};
+		$scope.newUser = {};
 		
 		$scope.loading = true;
         $scope.confirmPassword = {};
+		$scope.uneditable = false;
 
         /*
             Function name: Calculate Object size
@@ -77,34 +81,10 @@
         $scope.currentPage = 1;
         $scope.pageSize = 10;
 
-        // Scope for users data
-        $scope.aUsers = {};
-    //    $scope.aUsers.password = "";
-
-        $scope.btnchc = "Edit";
-        $scope.shw = false;
-
-        /*
-            Function name: Reset Flash Messages
-            Author(s): Flamiano, Glenn
-            Date Modified: February 2018
-            Description: Hide flash messages of every modal
-            Parameter(s): none
-            Return: none
-        */
-        function resetModalFlash(){
-            $scope.showMainFlash = true;
-            $scope.showAddFlash = false;
-            $scope.showEditFlash = false;
-        }
-        resetModalFlash();
 
         // Table sort functions
-        // column to sort
-        $scope.column = 'role';
-
-        // sort ordering (Ascending or Descending). Set true for desending
-        $scope.reverse = false; 
+        $scope.column = 'role'; //column to be sorted
+        $scope.reverse = false; // sort ordering (Ascending or Descending). Set true for desending
 
         /*
             Function name: Sort Table Columns
@@ -158,10 +138,9 @@
             Parameter(s): none
             Return: none
         */
-        function resetAUsers () {
-            $scope.aUsers = {};
-            $scope.aUsers.email = "";
-            //$scope.aUsers.password = "";
+        function resetNewUser () {
+            $scope.newUser = {};
+           
             selected = [];
             $scope.confirmPassword = {};
 
@@ -174,35 +153,35 @@
             }
         }
  
-        // get realtime changes
-        socket.on('userChange', function(){
-            initController();
-        });
-
-        initController();
-        
-        /*
-            Function name: Initialize Controller
-            Author(s): Flamiano, Glenn
-            Date Modified: December 2018
+ 
+		/*
+            Function name: initController
+            Author(s): Flamiano, Glenn; Ayala,Jenny
+            Date Modified: April 2018
             Description: Retrieves all user data from users collection in mongoDB
             Parameter(s): none
             Return: none
         */
         function initController() {
-            // get current user
             UserService.GetAll().then(function (user) {
-                vm.user = user;
                 $scope.allUsers = user;
                 $scope.userLength = Object.size(user);
             }).finally(function() {
 				$scope.loading = false;
 			});
         }
+		initController();
+ 
+        // get realtime changes
+        socket.on('userChange', function(){
+            initController();
+        });
 
+		
+		
+       //scope variables for user fields
         $scope.id = "";
         $scope.fields = [];
-        $scope.name = 'users';
 		
         /*
             Function name: Get all user fields 
@@ -214,8 +193,7 @@
         */
         function getAllFields(){
 			
-            ModulesService.getModuleByName($scope.name).then(function(response){
-    
+            ModulesService.getModuleByName('users').then(function(response){
                $scope.fields = response.fields;
                $scope.id = response._id;
               
@@ -225,8 +203,7 @@
                 alert(err.msg_error);
             });
         };
-        
-     //   getAllFields();
+        getAllFields();
 
         /*
             Function name: Show different field types
@@ -348,125 +325,17 @@
         }
 
         /*
-            Function name: Insert formatted date to $scope.aUsers
+            Function name: pushDateToNewUser
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/25
             Description: To format a date and to be inserted to $scope.aUsers
             Parameter(s): none
             Return: none
         */
-        $scope.pushDateToAUsers = function(fieldName, inputDate) {
-            $scope.aUsers[fieldName] = formatDate(inputDate);
+        $scope.pushDateToNewUser = function(fieldName, inputDate) {
+            $scope.newUser[fieldName] = formatDate(inputDate);
         };
-
-        /*
-            Function name: Validate email inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: Check all email inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkEmails(){
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var myRows = document.getElementsByName('email');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                //console.log('aaaaaa', myRows[i].value);
-                if(myRows[i].value != ''){
-                    //console.log(myRows[i].value+' grrrr '+re.test(myRows[i].value.toLowerCase()));
-                    if(!re.test(myRows[i].value.toLowerCase())){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate number inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all number inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkNumbers(){
-            var myRows = document.getElementsByName('number');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(isNaN(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate password strength
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check password if it contains a lowercase, uppercase, number, and is 8 characters
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswordChars(password){
-            var points = 0;
-            var valid = false;
-
-            // Validate lowercase letters
-            var lowerCaseLetters = /[a-z]/g;
-            if(password.match(lowerCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate capital letters
-            var upperCaseLetters = /[A-Z]/g;
-            if(password.match(upperCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate numbers
-            var numbers = /[0-9]/g;
-            if(password.match(numbers)) {  
-                points += 1;
-            }
-
-            // Validate length
-            if(password.length >= 8) {
-                points += 1;
-            }
-
-            // if points = 4 return true
-            if(points == 4){
-                valid = true;
-            }
-            
-            return valid;
-        }
-
-        /*
-            Function name: Validate password inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswords(){
-            var myRows = document.getElementsByName('password');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(!checkPasswordChars(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
+        
 
         /*
             Function name: Get all checkbox elements
@@ -501,7 +370,7 @@
             angular.forEach($scope.fields, function(value, key){
                 //initialize if the dropdown is required
                 if(value.type == 'dropdown' && value.required){
-                    $scope.aUsers[value.name] = value.options[0];
+                    $scope.newUser[value.name] = value.options[0];
                 }
             });
         };
@@ -517,35 +386,8 @@
         */
         $scope.putToModel = function(option, fieldName){
             //console.log(option);
-            $scope.aUsers[fieldName] = option;
+            $scope.newUser[fieldName] = option;
         }
-
-        /*
-            Function name: Validate confirm passwords
-            Author(s): Flamiano, Glenn
-                       Reccion, Jeremy
-            Date Modified: 2018/02/01
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkConfirmPasswords(){
-            var allValid = true;
-            for(var i in $scope.fields){
-                var currentField = $scope.fields[i];
-                
-                //validation for password
-                if(currentField.type == 'password'){
-                    if($scope.aUsers[currentField.name] == ''){
-                        $scope.confirmPassword[currentField.name] = '';
-                    }
-                    if($scope.aUsers[currentField.name] != $scope.confirmPassword[currentField.name]){
-                        allValid = false;
-                    }
-                }
-            }
-            return allValid;
-        };
 
         /*
             Function name: isChecked
@@ -557,7 +399,7 @@
         */
         $scope.isChecked = function(field_name, option, type){
             if(type == 'checkbox'){
-                if($scope.aUsers[field_name] == undefined) $scope.aUsers[field_name] = [];
+                if($scope.newUser[field_name] == undefined) $scope.newUser[field_name] = [];
                 var isChecked = ($scope.aUsers[field_name].indexOf(option) != -1) ? true : false;
                 return isChecked;
             }
@@ -573,8 +415,8 @@
         */
         $scope.isRadioSelected = function(field_name, option, type){
             if(type == 'radio'){
-                if($scope.aUsers[field_name] == undefined) $scope.aUsers[field_name] = [];
-                var isChecked = ($scope.aUsers[field_name].indexOf(option) != -1) ? true : false;
+                if($scope.newUser[field_name] == undefined) $scope.newUser[field_name] = [];
+                var isChecked = ($scope.newUser[field_name].indexOf(option) != -1) ? true : false;
                 return isChecked;
             }
         };
@@ -594,7 +436,7 @@
             }else{
                 selected['checkBoxAdd '+fieldName].remove(option);
             }
-            $scope.aUsers[fieldName] = selected['checkBoxAdd '+fieldName];
+            $scope.newUser[fieldName] = selected['checkBoxAdd '+fieldName];
         };
 
         /*
@@ -615,72 +457,67 @@
                 selected['checkBoxAdd '+fieldName].remove(option);
             }
 
-            $scope.aUsers[fieldName] = selected['checkBoxAdd '+fieldName];
+            $scope.newUser[fieldName] = selected['checkBoxAdd '+fieldName];
         };
 
 
         /*
             Function name: Add User Function
-            Author(s): Sanchez, Macku
+            Author(s): Sanchez, Macku; Ayala, Jenny
             Date Modified: January 2018
             Description: Adds New User and Assigns a Temporary Password to the New User
         */
         $scope.addUser = function(){
 			
-            console.log($scope.aUsers);
+            delete $rootScope.flash;
+            $scope.showAddFlash = true;
+
+            var requiredTextField=0; //number of required fields
+            var forDataBase=0; //number of required fields w/ input
+
+            for(var h in $scope.fields){
+                if($scope.fields[h].required==true){
+                    requiredTextField++;
+					 
+                    if($scope.newUser[$scope.fields[h].name]===undefined || $scope.newUser[$scope.fields[h].name]===null){
+						if($scope.fields[h].name == 'email') {
+							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.invalidMail);
+						}
+						else {
+							FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
+						}
+                         break;
+                    }
+					else{
+                         forDataBase++;
+                    }
+                }
+            }
 			
-             $scope.showAddFlash = true;
-
-            // var requiredTextField=0;
-            // var forDataBase=0;
-
-
-            // for(var h in $scope.fields){
-                // if($scope.fields[h].required==true){
-                    // requiredTextField++;
-                    // if($scope.aUsers[$scope.fields[h].name]===undefined || $scope.aUsers[$scope.fields[h].name]===null){
-                        // FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
-                        // break;
-                    // }else{
-                        // forDataBase++;
-                    // }
-                // }
-            // }
-            // if(!checkEmails()){
-                // FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-            // }else if(!checkNumbers()){
-                // FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-            // }else if(!checkPasswords()){
-                // FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-            // }else if(!checkConfirmPasswords()){
-                // FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
-            // }else{
-                // if(forDataBase===requiredTextField){
-                    // $scope.showAddFlash = false;
-                    // $scope.aUsers.preferedLanguage = $rootScope.selectedLanguage;
-                     UserService.Insert($scope.aUsers)
-                         .then(function () {
-                                 initController();
-                                 $('#myModal').modal('hide');
-                                 FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userAdded);
-                                 resetModalFlash();
-                                 resetAUsers();
-                             }).catch(function (error) {
-								if(error.exists){
-									FlashService.Error("email already exists");
-								}
-								else if(error.invalid){
-									FlashService.Error("invalid email");
-								}
-								else{
-									FlashService.Error(error);
-								}
-							});
-                             initController();
-                             
-                            
-                // }
-            // }
+			if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newUser, $scope.confirmPassword)){
+				console.log("allValid");
+				
+				if(forDataBase==requiredTextField){
+					UserService.Insert($scope.newUser)
+						.then(function () {
+							$('#myModal').modal('hide');
+							FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userAdded);
+							initController();
+							resetModalFlash();
+                        resetNewUser();
+					}).catch(function (error) {
+						if(error.exists){
+							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.emailErr);
+						}
+						else if(error.invalid){
+							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.invalidMail);
+						}
+						else{
+							FlashService.Error(error);
+						}
+					});                             
+				}
+			}
         };
 
         /*
@@ -699,6 +536,28 @@
                 }
             }
         }
+		
+		
+		/*
+            Name: enable edit
+            Author(s):
+                    Flamiano, Glenn
+                    Reccion, Jeremy
+            Date modified: 2018/03/06
+            Descrption: set the values of certain scope variables. also initialize dropdown values if they are required
+        */
+        $scope.enableEditing = function() {
+			
+            $scope.uneditable = false;
+            angular.forEach($scope.fields, function(value, key){
+                //initialize if the dropdown is required
+                //console.log($scope.newUser[value.name])
+                //when editing, non existing property may be undefined or ''
+                if(value.type == 'dropdown' && value.required && ($scope.newUser[value.name] == undefined || $scope.newUser[value.name] == '')){
+                    $scope.newUser[value.name] = value.options[0];
+                }
+            });
+        }
 
         /*
             Function name: edit User
@@ -709,39 +568,53 @@
             Return: none
         */
         $scope.editUser = function(index){
-            $scope.btnchc = "Edit";
-            $scope.shw = false;
-            $scope.aUsers = angular.copy(filterIndexById($scope.allUsers, index));
+            $scope.uneditable = true;
+            $scope.newUser = angular.copy(filterIndexById($scope.allUsers, index));
         };
 		
-		vm.cancelEdit = function() {
-			
-			$scope.aUsers = {};			
-			initController();
-		}
 		
 		/*
             Function name: Update User Function
-            Author(s): Sanchez, Macku
-            Date Modified: January 2018
+            Author(s): Sanchez, Macku; Ayala, Jennny
+            Date Modified: April 2018
             Description: Update User
         */
-		vm.updateUser = function() {
-			 UserService.Update($scope.aUsers)
+		$scope.updateUser = function() {
+			$scope.showEditFlash = true;
+			
+			var requiredTextField=0;
+            var forDataBase=0;
+
+            for(var h in $scope.fields){
+                if($scope.fields[h].required==true){
+                    requiredTextField++;
+                    if($scope.newUser[$scope.fields[h].name]===undefined){
+                        FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
+                    }else{
+                        forDataBase++;
+                    }
+                }
+            }
+			
+			if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newUser, $scope.confirmPassword)){
+				console.log("allValid");
+				
+				if(forDataBase==requiredTextField){
+					UserService.Update($scope.newUser)
                         .then(function () {
                             initController();
-                            $scope.btnchc = "Edit";
-                            $scope.shw = false;
                             $('#editModal').modal('hide');
                             FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userUpdated);
                         }).catch(function (error) {
                             FlashService.Error(error);
                         }); 
-                        $scope.btnchc = "Edit";
-                        $scope.shw = false;
-                        resetAUsers();
-                        resetModalFlash();     
-        }		
+						
+                        resetNewUser();
+                        resetModalFlash();
+				}
+			}
+        }
+		
 		
 		/*
             Function name: Delete User Function
@@ -749,7 +622,7 @@
             Date Modified: January 2018
             Description: Delet eUser
         */
-		vm.deleteUser = function(index) {
+		$scope.deleteUser = function(index) {
 			
 			
 			var toDel = filterIndexById($scope.allUsers, index);
@@ -779,32 +652,26 @@
         }
 
 
-        /*
-            Name: enable edit
-            Author(s):
-                    Flamiano, Glenn
-                    Reccion, Jeremy
-            Date modified: 2018/03/06
-            Descrption: set the values of certain scope variables. also initialize dropdown values if they are required
+ 
+		
+		/*
+            Function name: Reset Flash Messages
+            Author(s): Flamiano, Glenn
+            Date Modified: February 2018
+            Description: Hide flash messages of every modal
+            Parameter(s): none
+            Return: none
         */
-        vm.enableEditing = function() {
-            $scope.btnchc = "Save";
-            $scope.shw = true;
-            angular.forEach($scope.fields, function(value, key){
-                //initialize if the dropdown is required
-                //console.log($scope.aUsers[value.name])
-                //when editing, non existing property may be undefined or ''
-                if(value.type == 'dropdown' && value.required && ($scope.aUsers[value.name] == undefined || $scope.aUsers[value.name] == '')){
-                    $scope.aUsers[value.name] = value.options[0];
-                }
-            });
+        function resetModalFlash(){
+            $scope.showMainFlash = true;
+            $scope.showAddFlash = false;
+            $scope.showEditFlash = false;
         }
+        resetModalFlash();
 
-         vm.restart = function() {
-            $scope.btnchc = "Edit";
-            $scope.shw = false;
+        $scope.restart = function() {
             initController();
-            resetAUsers();
+            resetNewUser();
             resetModalFlash();
             $scope.showMainFlash = false;
         }
