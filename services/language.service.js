@@ -13,11 +13,21 @@ service.getSpecificLanguage = getSpecificLanguage;
 
 module.exports = service;
 
+
+/*
+    Language Service Service
+    Sachez, Macku
+    2018/04/13
+    *gets default language
+    *saves default language
+    *gets specific language
+*/
+
 function saveDefaultLanguage(req, res){
 	var deferred = Q.defer();
 	db.language.update({name: 'defaultLanguage'}, {$set: { value: req.body.option, updatedBy: req.body.email}}, function(err){
         if(err) deferred.reject(err);
-        //If no errors, send it back to the client
+        
         deferred.resolve();
     });
     return deferred.promise;
@@ -51,7 +61,7 @@ function getDefaultLanguage(req, res){
 function getSpecificLanguage(req,res){
     var deferred = Q.defer();
 
-    //console.log(req.params.user)
+    
 
     if (fs.existsSync(__dirname + '/../languages/'+req.params.user+'.json')) {
         var file=fs.readFileSync(__dirname + '/../languages/'+req.params.user+'.json', 'utf8');

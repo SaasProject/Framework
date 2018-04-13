@@ -11,6 +11,15 @@ router.post('/saveDefaultLanguage', saveDefaultLanguage);
 
 module.exports = router;
 
+/*
+    Language Service Controller
+    Sachez, Macku
+    2018/04/13
+    *gets default language
+    *saves default language
+    *gets specific language
+*/
+
 
 
 function getDefaultLanguage(req, res) {
