@@ -101,8 +101,8 @@
 				"modalTitleUpdate" : "ユーザーの更新"
 			},
 			"flashMessages" : {
-				"emIAT1" : "“",
-				"emIAT2" : "” メールが存在している",
+				"emailErr" : "メールが存在している",
+				"invalidMail" : "無効なメール",
 				"userAdded" : "ユーザーが追加された",
 				"userUpdated" : "ユーザーが更新された",
 				"confirmMessage" : "ユーザーを削除する？",
