@@ -200,8 +200,12 @@
                 "default": "DEFAULT"
             },
             "flashMessages":{
-				"updated": "Field successfully added",
+				"added": "Field successfully added",
+				"notAdded": "Field not added",
+				"updated": "Field successfully updated",
+				"notUpdated": "Field not updated",
 				"deleted": "Field successfully deleted",
+				"notDeleted": "Field not deleted",
 				"dbError": "Failed to get fields",
 				"empty": "Field must not be empty",
 				"exists": "Field already exists",

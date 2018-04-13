@@ -5,7 +5,7 @@
         .module('app')
         .controller('Modules.IndexController', Controller)
  
-    function Controller($scope, ModulesService){
+    function Controller($scope, ModulesService, FlashService, $rootScope){
         //$scope.newModule = {};
         $scope.module = {
             name: 'assets',
@@ -20,7 +20,9 @@
         $scope.fieldOptions = '';
 
         $scope.hasOptions = function(){
-            return ($scope.newField.type == 'dropdown' || $scope.newField.type == 'checkbox' || $scope.newField.type == 'radio') ? true : false;
+            return ($scope.newField.type == 'dropdown' || 
+            $scope.newField.type == 'checkbox' || 
+            $scope.newField.type == 'radio') ? true : false;
         }
 
         $scope.getModuleByName = function(){
@@ -29,6 +31,17 @@
             }).catch(function(err){
 
             });
+        }
+
+        $scope.resetFlash = function(){
+            FlashService.Reset();
+            $scope.newField = {
+                name: '',
+                required: false,
+                unique: false,
+                type: 'text'
+            }
+            $scope.fieldOptions = '';
         }
 
         $scope.getModuleByName();
@@ -76,56 +89,89 @@
         }
 
         $scope.saveField = function(){
+
             //change this check
             var doesExists = -1;
             if($scope.newField.id){
                 doesExists = $scope.module.fields.findIndex(function(x){
-                    return x.name == $scope.newField.name && x.id != $scope.newField.id;
+                    return x.name.toLowerCase() == $scope.newField.name.toLowerCase() 
+                    && x.id != $scope.newField.id;
                 });
             }
             else{
                 doesExists = $scope.module.fields.findIndex(function(x){
-                    return x.name == $scope.newField.name;
+                    return x.name.toLowerCase() == $scope.newField.name.toLowerCase();
                 });
             }
 
             if(doesExists == -1){
                 //sample
-                var forSave = {
-                    moduleName: $scope.module.name,
-                    field: $scope.newField
-                }
-                if($scope.fieldOptions != ''){
-                    forSave.field.options = $scope.fieldOptions.split(',');
-                }
-
-                console.log($scope.fieldOptions);
-
-                if($scope.newField.id == undefined){
-                    ModulesService.addModuleField(forSave).then(function(){
-                        alert('field added');
-                    }).catch(function(err){
-                        alert('cannot add field');
-                    });
+                if($scope.hasOptions() && $scope.fieldOptions == ''){
+                    FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.noOptions);
                 }
                 else{
-                    ModulesService.updateModuleField(forSave).then(function(){
-                        alert('field updated');
-                    }).catch(function(err){
-                        alert('cannot update field');
-                    });
+                    
+                    if($scope.hasOptions() && $scope.fieldOptions != ''){
+                        $scope.newField.options = $scope.fieldOptions.split(',');
+                    }
+
+                    var forSave = {
+                        moduleName: $scope.module.name,
+                        field: $scope.newField
+                    }
+    
+                    if($scope.newField.id == undefined){
+                        ModulesService.addModuleField(forSave).then(function(){
+                            //alert('field added');
+                            FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.added);
+                            $scope.getModuleByName();
+                            $scope.newField = {
+                                name: '',
+                                required: false,
+                                unique: false,
+                                type: 'text'
+                            }
+                            $scope.fieldOptions = '';
+                        }).catch(function(err){
+                            //alert('cannot add field');
+                            FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.notAdded);
+                        });
+                    }
+                    else{
+                        ModulesService.updateModuleField(forSave).then(function(){
+                            //alert('field updated');
+                            FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.updated);
+                            $scope.getModuleByName();
+                            $scope.newField = {
+                                name: '',
+                                required: false,
+                                unique: false,
+                                type: 'text'
+                            }
+                            $scope.fieldOptions = '';
+                        }).catch(function(err){
+                            //alert('cannot update field');
+                            FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.notUpdated);
+                        });
+                    }
                 }
+
+                
             }
             else{
-                alert('field already exists');
+                FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.exists);
+                //alert('field already exists');
             }
         }
 
         $scope.deleteField = function(fieldObject){
             ModulesService.deleteModuleField($scope.module.name, fieldObject.id).then(function(){
-                alert('field deleted');
+                //alert('field deleted');
+                FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.deleted);
+                $scope.getModuleByName();
             }).catch(function(err){
-                alert('cannot delete field');
+                //alert('cannot delete field');
+                FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.notDeleted);
             });
         }
 
@@ -144,5 +190,26 @@
                 }
             }
         } */
+        //temporary function for removing edit & delete button for default fields
+        $scope.isDefault = function(field){
+            if($scope.module.name == 'users' && 
+            (field == 'email' || field == 'firstName' || field == 'lastName' || field == 'role')){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        //function for sorting  fields
+		$scope.sortableOptions = {
+			axis: 'y',
+            update: function(e, ui) {				
+				ModulesService.updateFieldArray({moduleName: $scope.module.name, fieldArray: $scope.module.fields}).then(function(){
+                    }).catch(function(){
+                    });
+            },
+            
+        };
     }
 })();

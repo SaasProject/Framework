@@ -5,7 +5,7 @@
             <input type="text" class="form-control" ng-model="newModule.name">
             <button type="submit" class="btn btn-primary">Submit</button>
         </form> -->
-        <select class="form-control" ng-model="module.name" ng-change="getModuleByName()">
+        <select class="form-control" ng-model="module.name" ng-change="getModuleByName(); resetFlash()">
             <option value="assets">{{selectedLanguage.fields.labels.asset}}</option>
             <option value="devices">{{selectedLanguage.fields.labels.rfid_scanner}}</option>
             <option value="users">{{selectedLanguage.fields.labels.user}}</option>
@@ -15,8 +15,8 @@
         <div>
             <form class="form-group" ng-submit="saveField()">
                 <label>{{selectedLanguage.fields.labels.tableName + ':'}}</label>
-                <input type="text" class="form-control" ng-model="newField.name">
-                <input type="checkbox" ng-model="newField.required"> <b>{{selectedLanguage.fields.labels.required}}</b>
+                <input type="text" class="form-control" ng-model="newField.name" required>
+                <input type="checkbox" ng-model="newField.required"> <b>{{selectedLanguage.fields.labels.required}}</b> <br>
                 <input type="checkbox" ng-model="newField.unique"> <b>{{selectedLanguage.fields.labels.unique}}</b>
                 <select class="form-control" ng-model="newField.type">
                     <option value="text">{{selectedLanguage.fields.labels.text}}</option>
@@ -29,7 +29,8 @@
                     <option value="radio">{{selectedLanguage.fields.labels.radio}}</option>
                     <option value="date">{{selectedLanguage.fields.labels.date}}</option>
                 </select>
-                <div ng-if="hasOptions()">
+                <!-- ng-show instead of ng-if -->
+                <div ng-show="hasOptions()">
                     {{selectedLanguage.fields.labels.note1}}<br>
                     <textarea class="form-control" rows="4" cols="50" ng-model="fieldOptions"></textarea>
                 </div>
@@ -38,6 +39,9 @@
         </div>
     </div>
     <div class="col-md-7">
+        <div class="flash-message" ng-if="flash" ng-show = "!changePasswordModal">
+            <div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
+        </div>
         <table class="table">
             <thead>
                 <th>{{selectedLanguage.fields.labels.tableName}}</th>
@@ -46,18 +50,19 @@
                 <th>{{selectedLanguage.fields.labels.tableType}}</th>
                 <th></th>
             </thead>
-            <tbody>
-                <tr ng-repeat="field in module.fields">
+            <tbody ui-sortable="sortableOptions" ng-model="module.fields">
+                <tr ng-repeat="field in module.fields" style="cursor:move">
                     <td ng-bind="field.name"></td>
                     <td>{{selectedLanguage.fields.labels[(field.required) ? 'required' : 'notRequired']}}</td>
                     <td>{{selectedLanguage.fields.labels[(field.unique) ? 'unique' : 'notUnique']}}</td>
                     <td ng-bind="field.type"></td>
                     <td>
-                        <div class="pull-right">
+                        <div class="pull-right" ng-if="!isDefault(field.name)">
                             <a style = "cursor:pointer"><i class="fa fa-list-alt" aria-hidden="true" ng-click="editField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.edit}}"></i><a>
                                 |
                             <a style = "cursor:pointer"><i class="fa fa-trash" aria-hidden="true" ng-click="deleteField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.delete}}"></i></a>
                         </div>
+                        <text ng-if="isDefault(field.name)">{{selectedLanguage.fields.labels.default}}</text>
                     </td>
                 </tr>
             </tbody>
