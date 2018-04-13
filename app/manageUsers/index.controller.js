@@ -400,7 +400,7 @@
         $scope.isChecked = function(field_name, option, type){
             if(type == 'checkbox'){
                 if($scope.newUser[field_name] == undefined) $scope.newUser[field_name] = [];
-                var isChecked = ($scope.aUsers[field_name].indexOf(option) != -1) ? true : false;
+                var isChecked = ($scope.newUser[field_name].indexOf(option) != -1) ? true : false;
                 return isChecked;
             }
         };
