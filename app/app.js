@@ -57,6 +57,13 @@
                 templateUrl: 'asset/index.html',
                 controller: 'Asset.IndexController',
                 data: { activeTab: 'assets' }
+            })
+            .state('warehouses', {
+                url: '/warehouses',
+                templateUrl: 'warehouse/index.html',
+                controller: 'Warehouse.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'warehouses' }
             });
 
 
@@ -138,11 +145,19 @@
             //console.log($rootScope.isAdmin);
             //console.log(toState);
             //restrict 'Users' when accessing states other than the specified and redirect to login page
-            if(!$rootScope.isAdmin && (toState.name != 'asset' && toState.name != 'home' && toState.name != 'account')){
-                event.preventDefault();
-                //alert('Unauthorized');
-                $state.transitionTo('home');
-            }
+            $http.get('/api/users/isAdmin').then(function(response){
+                //response is true if user is admin from api/users.controller.js
+                $rootScope.isAdmin = response.data;
+                //console.log($rootScope.isAdmin);
+
+                //need to place code here. putting it outside will not work
+                if(!$rootScope.isAdmin && (toState.name != 'assets' && toState.name != 'home' && toState.name != 'account')){
+                    event.preventDefault();
+                    //alert('Unauthorized');
+                    $state.transitionTo('home');
+                }
+                
+            });
 
 
             //redirect to manageUsers when /perModule/users
