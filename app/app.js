@@ -45,19 +45,18 @@
                 controller: 'Account.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'account' }
-            })
-            
-
-            //SAMPLE added by jeremy
+            })            
             .state('fields', {
                 url: '/fields',
                 templateUrl: 'fields/index.html',
                 controller: 'Fields.IndexController',
+                data: { activeTab: 'fields' }
             })
-            .state('perModule', {
-                url: '/perModule/:moduleName',
-                templateUrl: 'modules/permodule.html',
-                controller: 'Modules.PerModuleController'
+            .state('assets', {
+                url: '/assets',
+                templateUrl: 'asset/index.html',
+                controller: 'Asset.IndexController',
+                data: { activeTab: 'assets' }
             });
 
 

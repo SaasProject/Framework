@@ -15,6 +15,7 @@
             name: '',
             required: false,
             unique: false,
+            default: false,
             type: 'text'
         }
         $scope.fieldOptions = '';
@@ -190,16 +191,6 @@
                 }
             }
         } */
-        //temporary function for removing edit & delete button for default fields
-        $scope.isDefault = function(field){
-            if($scope.module.name == 'users' && 
-            (field == 'email' || field == 'firstName' || field == 'lastName' || field == 'role')){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
 
         //function for sorting  fields
 		$scope.sortableOptions = {

@@ -183,7 +183,7 @@
 				"required": "必要",
 				"notRequired": "不要",
 				"unique": "一意",
-				"notUnique": "一意くない",
+				"notUnique": "一意ではない",
                 "type": "フィールドの種類を選択",
                 "text": "テキスト",
                 "number": "数字",

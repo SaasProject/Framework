@@ -57,12 +57,14 @@
                     <td>{{selectedLanguage.fields.labels[(field.unique) ? 'unique' : 'notUnique']}}</td>
                     <td ng-bind="field.type"></td>
                     <td>
-                        <div class="pull-right" ng-if="!isDefault(field.name)">
-                            <a style = "cursor:pointer"><i class="fa fa-list-alt" aria-hidden="true" ng-click="editField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.edit}}"></i><a>
-                                |
-                            <a style = "cursor:pointer"><i class="fa fa-trash" aria-hidden="true" ng-click="deleteField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.delete}}"></i></a>
+                        <div class="pull-right">
+                            <div ng-if="!field.default">
+                                <a style = "cursor:pointer"><i class="fa fa-list-alt" aria-hidden="true" ng-click="editField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.edit}}"></i><a>
+                                    |
+                                <a style = "cursor:pointer"><i class="fa fa-trash" aria-hidden="true" ng-click="deleteField(field)" data-toggle="tooltip" title="{{selectedLanguage.commons.delete}}"></i></a>
+                            </div>
+                            <text ng-if="field.default">{{selectedLanguage.fields.labels.default}}</text>
                         </div>
-                        <text ng-if="isDefault(field.name)">{{selectedLanguage.fields.labels.default}}</text>
                     </td>
                 </tr>
             </tbody>
