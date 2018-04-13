@@ -117,7 +117,6 @@
         $scope.sortColumn = function(col){
             $scope.column = col;
             $scope.reverse = TableSortService.sortSelectedColumn($scope.reverse, col).result;
-            $scope.reverseclass = TableSortService.sortSelectedColumn($scope.reverse, col).reverseclass;
         };
 
         /*
@@ -130,16 +129,6 @@
         */
         $scope.sortClass = function(col){
             return TableSortService.sortSelectedClass($scope.reverse, col, $scope.column);
-            /*
-            if($scope.column == col ){
-                if($scope.reverse){
-                    return 'arrow-down'; 
-                }else{
-                    return 'arrow-up';
-                }
-            }else{
-                return 'arrow-dormant';
-            }*/
         } 
         // End of Table Functions
 

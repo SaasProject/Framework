@@ -29,7 +29,7 @@
             };
         });
  
-    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, $stateParams, $rootScope) {
+    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableSortService, $stateParams, $rootScope) {
  
         /* Initialization of scope variables */
 		
@@ -239,8 +239,8 @@
         $scope.setTo = function(column){
 
             //when switching columns, sort in ascending order.
-            $scope.reverse = (column != $scope.sortColumn) ? false : !$scope.reverse;
             $scope.sortColumn = column;  
+            $scope.reverse = TableSortService.sortSelectedColumn($scope.reverse, column).result;
         };
 
         /*
@@ -252,15 +252,7 @@
             Return: none
         */
         $scope.sortClass = function(column){
-            if($scope.sortColumn == column){
-                if($scope.reverse){
-                    return 'arrow-down'; 
-                }else{
-                    return 'arrow-up';
-                }
-            }else{
-                return 'arrow-dormant';
-            }
+            return TableSortService.sortSelectedClass($scope.reverse, column, $scope.sortColumn);
         }; 
         ////////////////////////////////////////////////////////
         /*
