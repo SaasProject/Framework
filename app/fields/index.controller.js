@@ -3,7 +3,7 @@
  
     angular
         .module('app')
-        .controller('Modules.IndexController', Controller)
+        .controller('Fields.IndexController', Controller)
  
     function Controller($scope, ModulesService, FlashService, $rootScope){
         //$scope.newModule = {};

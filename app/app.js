@@ -49,10 +49,10 @@
             
 
             //SAMPLE added by jeremy
-            .state('modules', {
-                url: '/modules',
-                templateUrl: 'modules/index.html',
-                controller: 'Modules.IndexController',
+            .state('fields', {
+                url: '/fields',
+                templateUrl: 'fields/index.html',
+                controller: 'Fields.IndexController',
             })
             .state('perModule', {
                 url: '/perModule/:moduleName',
