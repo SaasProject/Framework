@@ -56,7 +56,13 @@ function deleteModule(req, res){
 
 function addModuleField(req, res){
     ModulesService.addModuleField(req.body.moduleName, req.body.field).then(function(){
-        res.status(200).send();
+        logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.field, "add module field")
+            .then(function(){
+                res.status(200).send();
+            })
+            .catch(function(){
+                res.status(400).send();
+            });
     }).catch(function(err){
         res.status(400).send();
     });
@@ -64,18 +70,30 @@ function addModuleField(req, res){
 
 function updateModuleField(req, res){
     ModulesService.updateModuleField(req.body.moduleName, req.body.field).then(function(){
-        res.status(200).send();
+        logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.field, "update module field")
+            .then(function(){
+                res.status(200).send();
+            })
+            .catch(function(){
+                res.status(400).send();
+            });
     }).catch(function(err){
         res.status(400).send();
     });
 }
 
 function deleteModuleField(req, res){
-    ModulesService.deleteModuleField(req.params.name, req.params.id).then(function(){
-        res.status(200).send();
-    }).catch(function(err){
-        res.status(400).send();
-    });
+    logsService.moduleLogs(req.session.user, req.params.name, req.params.id, "delete module field")
+        .then(function(){
+            ModulesService.deleteModuleField(req.params.name, req.params.id).then(function(){
+                res.status(200).send();
+            }).catch(function(err){
+                res.status(400).send();
+            });
+        })
+        .catch(function(){
+            res.status(400).send();
+        });
 }
 
 function getModuleByName(req, res){
@@ -89,7 +107,7 @@ function getModuleByName(req, res){
 function addModuleDoc(req, res){
     ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
         ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-            logsService.addModuleDocLog(req.body.moduleName, req.body.moduleDoc, "add module document")
+            logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "add module document")
             .then(function(){
                 res.status(200).send();
             })
@@ -117,7 +135,13 @@ function getAllModuleDocs(req, res){
 function updateModuleDoc(req, res){
     ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
         ModulesService.updateModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-            res.status(200).send();
+            logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "update module document")
+            .then(function(){
+                res.status(200).send();
+            })
+            .catch(function(){
+                res.status(400).send();
+            });
         }).catch(function(err){
             res.status(400).send();
         });
@@ -127,11 +151,18 @@ function updateModuleDoc(req, res){
 }
 
 function deleteModuleDoc(req, res){
-    ModulesService.deleteModuleDoc(req.params.name, req.params.id).then(function(){
-        res.status(200).send();
-    }).catch(function(err){
-        res.status(400).send();
-    });
+    //console.log(req.session.user);
+    logsService.moduleLogs(req.session.user, req.params.name, req.params.id, "delete module document")
+        .then(function(){
+            ModulesService.deleteModuleDoc(req.params.name, req.params.id).then(function(){
+                res.status(200).send();
+            }).catch(function(err){
+                res.status(400).send();
+            });
+        })
+        .catch(function(){
+            res.status(400).send();
+        });
 }
 
 function updateFieldArray(req, res){
