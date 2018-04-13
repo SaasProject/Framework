@@ -308,15 +308,9 @@
         */
         function getAllAssets(){
             //get all assets
-            ModulesService.getAllModuleDocs('assets').then(function(assets){
-                if(assets.length > 0){               
-                    //store to array
-                    $scope.assets = assets;
-                }
-                else{
-                    //perform notification here
-                    FlashService.Error("No assets found");
-                }
+            ModulesService.getAllModuleDocs('assets').then(function(assets){              
+                //store to array
+                $scope.assets = assets;
             })
             .catch(function(error){
                 FlashService.Error(error);
@@ -646,7 +640,9 @@
 
         /*
             Function name: isChecked
-            Author(s): Reccion, Jeremy
+            Author(s): 
+                        Flamiano, Glenn
+                        Reccion, Jeremy
             Date Modified: 2018/01/31
             Description: Check an option of the checkbox if checked
             Parameter(s): field.name, checkbox element
@@ -663,7 +659,7 @@
 
         /*
             Function name: isRadioSelected
-            Author(s): Reccion, Jeremy
+            Author(s): Flamiano, Glenn
             Date Modified: 2018/01/31
             Description: Check an option of the radio button if checked
             Parameter(s): field.name, html input type
@@ -753,8 +749,9 @@
                         FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
                     }else{
                         $scope.newAsset.created_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
-                        $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");                        
-                        ModulesService.addModuleDoc('assets', $scope.newAsset).then(function(){
+                        $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
+                        console.log($scope.newAsset);                        
+                        ModulesService.addModuleDoc({moduleName: 'assets', moduleDoc: $scope.newAsset}).then(function(){
                         //  get all assets to refresh the table
                         $('#myModal').modal('hide');
                         FlashService.Success($rootScope.selectedLanguage.assets.flashMessages.added);
@@ -764,7 +761,7 @@
                         resetModalFlash();
                         })
                         .catch(function(error){
-                            //tag exists 
+                            console.log(error);
                             if(error.exists){
                                 FlashService.Error($rootScope.selectedLanguage.assets.flashMessages.exists);
                             }
@@ -831,7 +828,7 @@
                         FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
                     }else{
                         $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");                        
-                            ModulesService.updateModuleDoc('assets', $scope.newAsset).then(function(){
+                            ModulesService.updateModuleDoc({moduleName: 'assets', moduleDoc: $scope.newAsset}).then(function(){
                             $('#myModal').modal('hide');
                             FlashService.Success($rootScope.selectedLanguage.assets.flashMessages.updated);
                             $scope.newAsset = {};

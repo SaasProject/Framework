@@ -26,7 +26,7 @@ function addModule(req, res){
     ModulesService.addModule(req.body).then(function(){
         res.status(200).send();
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -34,7 +34,7 @@ function getAllModules(req, res){
     ModulesService.getAllModules().then(function(modules){
         res.status(200).send(modules);
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -42,7 +42,7 @@ function updateModule(req, res){
     ModulesService.updateModule(req.body).then(function(){
         res.status(200).send();
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -50,7 +50,7 @@ function deleteModule(req, res){
     ModulesService.deleteModule(req.params.id, req.params.name).then(function(){
         res.status(200).send();
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -64,7 +64,7 @@ function addModuleField(req, res){
                 res.status(400).send();
             });
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -78,7 +78,7 @@ function updateModuleField(req, res){
                 res.status(400).send();
             });
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -88,7 +88,7 @@ function deleteModuleField(req, res){
             ModulesService.deleteModuleField(req.params.name, req.params.id).then(function(){
                 res.status(200).send();
             }).catch(function(err){
-                res.status(400).send();
+                res.status(400).send(err);
             });
         })
         .catch(function(){
@@ -100,7 +100,7 @@ function getModuleByName(req, res){
     ModulesService.getModuleByName(req.params.name).then(function(aModule){
         res.status(200).send(aModule);
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -116,11 +116,11 @@ function addModuleDoc(req, res){
             });
         }).catch(function(err){
             console.log(err);
-            res.status(400).send();
+            res.status(400).send(err);
         });
     }).catch(function(err){
         console.log(err);
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -128,7 +128,7 @@ function getAllModuleDocs(req, res){
     ModulesService.getAllModuleDocs(req.params.name).then(function(moduleDocs){
         res.status(200).send(moduleDocs);
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -143,10 +143,10 @@ function updateModuleDoc(req, res){
                 res.status(400).send();
             });
         }).catch(function(err){
-            res.status(400).send();
+            res.status(400).send(err);
         });
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
@@ -157,7 +157,7 @@ function deleteModuleDoc(req, res){
             ModulesService.deleteModuleDoc(req.params.name, req.params.id).then(function(){
                 res.status(200).send();
             }).catch(function(err){
-                res.status(400).send();
+                res.status(400).send(err);
             });
         })
         .catch(function(){
@@ -169,7 +169,7 @@ function updateFieldArray(req, res){
     ModulesService.updateFieldArray(req.body.moduleName, req.body.fieldArray).then(function(){
         res.status(200).send();
     }).catch(function(err){
-        res.status(400).send();
+        res.status(400).send(err);
     });
 }
 
