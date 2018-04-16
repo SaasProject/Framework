@@ -64,6 +64,13 @@
                 controller: 'Warehouse.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'warehouses' }
+            })
+            .state('devices', {
+                url: '/devices',
+                templateUrl: 'manageDevices/index.html',
+                controller: 'Device.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'devices' }
             });
 
 

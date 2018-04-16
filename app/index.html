@@ -29,9 +29,10 @@
                     <!--    <li ng-class="{active: activeTab === 'home'}"><a ui-sref="home"><span class="glyphicon glyphicon-home"></span> Home</a></li> -->
                         <!--added by jeremy -->
                         <li ng-class="{active: activeTab === 'assets'}"><a ui-sref="assets"><span class="glyphicon glyphicon-th-list"></span> {{selectedLanguage.navBar.assets}}</a></li>
+                        <li ng-class="{active: activeTab === 'warehouses'}" ng-show="isAdmin"><a ui-sref="warehouses"><img src = "whouse3.png"style = "margin-bottom:5px"/> {{selectedLanguage.navBar.warehouses}}</a></li>
+                        <li ng-class="{active: activeTab === 'devices'}" ng-show="isAdmin"><a ui-sref="devices"><span class="glyphicon glyphicon-hdd"></span> {{selectedLanguage.navBar.devices}}</a></li>
                         <li ng-class="{active: activeTab === 'manageUsers'}" ng-show="isAdmin"><a ui-sref="manageUsers"><span class="glyphicon glyphicon-tasks"></span> {{selectedLanguage.navBar.accounts}}</a></li>    
-						<li ng-class="{active: activeTab === 'fields'}" ng-show="isAdmin"><a ui-sref="fields"><span class="glyphicon glyphicon-th-list"></span> {{selectedLanguage.navBar.fields}}</a></li>
-                        <li ng-class="{active: activeTab === 'warehouses'}" ng-show="isAdmin"><a ui-sref="warehouses"><span class="glyphicon glyphicon-th-list"></span> {{selectedLanguage.navBar.warehouses}}</a></li>
+                        <li ng-class="{active: activeTab === 'fields'}" ng-show="isAdmin"><a ui-sref="fields"><span class="glyphicon glyphicon-th-list"></span> {{selectedLanguage.navBar.fields}}</a></li>
                     </ul>
                     
                     <ul class="nav navbar-nav navbar-right">
@@ -144,6 +145,7 @@
     <script src="fields/index.controller.js"></script>
     <script src="asset/index.controller.js"></script>
     <script src="warehouse/index.controller.js"></script>
+    <script src="manageDevices/index.controller.js"></script>
 
 
     <!-- added by dyan0 socket.io -->
