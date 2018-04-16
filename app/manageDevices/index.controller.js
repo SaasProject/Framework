@@ -49,7 +49,7 @@
             };
         });
  
-    function Controller($scope, FlashService, ModulesService, socket, $rootScope) {
+    function Controller($scope, FlashService, ModulesService, TableService, socket, $rootScope) {
         var vm = this;
  
         vm.device = [];
@@ -114,13 +114,7 @@
         */
         $scope.sortColumn = function(col){
             $scope.column = col;
-            if($scope.reverse){
-                $scope.reverse = false;
-                $scope.reverseclass = 'arrow-up';
-            }else{
-                $scope.reverse = true;
-                $scope.reverseclass = 'arrow-down';
-            }
+            $scope.reverse = TableService.sortSelectedColumn($scope.reverse, col).result;
         };
 
         /*
@@ -132,15 +126,7 @@
             Return: none
         */
         $scope.sortClass = function(col){
-            if($scope.column == col ){
-                if($scope.reverse){
-                    return 'arrow-down'; 
-                }else{
-                    return 'arrow-up';
-                }
-            }else{
-                return 'arrow-dormant';
-            }
+            return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
         } 
         // End of Table Functions
 
@@ -153,12 +139,7 @@
             Return: none
         */
         $scope.setWidth = function(column){
-            switch(column){
-                case "device_id": return 'col-sm-2'; break;
-                case "deviceName": return 'col-sm-3'; break;
-                case "location": return 'col-sm-3'; break;
-                default: return '';
-            }
+            return TableService.setWidth(column);
         };
 
         /*

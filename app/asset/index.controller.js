@@ -29,7 +29,7 @@
             };
         });
  
-    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableSortService, InputValidationService, $stateParams, $rootScope) {
+    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableService, InputValidationService, $stateParams, $rootScope) {
  
         /* Initialization of scope variables */
 		
@@ -240,7 +240,7 @@
 
             //when switching columns, sort in ascending order.
             $scope.sortColumn = column;  
-            $scope.reverse = TableSortService.sortSelectedColumn($scope.reverse, column).result;
+            $scope.reverse = TableService.sortSelectedColumn($scope.reverse, column).result;
         };
 
         /*
@@ -252,8 +252,20 @@
             Return: none
         */
         $scope.sortClass = function(column){
-            return TableSortService.sortSelectedClass($scope.reverse, column, $scope.sortColumn);
+            return TableService.sortSelectedClass($scope.reverse, column, $scope.sortColumn);
         }; 
+
+        /*
+            Function name: Set column width
+            Author(s): Flamiano, Glenn
+            Date Modified: December 2018
+            Description: To set the fixed with of the specific columns in the table
+            Parameter(s): none
+            Return: none
+        */
+        $scope.setWidth = function(column){
+            return TableService.setWidth(column);
+        };
         ////////////////////////////////////////////////////////
         /*
             Function name: $watch functions for sort & search

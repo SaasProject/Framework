@@ -49,7 +49,7 @@
             };
         });
  
-    function Controller($scope, FlashService, ModulesService, TableSortService, socket, $rootScope) {
+    function Controller($scope, FlashService, ModulesService, TableService, socket, $rootScope) {
         var vm = this;
 		
 		// Scope for data
@@ -117,7 +117,7 @@
         */
         $scope.sortColumn = function(col){
             $scope.column = col;
-            $scope.reverse = TableSortService.sortSelectedColumn($scope.reverse, col).result;
+            $scope.reverse = TableService.sortSelectedColumn($scope.reverse, col).result;
         };
 
         /*
@@ -129,7 +129,7 @@
             Return: none
         */
         $scope.sortClass = function(col){
-            return TableSortService.sortSelectedClass($scope.reverse, col, $scope.column);
+            return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
         } 
 		
     /***** End of Table Functions *****/
@@ -144,12 +144,7 @@
             Return: none
         */
         $scope.setWidth = function(column){
-            switch(column){
-                case "name": return 'col-sm-2'; break;
-                case "capacity": return 'col-sm-3'; break;
-             //   case "location": return 'col-sm-3'; break;
-                default: return '';
-            }
+            return TableService.setWidth(column);
         };
 
         //Clear

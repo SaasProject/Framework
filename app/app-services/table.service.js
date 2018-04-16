@@ -3,13 +3,14 @@
  
     angular
         .module('app')
-        .factory('TableSortService', Service);
+        .factory('TableService', Service);
  
     function Service(FlashService) {
         var service = {};
  
         service.sortSelectedColumn = sortSelectedColumn;
         service.sortSelectedClass = sortSelectedClass;
+        service.setWidth = setWidth;
  
         return service;
  
@@ -38,6 +39,10 @@
                 result = 'arrow-dormant';
             }
             return result;
+        }
+
+        function setWidth(column){
+            return 'col-sm-2';
         }
     }
  
