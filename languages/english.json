@@ -96,7 +96,7 @@
 				"addUser" : "Add User"
 			},
 			"labels": {
-				"navTitle" : "Manage User Accounts",
+				"navTitle" : "User Accounts",
 				"modalTitleAdd" : "Add User",
 				"modalTitleUpdate" : "Update User"
 			},

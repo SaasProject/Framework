@@ -141,7 +141,7 @@
 				          	</div>
 
 				          	<!-- show date -->
-				          	<input data="{{field.type}}" type="date" ng-show="showDate(field.type) && !uneditable" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-readonly="uneditable || field.name == 'email'" ng-required=field.required>
+				          	<input data="{{field.type}}" type="date" ng-show="showDate(field.type) && !uneditable" ng-model="tempDate" ng-change="pushDateToNewUser(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-readonly="uneditable || field.name == 'email'" ng-required=field.required>
 
 				          	<!-- show dropdown -->
 				          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="newUser[field.name]" ng-disabled="uneditable|| field.name == 'email'">
