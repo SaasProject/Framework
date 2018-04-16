@@ -1,5 +1,8 @@
-<div class="row">
-    <div class="col-md-3">
+<div class="col-sm-6">
+<div class="panel panel-primary">
+	<div class="panel-heading"><h4>{{selectedLanguage.fields.labels.customize}}</h4></div>
+    <div class="panel-body">
+    <div class="form-inline">
         <!-- Module
         <form class="form-inline" ng-submit="submit()">
             <input type="text" class="form-control" ng-model="newModule.name">
@@ -14,10 +17,11 @@
         <hr>
         <div>
             <form class="form-group" ng-submit="saveField()">
-                <label>{{selectedLanguage.fields.labels.tableName + ':'}}</label>
-                <input type="text" class="form-control" ng-model="newField.name" required>
+                <label>{{selectedLanguage.fields.labels.tableName + ':'}}</label><br>
+                <input type="text" class="form-control" ng-model="newField.name" required><br><br>
                 <input type="checkbox" ng-model="newField.required"> <b>{{selectedLanguage.fields.labels.required}}</b> <br>
-                <input type="checkbox" ng-model="newField.unique"> <b>{{selectedLanguage.fields.labels.unique}}</b>
+                <input type="checkbox" ng-model="newField.unique"> <b>{{selectedLanguage.fields.labels.unique}}</b><br><br>
+				<label class="form-check-label" for="typeDropdown">{{selectedLanguage.fields.labels.type}}</label><br>
                 <select class="form-control" ng-model="newField.type">
                     <option value="text">{{selectedLanguage.fields.labels.text}}</option>
                     <option value="number">{{selectedLanguage.fields.labels.number}}</option>
@@ -28,7 +32,7 @@
                     <option value="dropdown">{{selectedLanguage.fields.labels.dropdown}}</option>
                     <option value="radio">{{selectedLanguage.fields.labels.radio}}</option>
                     <option value="date">{{selectedLanguage.fields.labels.date}}</option>
-                </select>
+                </select><br><br>
                 <!-- ng-show instead of ng-if -->
                 <div ng-show="hasOptions()">
                     {{selectedLanguage.fields.labels.note1}}<br>
@@ -38,7 +42,13 @@
             </form>
         </div>
     </div>
-    <div class="col-md-7">
+	</div>
+	</div>
+</div>
+    <div class="col-sm-6">
+	<div class="panel panel-success">
+        <div class="panel-heading"><h4>{{selectedLanguage.fields.labels[name]}}</h4></div>
+        <div class="panel-body">
         <div class="flash-message" ng-if="flash" ng-show = "!changePasswordModal">
             <div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
         </div>
@@ -70,4 +80,6 @@
             </tbody>
         </table>
     </div>
+	</div>
+	</div>
 </div>
