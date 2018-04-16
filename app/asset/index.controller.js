@@ -173,6 +173,8 @@
                 }); */
             }
 
+            $scope.reportColumns.push('updated_date');
+
             //use nested angular.forEach to process each value of each asset
             //value = asset object
             //value2 = asset[field.name]
