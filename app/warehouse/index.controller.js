@@ -663,15 +663,8 @@
                 FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
                 $scope.formValid = true;
             }else{
-                if(!checkEmails()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-                }else if(!checkNumbers()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-                }else if(!checkPasswords()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-                }else if(!checkConfirmPasswords()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
-                }else{
+                if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
+                    
                     ModulesService.addModuleDoc({moduleName: 'warehouses', moduleDoc: $scope.whouse})
                     .then(function () {
                         $('#myModal').modal('hide');
@@ -759,15 +752,8 @@
                 //resetwhouse();
                 $scope.formValid = true;
             }else{
-                if(!checkEmails()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
-                }else if(!checkNumbers()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.invalidNo);
-                }else if(!checkPasswords()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.containPass);
-                }else if(!checkConfirmPasswords()){
-                    FlashService.Error($rootScope.selectedLanguage.commons.confirmPass);
-                }else{
+                if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
+                    
                     ModulesService.updateModuleDoc({moduleName: 'warehouses', moduleDoc: $scope.whouse})
                         .then(function () {
 							$scope.viewModal = false;							

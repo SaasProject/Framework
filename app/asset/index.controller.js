@@ -612,8 +612,8 @@
 				    $scope.isNull = false;
 				} else {
                     $scope.showAddFlash = true;
-                    if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
-                    }else{
+                    if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
+                        
                         $scope.newAsset.created_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
                         $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
                         console.log($scope.newAsset);                        
@@ -684,8 +684,8 @@
 					
 			} else {
                     $scope.showAddFlash = true;
-                    if(!InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
-                    }else{
+                    if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
+                        
                         $scope.newAsset.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");                        
                             ModulesService.updateModuleDoc({moduleName: 'assets', moduleDoc: $scope.newAsset}).then(function(){
                             $('#myModal').modal('hide');
