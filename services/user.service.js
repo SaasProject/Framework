@@ -198,8 +198,6 @@ function insert(userParam){
     function insertUser(password) {
 
 		var user = userParam;
-		
-		console.log(password);
         user.hash = bcrypt.hashSync(password, 10);
 			
 		

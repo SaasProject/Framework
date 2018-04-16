@@ -489,7 +489,6 @@
             }
 			
 			if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newUser, $scope.confirmPassword)){
-				console.log("allValid");
 				
 				if(forDataBase==requiredTextField){
 					UserService.Insert($scope.newUser)
@@ -591,7 +590,6 @@
             }
 			
 			if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newUser, $scope.confirmPassword)){
-				console.log("allValid");
 				
 				if(forDataBase==requiredTextField){
 					UserService.Update($scope.newUser)
