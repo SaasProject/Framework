@@ -10,7 +10,6 @@
  
         service.sortSelectedColumn = sortSelectedColumn;
         service.sortSelectedClass = sortSelectedClass;
-        service.showColumn = showColumn;
  
         return service;
  
@@ -39,14 +38,6 @@
                 result = 'arrow-dormant';
             }
             return result;
-        }
-
-        function showColumn(col){
-            if(col < 5){
-                return true;
-            } else {
-                return false;
-            }
         }
 
     }

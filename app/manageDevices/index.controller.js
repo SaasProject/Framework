@@ -129,17 +129,6 @@
             return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
         };
 
-        /*
-            Function name: Set column width
-            Author(s): Flamiano, Glenn
-            Date Modified: December 2018
-            Description: To set the fixed with of the specific columns in the table
-            Parameter(s): none
-            Return: none
-        */
-        $scope.showColumn = function(column){
-            return TableService.showColumn(column);
-        };
         // End of Table Functions
 
         /*
