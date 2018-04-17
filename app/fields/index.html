@@ -36,8 +36,9 @@
                 <!-- ng-show instead of ng-if -->
                 <div ng-show="hasOptions()">
                     {{selectedLanguage.fields.labels.note1}}<br>
-                    <textarea class="form-control" rows="4" cols="50" ng-model="fieldOptions"></textarea>
+                    <textarea class="form-control" rows="4" cols="40" ng-model="fieldOptions"></textarea>
                 </div>
+                <br>
                 <button type="submit" class="btn btn-primary">{{selectedLanguage.commons.save}}</button>
             </form>
         </div>
