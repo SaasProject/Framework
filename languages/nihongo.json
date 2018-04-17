@@ -102,7 +102,6 @@
 			},
 			"flashMessages" : {
 				"emailErr" : "メールが存在している",
-				"invalidMail" : "無効なメール",
 				"userAdded" : "ユーザーが追加された",
 				"userUpdated" : "ユーザーが更新された",
 				"confirmMessage" : "ユーザーを削除する？",

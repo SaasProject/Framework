@@ -476,7 +476,7 @@
 					 
                     if($scope.newUser[$scope.fields[h].name]===undefined || $scope.newUser[$scope.fields[h].name]===null){
 						if($scope.fields[h].name == 'email') {
-							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.invalidMail);
+							FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
 						}
 						else {
 							FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
@@ -504,7 +504,7 @@
 							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.emailErr);
 						}
 						else if(error.invalid){
-							FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.invalidMail);
+							FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
 						}
 						else{
 							FlashService.Error(error);
