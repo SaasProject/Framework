@@ -9,13 +9,8 @@
         var service = {};
  
         service.showInputTypes = showInputTypes;
-        service.showTextArea = showTextArea;
-        service.showCheckBox = showCheckBox;
-        service.showRadio = showRadio;
-        service.showDropDown = showDropDown;
         service.arrayRemove = arrayRemove;
         service.formatDate = formatDate;
-        service.pushDateToAllEntry = pushDateToAllEntry;
         service.pushToAllEntry = pushToAllEntry;
         service.isChecked = isChecked;
         service.declareSelected = declareSelected;
@@ -38,45 +33,12 @@
                 case "number":
                 case "email":
                 case "password":
-                case "date":
                     return true;
                     break;
                 default:
                     return false;
                     break
                 
-            }
-        }
-
-        function showTextArea(data) {
-            if(data == 'textarea'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function showCheckBox(data) {
-            if(data == 'checkbox'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function showRadio(data) {
-            if(data == 'radio'){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function showDropDown(data) {
-            if(data == 'dropdown'){
-                return true;
-            } else {
-                return false;
             }
         }
 
@@ -100,6 +62,7 @@
             Return: formatted date
         */
         function formatDate(date) {
+            console.log(date);
             var d = new Date(date),
                 month = '' + (d.getMonth() + 1),
                 day = '' + d.getDate(),
@@ -108,15 +71,8 @@
             if (month.length < 2) month = '0' + month;
             if (day.length < 2) day = '0' + day;
 
+            console.log([year, month, day].join('-'));
             return [year, month, day].join('-');
-        }
-
-        function pushDateToAllEntry(fieldName, fieldType, inputDate, unEditAble, allEntry) {
-            if(!unEditAble){
-                if(fieldType == 'date'){
-                    allEntry[fieldName] = formatDate(inputDate);
-                }
-            }
         }
 
         function pushToAllEntry(fieldName, option, selected) {

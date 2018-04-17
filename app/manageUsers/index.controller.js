@@ -51,7 +51,7 @@
             };
         });
  
-    function Controller(UserService, $scope, FlashService, ModulesService, TableService, socket, $rootScope, InputValidationService) {
+    function Controller(UserService, $scope, FlashService, ModulesService, TableService, socket, $rootScope, InputValidationService, InputTypeService) {
        
 		//scope for users
 		$scope.allUsers = {};
@@ -59,7 +59,7 @@
 		
 		$scope.loading = true;
         $scope.confirmPassword = {};
-		$scope.uneditable = false;
+		$scope.unEditAble = false;
 
         /*
             Function name: Calculate Object size
@@ -208,76 +208,8 @@
             Parameter(s): none
             Return: boolean
         */
-        $scope.showTextBox = function(data){
-            if(data == 'text'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showEmail = function(data){
-            if(data == 'email'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showNumber = function(data){
-            if(data == 'number'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showPassword = function(data){
-            if(data == 'password'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showTextArea = function(data){
-            if(data == 'textarea'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showCheckBox = function(data){
-            if(data == 'checkbox'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDropDown = function(data){
-            if(data == 'dropdown'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showRadio = function(data){
-            if(data == 'radio'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDate = function(data){
-            if(data == 'date'){
-                return true;
-            } else {
-                return false;
-            }
+        $scope.showInputType = function(data){
+            return InputTypeService.showInputTypes(data);
         };
 
         /*
@@ -289,48 +221,21 @@
             Return: size
         */
         Array.prototype.remove = function() {
-            var what, a = arguments, L = a.length, ax;
-            while (L && this.length) {
-                what = a[--L];
-                while ((ax = this.indexOf(what)) !== -1) {
-                    this.splice(ax, 1);
-                }
-            }
-            return this;
+            return InputTypeService.arrayRemove();
         };
 
         /*
-            Function name: Format date
+            Function name: Insert formatted date to $scope.aDevices
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/25
-            Description: To iformat a date and to be inserted to $scope.aUsers
-            Parameter(s): none
-            Return: formatted date
-        */
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-
-        /*
-            Function name: pushDateToNewUser
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: To format a date and to be inserted to $scope.aUsers
+            Description: To iformat a date and to be inserted to $scope.aDevices
             Parameter(s): none
             Return: none
         */
-        $scope.pushDateToNewUser = function(fieldName, inputDate) {
-            $scope.newUser[fieldName] = formatDate(inputDate);
+        $scope.pushDateToAllEntry = function(fieldName, inputDate) {
+            $scope.aDevices[fieldName] = InputTypeService.formatDate(inputDate);
         };
-        
+
 
         /*
             Function name: Get all checkbox elements
@@ -345,13 +250,52 @@
         var selectedLength = 0;
         $scope.declareSelected = function(){
             $scope.showMainFlash = false;
-            checkboxFields = document.getElementsByName("checkBoxInput");
-            for(var i=0;i<checkboxFields.length;i++){
-                selected[checkboxFields[i].className] = [];
-                selectedLength++;
-            }
+
+            var select = InputTypeService.declareSelected(selected, checkboxFields, selectedLength);
+            console.log(select);
+            selected = select.selected;
+            selectedLength = select.selectedLength;
         };
 
+        /*
+            Function name: Insert radio button value to $scope.aUsers
+            Author(s): Flamiano, Glenn
+            Date Modified: February 2018
+            Description: To insert radio button value to $scope.aUsers, it is called
+                when radio button is checked
+            Parameter(s): option, fieldName
+            Return: none
+        */
+        $scope.putToModel = function(option, fieldName){
+            $scope.aDevices[fieldName] = option;
+        }
+
+        /*
+            Function name: isChecked
+            Author(s): Reccion, Jeremy
+            Date Modified: 2018/01/31
+            Description: Check an option of the checkbox if checked
+            Parameter(s): field.name, checkbox element
+            Return: none
+        */
+        $scope.isChecked = function(field_name, option){
+            return InputTypeService.isChecked(field_name, option, $scope.aDevices);
+        };
+
+
+        /*
+            Function name: Insert checkbox checked values to
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/26
+            Description: Check all password inputs in add modal     //??? wrong description?
+            Parameter(s): field.name, checkbox element
+            Return: none
+        */
+        $scope.pushToANewUser = function(fieldName, option){
+            $scope.aDevices[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        };
+
+        
         /*
             Name: modify dropdown 
             Author(s):
@@ -370,92 +314,7 @@
             });
         };
 
-        /*
-            Function name: Insert radio button value to $scope.aUsers
-            Author(s): Flamiano, Glenn
-            Date Modified: February 2018
-            Description: To insert radio button value to $scope.aUsers, it is called
-                when radio button is checked
-            Parameter(s): option, fieldName
-            Return: none
-        */
-        $scope.putToModel = function(option, fieldName){
-            //console.log(option);
-            $scope.newUser[fieldName] = option;
-        }
-
-        /*
-            Function name: isChecked
-            Author(s): Reccion, Jeremy
-            Date Modified: 2018/01/31
-            Description: Check an option of the checkbox if checked
-            Parameter(s): field.name, html input type
-            Return: none
-        */
-        $scope.isChecked = function(field_name, option, type){
-            if(type == 'checkbox'){
-                if($scope.newUser[field_name] == undefined) $scope.newUser[field_name] = [];
-                var isChecked = ($scope.newUser[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
-        };
-
-        /*
-            Function name: isRadioSelected
-            Author(s): Reccion, Jeremy
-            Date Modified: 2018/01/31
-            Description: Check an option of the radio button if checked
-            Parameter(s): field.name, html input type
-            Return: none
-        */
-        $scope.isRadioSelected = function(field_name, option, type){
-            if(type == 'radio'){
-                if($scope.newUser[field_name] == undefined) $scope.newUser[field_name] = [];
-                var isChecked = ($scope.newUser[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
-        };
-
-        /*
-            Function name: Insert checkbox checked values to
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add modal
-            Parameter(s): field.name, checkbox element
-            Return: none
-        */
-        $scope.pushToAUsers = function(fieldName, option){
-            var checkedOption = document.getElementsByName(option);
-            if(checkedOption[0].checked){
-                selected['checkBoxAdd '+fieldName].push(option);
-            }else{
-                selected['checkBoxAdd '+fieldName].remove(option);
-            }
-            $scope.newUser[fieldName] = selected['checkBoxAdd '+fieldName];
-        };
-
-        /*
-            Function name: Insert checkbox checked values to
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in edit modal
-            Parameter(s): field.name, checkbox element
-            Return: none
-        */
-        $scope.pushEditToAUsers = function(fieldName, option){
-
-            var checkedOption = document.getElementsByName('edit '+option);
-            //console.log(option+' field is '+checkedOption.checked);
-            if(checkedOption[0].checked){
-                selected['checkBoxAdd '+fieldName].push(option);
-            }else{
-                selected['checkBoxAdd '+fieldName].remove(option);
-            }
-
-            $scope.newUser[fieldName] = selected['checkBoxAdd '+fieldName];
-        };
-
-
+        
         /*
             Function name: Add User Function
             Author(s): Sanchez, Macku; Ayala, Jenny
@@ -542,7 +401,7 @@
         */
         $scope.enableEditing = function() {
 			
-            $scope.uneditable = false;
+            $scope.unEditAble = false;
             angular.forEach($scope.fields, function(value, key){
                 //initialize if the dropdown is required
                 //console.log($scope.newUser[value.name])
@@ -562,7 +421,7 @@
             Return: none
         */
         $scope.editUser = function(index){
-            $scope.uneditable = true;
+            $scope.unEditAble = true;
             $scope.newUser = angular.copy(filterIndexById($scope.allUsers, index));
         };
 		

@@ -215,22 +215,6 @@
             return InputTypeService.showInputTypes(data);
         };
 
-        $scope.showTextArea = function(data){
-            return InputTypeService.showTextArea(data);
-        };
-
-        $scope.showCheckBox = function(data){
-            return InputTypeService.showCheckBox(data);
-        };
-
-        $scope.showDropDown = function(data){
-            return InputTypeService.showDropDown(data);
-        };
-
-        $scope.showRadio = function(data){
-            return InputTypeService.showRadio(data);
-        };
-
         /*
             Function name: Array remove element function
             Author(s): Flamiano, Glenn
@@ -251,8 +235,8 @@
             Parameter(s): none
             Return: none
         */
-        $scope.pushDateToADevices = function(fieldName, fieldType, inputDate) {
-            return InputTypeService.pushDateToAllEntry(fieldName, fieldType, inputDate, $scope.unEditAble, $scope.aDevices);
+        $scope.pushDateToAllEntry = function(fieldName, inputDate) {
+            $scope.aDevices[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
 
@@ -286,7 +270,6 @@
             Return: none
         */
         $scope.putToModel = function(option, fieldName){
-            //console.log(option);
             $scope.aDevices[fieldName] = option;
         }
 

@@ -27,27 +27,30 @@
 							<span style = "color:red" ng-if="field.required">*</span>
 
 				          	<!-- show input -->
-				          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="showInputType(field.type)" ng-model="aDevices[field.name]" class="{{field.type=='date'?'form-control addTicketDateInput':'form-control';}}" ng-required=field.required>
+							<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="showInputType(field.type)" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required>
+							  
+							<!-- show date -->
+				          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="field.type=='date'" ng-model="tempDate" class="form-control addTicketDateInput" ng-required=field.required ng-change="pushDateToAllEntry(field.name, this.tempDate)">
 
 				          	<!-- show confirm password -->
 				          	<label ng-show="field.type=='password'" for=field.name>Confirm {{field.name}}: </label>
 				          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="field.type=='password'" ng-model="confirmPassword[field.name]" class="form-control">
 
 				          	<!-- show text area -->
-	  			          	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+	  			          	<textarea data="{{field.type}}" ng-show="field.type=='textarea'" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
 
 				          	<!-- show checkbox -->
-				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
+				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='checkbox'">
 				          		<input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" data="{{option}}" ng-click="pushToADevices(field.name, option)">{{option}}<br>
 				          	</div>
 
 				          	<!-- show radio -->
-				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
+				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
 				          		<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 				          	</div>
 
 				          	<!-- show dropdown -->
-				          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aDevices[field.name]">
+				          	<select class="form-control" data="{{field.type}}" ng-show="field.type=='dropdown'" ng-model="aDevices[field.name]">
 								<option value="" ng-if="!field.required"></option>
 								<option ng-repeat="option in field.options" ng-if="field.name != 'location'">{{option}}</option>
 								<!-- added by jano (from jeremy's implementation) - warehouses as locations -->
@@ -88,35 +91,34 @@
 						<div class="form-group" ng-repeat="field in fields">
 							<label  for=field.name>{{field.name}}: </label>
 							<span style = "color:red" ng-if="field.required">*</span>
-							<!--<input id=field.name type=field.type ng-model="aDevices[field.name]" class="form-control" ng-readonly="unEditAble || field.name == 'device_id'"><br>-->
-							<!--<div ng-show="showCheckBox(field.type)" ng-repeat="options in aDevices[field.name] track by $index" style="float:left">
-          					{{options}}.&nbsp;
-	          				</div><br ng-show="showCheckBox(field.type)">
-	          				<p ng-show="showRadio(field.type)" ng-model="aDevices[field.name]">{{aDevices[field.name]}}</p>-->
-	          				<p ng-show="showDate(field.type) && unEditAble" ng-model="aDevices[field.name]">{{aDevices[field.name]}}</p>
 
-	          				<!-- show input -->
-				          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="showInputType(field.type)" ng-model="aDevices[field.name]" class="{{field.type=='date'?'form-control addTicketDateInput':'form-control';}}" ng-required=field.required>
+	          				<p ng-show="field.type=='date' && unEditAble" ng-model="aDevices[field.name]">{{aDevices[field.name]}}</p>
+
+							<!-- show input -->
+							<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="showInputType(field.type)" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required ng-readonly="unEditAble || field.name == 'device_id'">
+							  
+							<!-- show date -->
+				          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type}}" ng-show="field.type=='date' && unEditAble == false" ng-model="tempDate" class="form-control addTicketDateInput" ng-required=field.required ng-readonly="unEditAble || field.name == 'device_id'" ng-change="pushDateToAllEntry(field.name, this.tempDate)">
 
 				          	<!-- show confirm password -->
 				          	<label ng-show="field.type=='password'" for=field.name>Confirm {{field.name}}: </label>
-				          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="field.type=='password'" ng-model="confirmPassword[field.name]" class="form-control">
+				          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="field.type=='password'" ng-model="confirmPassword[field.name]" class="form-control" ng-readonly="unEditAble || field.name == 'device_id'">
 
 				          	<!-- show text area -->
-	  			          	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+	  			          	<textarea data="{{field.type}}" ng-show="field.type=='textarea'" ng-model="aDevices[field.name]" class="form-control" ng-required=field.required ng-readonly="unEditAble || field.name == 'device_id'" rows="4" cols="50"></textarea>
 
 				          	<!-- show checkbox -->
-				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
+				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='checkbox'" ng-readonly="unEditAble || field.name == 'device_id'">
 				          		<input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" data="{{option}}" ng-click="pushToADevices(field.name, option)">{{option}}<br>
 				          	</div>
 
 				          	<!-- show radio -->
-				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
+				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'" ng-readonly="unEditAble || field.name == 'device_id'">
 				          		<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 				          	</div>
 
 				          	<!-- show dropdown -->
-				          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aDevices[field.name]">
+				          	<select class="form-control" data="{{field.type}}" ng-show="field.type=='dropdown'" ng-model="aDevices[field.name]" ng-readonly="unEditAble || field.name == 'device_id'">
 								<option value="" ng-if="!field.required"></option>
 								<option ng-repeat="option in field.options" ng-if="field.name != 'location'">{{option}}</option>
 								<!-- added by jano (from jeremy's implementation) - warehouses as locations -->
