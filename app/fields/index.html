@@ -62,7 +62,7 @@
             </thead>
             <tbody ui-sortable="sortableOptions" ng-model="module.fields">
                 <tr ng-repeat="field in module.fields" style="cursor:move">
-                    <td ng-bind="field.name"></td>
+                    <td ng-bind="field.name" class='cutOverflow'></td>
                     <td>{{selectedLanguage.fields.labels[(field.required) ? 'required' : 'notRequired']}}</td>
                     <td>{{selectedLanguage.fields.labels[(field.unique) ? 'unique' : 'notUnique']}}</td>
                     <td ng-bind="field.type"></td>

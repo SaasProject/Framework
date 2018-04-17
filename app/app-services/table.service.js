@@ -10,7 +10,7 @@
  
         service.sortSelectedColumn = sortSelectedColumn;
         service.sortSelectedClass = sortSelectedClass;
-        service.setWidth = setWidth;
+        service.showColumn = showColumn;
  
         return service;
  
@@ -41,9 +41,14 @@
             return result;
         }
 
-        function setWidth(column){
-            return 'col-sm-2';
+        function showColumn(col){
+            if(col < 5){
+                return true;
+            } else {
+                return false;
+            }
         }
+
     }
  
 })();

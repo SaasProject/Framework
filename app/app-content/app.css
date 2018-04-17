@@ -154,3 +154,7 @@ p:hover {
 	margin-left: auto; 
 	margin-right: auto;
 }
+
+table {
+    table-layout: fixed;
+}

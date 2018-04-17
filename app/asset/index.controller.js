@@ -255,7 +255,7 @@
         */
         $scope.sortClass = function(column){
             return TableService.sortSelectedClass($scope.reverse, column, $scope.sortColumn);
-        }; 
+        };
 
         /*
             Function name: Set column width
@@ -265,9 +265,10 @@
             Parameter(s): none
             Return: none
         */
-        $scope.setWidth = function(column){
-            return TableService.setWidth(column);
+        $scope.showColumn = function(column){
+            return TableService.showColumn(column);
         };
+
         ////////////////////////////////////////////////////////
         /*
             Function name: $watch functions for sort & search

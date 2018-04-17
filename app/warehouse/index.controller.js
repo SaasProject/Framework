@@ -132,9 +132,6 @@
             return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
         } 
 		
-    /***** End of Table Functions *****/
-		
-
         /*
             Function name: Set column width
             Author(s): Flamiano, Glenn
@@ -143,9 +140,10 @@
             Parameter(s): none
             Return: none
         */
-        $scope.setWidth = function(column){
-            return TableService.setWidth(column);
+        $scope.showColumn = function(column){
+            return TableService.showColumn(column);
         };
+        /***** End of Table Functions *****/
 
         //Clear
         function resetScope() {

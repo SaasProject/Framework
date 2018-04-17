@@ -110,7 +110,18 @@
         $scope.sortClass = function(col){
             return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
         } 
-        // End of Table Functions
+
+        /*
+            Function name: Show Column
+            Author(s): Flamiano, Glenn
+            Date Modified: April 17, 2018
+            Description: To display maximum number of columns by field index
+            Parameter(s): column
+            Return: none
+        */
+        $scope.sortClass = function(col){
+            return TableService.sortSelectedClass($scope.reverse, col, $scope.column);
+        } 
 
         /*
             Function name: Set column width
@@ -120,9 +131,10 @@
             Parameter(s): none
             Return: none
         */
-        $scope.setWidth = function(column){
-            return TableService.setWidth(column);
+        $scope.showColumn = function(column){
+            return TableService.showColumn(column);
         };
+        // End of Table Functions
 
         /*
             Function name: Reset user scope
