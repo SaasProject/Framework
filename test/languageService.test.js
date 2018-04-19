@@ -25,25 +25,31 @@ describe('language service testing', function(){
         testAuthor();
     });
 
-    describe('getDefaultLanguage()', function(){
+    describe('saveDefaultLanguage and Get Default Language', function(){
 
-        
+        var language = {body:{option:'english',email:'saasteamaws@gmail.com'}}
 
-        //it is suggested to clean (either manually or other service methods) the test data inserted to the database
-        //if service methods will be used, use before() hook
-        //before(function(){});
-
-        it('should return an object that has a language pack that depends on the default language set by the Admin', function(){
+        it('will save a new default language that will be retrieved by get default language function', function(){
             //testAuthor();
-            return languageService.getDefaultLanguage({}).then(function(data){
-                //console.log(Object.keys(data)[0]);
-                expect(data).to.be.an('object');
-            });
-        });
-        
+
+            return languageService.saveDefaultLanguage(language)
+                .then(function(){})
+                .catch(function(){});
+        }); 
+
+        it('will get the default language set by saveDefaultLanguage function', function(){
+
+            languageService.getDefaultLanguage({})
+                            .then(function(data){
+                                expect(data).to.have.property('English');
+                            })
+                            .catch(function(error){
+                                //expect(data).to.have.property('English');
+                            });
+        }); 
     });
 
-    describe('getSpecificLanguage()', function(){
+    describe('get specific language', function(){
          
         //it is suggested to clean (either manually or other service methods) the test data inserted to the database
         //if service methods will be used, use before() hook
