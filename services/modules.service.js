@@ -1,4 +1,4 @@
-var config = require('config.json');
+var config = require('../config.json');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, {native_parser: true});
 db.bind('modules');
