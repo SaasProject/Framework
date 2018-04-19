@@ -101,8 +101,20 @@ function deleteFile(req, res){
 */
 function uploadFile(req, res){
     db.bind(req.query.dbName);
-    //console.log(req.query.dbName);
-    //console.log(db.collection(req.query.dbName));
+
+     /*
+        Function name: Split by last dot
+        Author(s): Flamiano, Glenn
+        Date Created: 2018/03/05
+        Date Updated: 2018/03/05
+        Description: Gets file name and extension and returns the file extension by last dot
+        Parameter(s): text
+        Return: text after last dot
+    */
+    function splitByLastDot(text) {
+        var index = text.lastIndexOf('.');
+        return [text.slice(0, index), text.slice(index + 1)]
+    }
 
     /*
     Function name: Upload File Service Multer Storage
@@ -115,7 +127,8 @@ function uploadFile(req, res){
     var storage = multer.diskStorage({
         destination: './'+req.query.pathUsed,
         filename: function(req, file, cb) {
-            return cb(null, req.body.id +'.'+ file.mimetype.toString().slice(6));
+            //console.log(req.body.id +'.'+ splitByLastDot(file.originalname)[1]);
+            return cb(null, req.body.id +'.'+ splitByLastDot(file.originalname)[1]);
         }
     });
 

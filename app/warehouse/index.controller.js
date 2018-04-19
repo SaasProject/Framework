@@ -49,7 +49,7 @@
             };
         });
  
-    function Controller($scope, FlashService, ModulesService, TableService, socket, $rootScope) {
+    function Controller($scope, FlashService, ModulesService, TableService, socket, $rootScope, InputTypeService, InputValidationService) {
         var vm = this;
 		
 		// Scope for data
@@ -250,9 +250,7 @@
             getAssetUpdate();
         });
 
- 
-
-        /*
+/*
             Function name: Show different field types
             Author(s): Flamiano, Glenn
             Date Modified: 01/26/2018
@@ -260,76 +258,8 @@
             Parameter(s): none
             Return: boolean
         */
-        $scope.showTextBox = function(data){
-            if(data == 'text'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showEmail = function(data){
-            if(data == 'email'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showNumber = function(data){
-            if(data == 'number'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showPassword = function(data){
-            if(data == 'password'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showTextArea = function(data){
-            if(data == 'textarea'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showCheckBox = function(data){
-            if(data == 'checkbox'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDropDown = function(data){
-            if(data == 'dropdown'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showRadio = function(data){
-            if(data == 'radio'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDate = function(data){
-            if(data == 'date'){
-                return true;
-            } else {
-                return false;
-            }
+        $scope.showInputType = function(data){
+            return InputTypeService.showInputTypes(data);
         };
 
         /*
@@ -341,160 +271,21 @@
             Return: size
         */
         Array.prototype.remove = function() {
-            var what, a = arguments, L = a.length, ax;
-            while (L && this.length) {
-                what = a[--L];
-                while ((ax = this.indexOf(what)) !== -1) {
-                    this.splice(ax, 1);
-                }
-            }
-            return this;
+            return InputTypeService.arrayRemove();
         };
 
         /*
-            Function name: Format date
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: To format a date and to be inserted
-            Parameter(s): none
-            Return: formatted date
-        */
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-
-        /*
-            Function name: Insert formatted date to $scope.whouse
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
+            Function name: Insert formatted date $scope.whouse
+            Author(s): Omugtong, Jano
+            Date Modified: 2018/04/17
             Description: To format a date and to be inserted to $scope.whouse
-            Parameter(s): none
-            Return: none
+            Parameter(s): fieldName, inputDate
+            Return: update $scope.whouse
         */
-        $scope.pushDateTowhouse = function(fieldName, fieldType, inputDate) {
-            if(!$scope.unEditAble){
-                if(fieldType == 'date'){
-                    $scope.whouse[fieldName] = formatDate(inputDate);
-                }
-            }
+        $scope.pushDateToAllEntry = function(fieldName, inputDate) {
+            $scope.whouse[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
-        /*
-            Function name: Validate email inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: Check all email inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkEmails(){
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            var myRows = document.getElementsByName('email');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                //console.log('aaaaaa', myRows[i].value);
-                if(myRows[i].value != ''){
-                    //console.log(myRows[i].value+' grrrr '+re.test(myRows[i].value.toLowerCase()));
-                    if(!re.test(myRows[i].value.toLowerCase())){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate number inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all number inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkNumbers(){
-            var myRows = document.getElementsByName('number');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(isNaN(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
-
-        /*
-            Function name: Validate password strength
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check password if it contains a lowercase, uppercase, number, and is 8 characters
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswordChars(password){
-            var points = 0;
-            var valid = false;
-
-            // Validate lowercase letters
-            var lowerCaseLetters = /[a-z]/g;
-            if(password.match(lowerCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate capital letters
-            var upperCaseLetters = /[A-Z]/g;
-            if(password.match(upperCaseLetters)) {  
-                points += 1;
-            }
-
-            // Validate numbers
-            var numbers = /[0-9]/g;
-            if(password.match(numbers)) {  
-                points += 1;
-            }
-
-            // Validate length
-            if(password.length >= 8) {
-                points += 1;
-            }
-
-            // if points = 4 return true
-            if(points == 4){
-                valid = true;
-            }
-            
-            return valid;
-        }
-
-        /*
-            Function name: Validate password inputs
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkPasswords(){
-            var myRows = document.getElementsByName('password');
-            var allValid = true;
-            for(var i=0;i<myRows.length;i++){ 
-                if(myRows[i].value != ''){
-                    if(!checkPasswordChars(myRows[i].value)){
-                        allValid = false;
-                    }
-                }
-            } 
-            return allValid;
-        };
 
         /*
             Function name: Get all checkbox elements
@@ -509,12 +300,11 @@
         var selectedLength = 0;
         $scope.declareSelected = function(){
             $scope.showMainFlash = false;
-            //for add/edit checkboxes
-            checkboxFields = document.getElementsByName("checkBoxInput");
-            for(var i=0;i<checkboxFields.length;i++){
-                selected[checkboxFields[i].className] = [];
-                selectedLength++;
-            }
+
+            var select = InputTypeService.declareSelected(selected, checkboxFields, selectedLength);
+            console.log(select);
+            selected = select.selected;
+            selectedLength = select.selectedLength;
         };
 
         /*
@@ -528,35 +318,8 @@
         */
         $scope.putToModel = function(option, fieldName){
             //console.log(option);
-            $scope.whouse[fieldName] = option;
+            $scope.aDevices[fieldName] = option;
         }
-
-        /*
-            Function name: Validate confirm passwords
-            Author(s): Flamiano, Glenn
-                       Reccion, Jeremy
-            Date Modified: 2018/02/01
-            Description: Check all password inputs in add/edit modal
-            Parameter(s): none
-            Return: boolean
-        */
-        function checkConfirmPasswords(){
-            var allValid = true;
-            for(var i in $scope.fields){
-                var currentField = $scope.fields[i];
-                
-                //validation for password
-                if(currentField.type == 'password'){
-                    if($scope.whouse[currentField.name] == ''){
-                        $scope.confirmPassword[currentField.name] = '';
-                    }
-                    if($scope.whouse[currentField.name] != $scope.confirmPassword[currentField.name]){
-                        allValid = false;
-                    }
-                }
-            }
-            return allValid;
-        };
 
         /*
             Function name: isChecked
@@ -566,77 +329,23 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.isChecked = function(field_name, option, type){
-            if(type == 'checkbox'){
-                //console.log(type);
-                if($scope.whouse[field_name] == undefined) $scope.whouse[field_name] = [];
-                var isChecked = ($scope.whouse[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
+        $scope.isChecked = function(field_name, option){
+            return InputTypeService.isChecked(field_name, option, $scope.aDevices);
         };
 
-        /*
-            Function name: isRadioSelected
-            Author(s): Reccion, Jeremy
-            Date Modified: 2018/01/31
-            Description: Check an option of the radio button if checked
-            Parameter(s): field.name, html input type
-            Return: none
-        */
-        $scope.isRadioSelected = function(field_name, option, type){
-            if(type == 'radio'){
-                //console.log(type);
-                if($scope.whouse[field_name] == undefined) $scope.whouse[field_name] = [];
-                var isChecked = ($scope.whouse[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
-        };
 
         /*
             Function name: Insert checkbox checked values to
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/26
-            Description: Check all password inputs in add modal
+            Description: Check all password inputs in add modal     //??? wrong description?
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushTowhouse = function(fieldName, option){
-            //console.log('pushed '+fieldName+' '+option+' '+event);
-            //selected.push(option);
+        $scope.pushToAwhouse = function(fieldName, option){
+            $scope.aDevices[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        }; 
 
-            var checkedOption = document.getElementsByName(option);
-            if(checkedOption[0].checked){
-                selected['checkBoxAdd '+fieldName].push(option);
-            }else{
-                selected['checkBoxAdd '+fieldName].remove(option);
-            }
-
-            //console.log('Selected options', selected);
-            $scope.whouse[fieldName] = selected['checkBoxAdd '+fieldName];
-        };
-
-        /*
-            Function name: Insert checkbox checked values to
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in edit modal
-            Parameter(s): field.name, checkbox element
-            Return: none
-        */
-        $scope.pushEditTowhouse = function(fieldName, option){
-            //console.log('pushed '+fieldName+' '+option);
-            //selected.push(option);
-
-            var checkedOption = document.getElementsByName('edit '+option);
-            if(checkedOption[0].checked){
-                selected['checkBoxAdd '+fieldName].push(option);
-            }else{
-                selected['checkBoxAdd '+fieldName].remove(option);
-            }
-
-            //console.log('Selected options', selected);
-            $scope.whouse[fieldName] = selected['checkBoxAdd '+fieldName];
-        };
 
         // added add function
         $scope.addWH = function(isValid){

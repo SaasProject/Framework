@@ -16,7 +16,7 @@
 			"confirm" : "確認",
 			"confirmPass" : "新しいパスワードが一致しません。もう一度入力してください。",
 			"containPass" : "パスワードには、小文字、大文字、数字、少なくとも8文字",
-			"invalidEmail" : "有効なメールアドレスを入力してください。",
+			"invalidEmail" : "無効なメール",
 			"invalidNo" : "番号は番号フィールドにのみ入力してください。",
 			"hiUser1" : "こんにちは, ",
 			"hiUser2" : "さん!"
@@ -102,7 +102,6 @@
 			},
 			"flashMessages" : {
 				"emailErr" : "メールが存在している",
-				"invalidMail" : "無効なメール",
 				"userAdded" : "ユーザーが追加された",
 				"userUpdated" : "ユーザーが更新された",
 				"confirmMessage" : "ユーザーを削除する？",
