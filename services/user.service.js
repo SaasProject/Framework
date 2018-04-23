@@ -244,7 +244,7 @@ function update(_id, userParam) {
 						if (user && bcrypt.compareSync(userParam.oldPassword, user.hash)){
 							updateUser();
 						}else{
-							deferred.reject(userParam.preferedLanguage.manageAccounts.flashMessages.oldPasswordIsIncorrect);
+							deferred.reject({incorrectPW : true});
 						}
 					}
 					else{

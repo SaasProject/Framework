@@ -602,7 +602,12 @@
 							
                                 })
                                 .catch(function (error) {
-                                    FlashService.Error(error);
+									if(error.incorrectPW) {
+										FlashService.Error($rootScope.selectedLanguage.manageAccounts.flashMessages.oldPasswordIsIncorrect);
+									}
+									else {
+										FlashService.Error(error);
+									}
                                 });
                         
 						}
