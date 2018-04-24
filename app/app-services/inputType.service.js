@@ -12,7 +12,8 @@
         service.arrayRemove = arrayRemove;
         service.formatDate = formatDate;
         service.pushToAllEntry = pushToAllEntry;
-        service.isChecked = isChecked;
+        service.pushEditToAllEntry = pushEditToAllEntry;
+        service.isChoosed = isChoosed;
         service.declareSelected = declareSelected;
  
         return service;
@@ -62,7 +63,6 @@
             Return: formatted date
         */
         function formatDate(date) {
-            console.log(date);
             var d = new Date(date),
                 month = '' + (d.getMonth() + 1),
                 day = '' + d.getDate(),
@@ -71,11 +71,11 @@
             if (month.length < 2) month = '0' + month;
             if (day.length < 2) day = '0' + day;
 
-            console.log([year, month, day].join('-'));
             return [year, month, day].join('-');
         }
 
         function pushToAllEntry(fieldName, option, selected) {
+            console.log(selected);
             var checkedOption = document.getElementsByName(option);
             if(checkedOption[0].checked){
                 selected['checkBoxAdd '+fieldName].push(option);
@@ -86,7 +86,20 @@
             return selected['checkBoxAdd '+fieldName];
         }
 
-        function isChecked(field_name, option, allEntry) {
+        function pushEditToAllEntry(fieldName, option, selected) {
+            console.log(selected);
+            var checkedOption = document.getElementsByName('edit '+option);
+            if(checkedOption[0].checked){
+                selected['checkBoxAdd '+fieldName].push(option);
+            }else{
+                selected['checkBoxAdd '+fieldName].remove(option);
+            }
+
+            //console.log('Selected options', selected);
+            return selected['checkBoxAdd '+fieldName];
+        }
+
+        function isChoosed(field_name, option, allEntry) {
             if(allEntry[field_name] == undefined) allEntry[field_name] = [];
             var isChecked = (allEntry[field_name].indexOf(option) != -1) ? true : false;
             return isChecked;
