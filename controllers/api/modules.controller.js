@@ -47,7 +47,7 @@ function updateModule(req, res){
 }
 
 function deleteModule(req, res){
-    ModulesService.deleteModule(req.params.id, req.params.name).then(function(){
+    ModulesService.deleteModule(req.params.name).then(function(){
         res.status(200).send();
     }).catch(function(err){
         res.status(400).send(err);
@@ -105,22 +105,17 @@ function getModuleByName(req, res){
 }
 
 function addModuleDoc(req, res){
-    ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-        ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-            logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "add module document")
-            .then(function(){
-                res.status(200).send();
-            })
-            .catch(function(){
-                res.status(400).send();
-            });
-        }).catch(function(err){
-            console.log(err);
-            res.status(400).send(err);
+    ModulesService.addModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+        logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "add module document")
+        .then(function(){
+            res.status(200).send();
+        })
+        .catch(function(){
+            res.status(400).send();
         });
     }).catch(function(err){
-        console.log(err);
-        res.status(400).send(err);
+            console.log(err);
+            res.status(400).send(err);
     });
 }
 
@@ -133,17 +128,13 @@ function getAllModuleDocs(req, res){
 }
 
 function updateModuleDoc(req, res){
-    ModulesService.findDuplicateDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-        ModulesService.updateModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
-            logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "update module document")
-            .then(function(){
-                res.status(200).send();
-            })
-            .catch(function(){
-                res.status(400).send();
-            });
-        }).catch(function(err){
-            res.status(400).send(err);
+    ModulesService.updateModuleDoc(req.body.moduleName, req.body.moduleDoc).then(function(){
+        logsService.moduleLogs(req.session.user, req.body.moduleName, req.body.moduleDoc, "update module document")
+        .then(function(){
+            res.status(200).send();
+        })
+        .catch(function(){
+            res.status(400).send();
         });
     }).catch(function(err){
         res.status(400).send(err);

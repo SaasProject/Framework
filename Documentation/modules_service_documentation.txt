@@ -2,7 +2,7 @@ Modules Service Documentation
 
 Author: Jeremy Reccion
 Date Created: April 06, 2018
-Last Updated: April 12, 2018
+Last Updated: April 24, 2018
 
 Description: Provides methods for managing collections and the fields of each collection
 
@@ -95,13 +95,14 @@ Description:
     it does not update the 'fields' property.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if there is another module with the same name, returns an error object with 'exists' set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
-- deleteModule(id, moduleName)
+- deleteModule(moduleName)
 
 Parameters:
-    id - String. The '_id' property of the module
     moduleName - String. The 'name' property of the module
 
 Description:
@@ -109,21 +110,24 @@ Description:
     collection.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if the module does not exists, return an object with 'notFound' property set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - addModuleField(moduleName, fieldObject)
 
 Parameters:
     moduleName - String. the name of the specific module.
-    fieldObject - Object. contains a field's details. Must have 'name' property.
+    fieldObject - Object. contains a field's details. Must have 'name' & 'unique' property.
 
 Description:
-    pushes the object to the specific module's 'fields' property. it also does not check for
-    uniqueness of its name.
+    pushes the object to the specific module's 'fields' property.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if the field exists, return an error object with 'exists' property set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - updateModuleField(moduleName, fieldObject)
@@ -133,11 +137,13 @@ Parameters:
     fieldObject - Object. contains a field's details. Must have 'name' and 'id' property.
 
 Description:
-    updates the specific field from the specific module. it also does not check for
-    uniqueness of its name.
+    updates the specific field from the specific module.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if another field with the same name exists, return an error object with 'exists' property set to true.
+    if the field does not exists, return an error object with 'notFound' prooperty set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - deleteModuleField(moduleName, fieldID)
@@ -150,7 +156,9 @@ Description:
     removes the field from the module's 'fields' property.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if the field does not exists, return an error object with 'notFound' prooperty set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - getModuleByName(moduleName)
@@ -162,7 +170,9 @@ Description:
     gets the specific module document from the 'modules' collection.
 
 Returns:
-    if successful, returns the module object. otherwise, it returns the error object (from MongoDB).
+    if successful, returns the module object.
+    if it does not exists, returns an error object with 'notFound' property set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - addModuleDoc(moduleName, newDoc)
@@ -175,10 +185,12 @@ Parameters:
 Description:
     inserts the object to the specific collection. it does not check the correspondence between
     its keys/properties with the field names of the specific module. it also does not check for
-    uniqueness nor null values.
+    null values.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing.
+    if the unique values already exists, return an error object with 'exists' property set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - getAllModuleDocs(moduleName)
@@ -202,10 +214,16 @@ Parameters:
     from the specific module. must have '_id' property.
 
 Description:
-    updates the specific document from the specific collection.
+    updates the object to the specific collection. it does not check the correspondence between
+    its keys/properties with the field names of the specific module. it also does not check for
+    null values.
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing.
+    if the unique values already exists, return an error object with 'exists' property set to true.
+    if the document does not exists in the module, return an error object with 'notFound' property
+    set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - deleteModuleDoc(moduleName, id)
@@ -218,7 +236,10 @@ Description:
     deletes the specific document from the specific collection
 
 Returns:
-    if successful, returns nothing. otherwise, it returns the error object (from MongoDB).
+    if successful, returns nothing. 
+    if the document does not exists in the module, return an error object with 'notFound' property
+    set to true.
+    otherwise, it returns the error object (from MongoDB).
 
 --------------------------------------------------------------------------------------------------
 - findDuplicateDoc(moduleName, moduleDoc)

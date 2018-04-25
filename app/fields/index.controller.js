@@ -120,6 +120,8 @@
                         moduleName: $scope.module.name,
                         field: $scope.newField
                     }
+
+                    console.log($scope.newField);
     
                     if($scope.newField.id == undefined){
                         ModulesService.addModuleField(forSave).then(function(){
