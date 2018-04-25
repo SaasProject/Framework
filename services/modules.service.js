@@ -470,8 +470,11 @@ function updateModuleDoc(moduleName, updateDoc){
 
     service.findDuplicateDoc(moduleName, updateDoc).then(function(){
         db.bind(moduleName);
-        //create another object and copy. then delete the '_id' property of the new copy
-        db[moduleName].update({_id: mongo.helper.toObjectID(updateDoc._id)}, {$set: updateDoc}, function(err, writeResult){
+        
+        //convert '_id' to ObjectID
+        updateDoc._id = new ObjectID(updateDoc._id);
+        
+        db[moduleName].update({_id: updateDoc._id}, {$set: updateDoc}, function(err, writeResult){
             if(err){
                 deferred.reject(err);
             }
