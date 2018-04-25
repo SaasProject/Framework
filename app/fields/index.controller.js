@@ -89,6 +89,25 @@
             }
         }
 
+        /*
+            Function name: remove array duplicates
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/04/25
+            Update Date: 2018/04/25
+            Description: To remove duplicate values within an array
+            Parameter(s): target Array
+            Return: none
+        */
+        function removeArrayDuplicates(targetArray){
+            let distictArray = [];
+            for(let i = 0;i < targetArray.length; i++){
+                if(distictArray.indexOf(targetArray[i]) == -1){
+                    distictArray.push(targetArray[i]);
+                }
+            }
+            return distictArray;
+        }
+
         $scope.saveField = function(){
 
             //change this check
@@ -114,6 +133,7 @@
                     
                     if($scope.hasOptions() && $scope.fieldOptions != ''){
                         $scope.newField.options = $scope.fieldOptions.split(',');
+                        $scope.newField.options = removeArrayDuplicates($scope.newField.options);
                     }
 
                     var forSave = {
