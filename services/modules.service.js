@@ -11,6 +11,7 @@ var service = {};
 
 service.addModule = addModule;
 service.getAllModules = getAllModules;
+service.getModuleByName = getModuleByName;
 service.updateModule = updateModule;
 service.deleteModule = deleteModule;
 
@@ -18,7 +19,6 @@ service.addModuleField = addModuleField;
 service.updateModuleField = updateModuleField;
 service.deleteModuleField = deleteModuleField;
 
-service.getModuleByName = getModuleByName;
 service.addModuleDoc = addModuleDoc;
 service.getAllModuleDocs = getAllModuleDocs;
 service.updateModuleDoc = updateModuleDoc;
@@ -31,6 +31,7 @@ service.updateFieldArray = updateFieldArray;
 */
 var dbError = {dbError: true};
 var exists =  {exists: true};
+var notFound = {notFound: true};
 
 /*
     Function name: add module
@@ -130,16 +131,24 @@ function updateModule(updateModule){
     //fields array should not be editable when using this function. therefore, delete it from input
     delete updateModule.fields;
 
-    //check if the name of the selected module has not changed
-    db.modules.findOne({_id: mongo.helper.toObjectID(updateModule._id)}, function(err, aModule){
+    db.modules.find({$or: [
+        {_id: mongo.helper.toObjectID(updateModule._id)},
+        {name: updateModule.name}
+    ]}).toArray(function(err, modules){
         if(err){
             deferred.reject(err);
         }
-        else if(aModule){
-            //if names are different, renaming the collection must be executed, then proceed to update
-            if(aModule.name != updateModule.name){
-                db.bind(aModule.name);
-                db[aModule.name].rename(updateModule.name, function(err){
+        else if(modules.length == 0){
+            deferred.reject(notFound);
+        }
+        //vali inputs, no other document have the same name
+        else if(modules.length == 1){
+            var oldModule = modules[0];
+            
+            //rename if old & new names are different
+            if(oldModule.name != updateModule.name){
+                db.bind(oldModule.name);
+                db[oldModule.name].rename(updateModule.name, function(err){
                     if(err){
                         deferred.reject(err);
                     }
@@ -148,11 +157,16 @@ function updateModule(updateModule){
                     }
                 });
             }
+            //go straight to update
+            else{
+                update();
+            }
         }
+        //another module document with the same name exists
         else{
-            update();
+            deferred.reject(exists);
         }
-    });
+    });       
 
     //updates the document in the 'modules' collection
     function update(){
@@ -178,28 +192,43 @@ function updateModule(updateModule){
 /*
     Function name: delete module
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/03
+    Date Modified: 2018/04/23
     Description: drops the specific collection then remove its document from the 'modules' collection
     Parameter(s):
-        *id: string type
         *moduleName: string type
     Return: Promise
 */
-function deleteModule(id, moduleName){
+function deleteModule(moduleName){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
     //drop the collection
     db.bind(moduleName);
-    db[moduleName].drop();
-
-    //remove document from 'modules' collection
-    db.modules.remove({_id: mongo.helper.toObjectID(id)}, function(err){
+    db[moduleName].drop(function(err){
         if(err){
-            deferred.reject(err);
+            if(err.codeName == 'NamespaceNotFound'){
+                deferred.reject(notFound);
+            }
+            else{
+                deferred.reject(err);
+            }
         }
         else{
-            deferred.resolve();
+            //remove document from 'modules' collection
+            db.modules.remove({name: moduleName}, function(err, writeResult){
+                if(err){
+                    deferred.reject(err);
+                }
+                else{
+                    //n is used to know if the document was removed
+                    if(writeResult.result.n == 0){
+                        deferred.reject(notFound);
+                    }
+                    else{
+                        deferred.resolve();
+                    }
+                }
+            });
         }
     });
 
@@ -209,7 +238,7 @@ function deleteModule(id, moduleName){
 /*
     Function name: add module field
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/12
+    Date Modified: 2018/04/20
     Description: insert a new field object to the specific module's fields array
     Parameter(s):
         *moduleName: required. string type
@@ -225,12 +254,22 @@ function addModuleField(moduleName, fieldObject){
     //create a new objectID to used as query for updates and delete
     fieldObject.id = new ObjectID();
 
-    db.modules.update({name: moduleName}, {$push: {fields: fieldObject}}, function(err){
+    //the query searches for the module name that do not have the inputted field name
+    //this is to avoid pushing same field names on the 'fields' array of the specified module
+    //writeResult will determine if the update was successful or not (i.e. writeResult.result.nModified)
+    db.modules.update({name: moduleName, fields: {$not: {$elemMatch: {name: fieldObject.name}}}}, {$push: {fields: fieldObject}}, function(err, writeResult){
         if(err){
             deferred.reject(err);
         }
         else{
-            deferred.resolve();
+            //console.log(writeResult.result);
+            //check the status of the update, if it failed, it means that there is an existing field name
+            if(writeResult.result.nModified == 0){
+                deferred.reject(exists);
+            }
+            else{
+                deferred.resolve();
+            }
         }
     });
 
@@ -240,7 +279,7 @@ function addModuleField(moduleName, fieldObject){
 /*
     Function name: update module field
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/05
+    Date Modified: 2018/04/24
     Description:  update a field object from the specific module's fields array
     Parameter(s):
         *moduleName: required. string type
@@ -251,15 +290,45 @@ function updateModuleField(moduleName, fieldObject){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
-    fieldObject.id = new ObjectID(fieldObject.id);
-    
-    db.modules.update({name: moduleName, fields: {$elemMatch: {id: fieldObject.id}}}, {$set: {'fields.$': fieldObject}}, function(err){
-        if(err){
-            deferred.reject(err);
+    console.log(fieldObject);
+
+    service.getModuleByName(moduleName).then(function(aModule){        
+        //use array.filter() to get the duplicate fields
+        var duplicateFields = aModule.fields.filter(function(field){
+            //lesson learned: use toString() in id
+            return field.id.toString() == fieldObject.id.toString() || field.name == fieldObject.name;
+        });
+        
+        if(duplicateFields.length == 0){
+            deferred.reject(notFound);
+        }
+        //valid inputs
+        else if(duplicateFields.length == 1){
+            //this is to ensure that the field is inside the specific module (in case of improper input parameters)
+
+            fieldObject.id = new ObjectID(fieldObject.id);
+
+            if(duplicateFields[0].id.toString() == fieldObject.id.toString()){
+                db.modules.update({name: moduleName, fields: {$elemMatch: {id: fieldObject.id}}}, {$set: {'fields.$': fieldObject}}, function(err, writeResult){
+                    if(err){
+                        deferred.reject(err);
+                    }
+                    else{
+                        console.log(writeResult.result);
+                        deferred.resolve();
+                    }
+                });
+            }
+            //the only element has the same name but is different id, therefore, not inside the module document
+            else{
+                deferred.reject(notFound);
+            }
         }
         else{
-            deferred.resolve();
+            deferred.reject(exists);
         }
+    }).catch(function(err){
+        deferred.reject(err);
     });
 
     return deferred.promise;
@@ -268,7 +337,7 @@ function updateModuleField(moduleName, fieldObject){
 /*
     Function name: delete module field
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/05
+    Date Modified: 2018/04/24
     Description:  delete a field object from the specific module's fields array
     Parameter(s):
         *moduleName: required. string type
@@ -279,12 +348,17 @@ function deleteModuleField(moduleName, fieldID){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
     
-    db.modules.update({name: moduleName}, {$pull: {fields: {id: mongo.helper.toObjectID(fieldID)}}}, function(err){
+    db.modules.update({name: moduleName}, {$pull: {fields: {id: mongo.helper.toObjectID(fieldID)}}}, function(err, writeResult){
         if(err){
             deferred.reject(err);
         }
         else{
-            deferred.resolve();
+            if(writeResult.result.nModified == 0){
+                deferred.reject(notFound);
+            }
+            else{
+                deferred.resolve();
+            }
         }
     });
 
@@ -294,7 +368,7 @@ function deleteModuleField(moduleName, fieldID){
 /*
     Function name: get a specific module
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/03
+    Date Modified: 2018/04/20
     Description: retrieves a specific module by its name
     Parameter(s):
         *moduleName: string type
@@ -308,8 +382,11 @@ function getModuleByName(moduleName){
         if(err){
             deferred.reject(err);
         }
-        else{
+        else if(aModule){
             deferred.resolve(aModule);
+        }
+        else{
+            deferred.reject(notFound);
         }
     });
 
@@ -319,7 +396,7 @@ function getModuleByName(moduleName){
 /*
     Function name: add document
     Author: Reccion, Jeremy
-    Date Modified: 2018/04/04
+    Date Modified: 2018/04/24
     Description: add a document in a specific collection
     Parameter(s):
         *moduleName: string type
@@ -330,15 +407,19 @@ function addModuleDoc(moduleName, newDoc){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
-    db.bind(moduleName);
+    service.findDuplicateDoc(moduleName, newDoc).then(function(){
+        db.bind(moduleName);
 
-    db[moduleName].insert(newDoc, function(err){
-        if(err){
-            deferred.reject(err);
-        }
-        else{
-            deferred.resolve();
-        }
+        db[moduleName].insert(newDoc, function(err){
+            if(err){
+                deferred.reject(err);
+            }
+            else{
+                deferred.resolve();
+            }
+        });
+    }).catch(function(err){
+        deferred.reject(err);
     });
 
     return deferred.promise;
@@ -387,20 +468,24 @@ function updateModuleDoc(moduleName, updateDoc){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
 
-    db.bind(moduleName);
-
-    //create another object and copy. then delete the '_id' property of the new copy
-    var forUpdate = {};
-    Object.assign(forUpdate, updateDoc);
-    delete forUpdate._id;
-
-    db[moduleName].update({_id: mongo.helper.toObjectID(updateDoc._id)}, {$set: forUpdate}, function(err){
-        if(err){
-            deferred.reject(err);
-        }
-        else{
-            deferred.resolve();
-        }
+    service.findDuplicateDoc(moduleName, updateDoc).then(function(){
+        db.bind(moduleName);
+        //create another object and copy. then delete the '_id' property of the new copy
+        db[moduleName].update({_id: mongo.helper.toObjectID(updateDoc._id)}, {$set: updateDoc}, function(err, writeResult){
+            if(err){
+                deferred.reject(err);
+            }
+            else{
+                if(writeResult.result.nModified == 0){
+                    deferred.reject(notFound);
+                }
+                else{
+                    deferred.resolve();
+                }
+            }
+        });
+    }).catch(function(err){
+        deferred.reject(err);
     });
 
     return deferred.promise;
@@ -422,12 +507,18 @@ function deleteModuleDoc(moduleName, id){
 
     db.bind(moduleName);
 
-    db[moduleName].remove({_id: mongo.helper.toObjectID(id)}, function(err){
+    db[moduleName].remove({_id: mongo.helper.toObjectID(id)}, function(err, writeResult){
         if(err){
             deferred.reject(err);
         }
         else{
-            deferred.resolve();
+            //n is used to know if the document was removed
+            if(writeResult.result.n == 0){
+                deferred.reject(notFound);
+            }
+            else{
+                deferred.resolve();
+            }
         }
     });
 
@@ -452,7 +543,7 @@ function findDuplicateDoc(moduleName, moduleDoc){
     //get the fields of the specific module
     service.getModuleByName(moduleName).then(function(aModule){
         //initialize array & object for querying
-        var uniqueFields = [];
+        var uniqueValues = [];
         var tempObj;
 
         //push the value of the document when a field is unique
@@ -460,24 +551,26 @@ function findDuplicateDoc(moduleName, moduleDoc){
             if(field.unique){
                 tempObj = {};
                 tempObj[field.name] = moduleDoc[field.name];
-                uniqueFields.push(tempObj);
+                uniqueValues.push(tempObj);
             }
         });
 
-        if(uniqueFields.length == 0){
+        if(uniqueValues.length == 0){
             deferred.resolve();
         }
         else{
+            db.bind(moduleName);
+
             //use $or for checking each field for uniqueness, not their combination
-            db[moduleName].findOne({$or: uniqueFields}, function(err, duplicateDoc){
+            db[moduleName].findOne({$or: uniqueValues}, function(err, duplicateDoc){
                 if(err){
                     deferred.reject(err);
                 }
-                    //a duplicate exists, but needs further checking
-                    else if(duplicateDoc){
-                        //updating a module document
-                        if(moduleDoc._id){
-                            //different module documents with similar unique values
+                //a duplicate exists, but needs further checking
+                else if(duplicateDoc){
+                    //updating a module document
+                    if(moduleDoc._id){
+                        //different module documents with similar unique values
                         if(moduleDoc._id != duplicateDoc._id){
                             deferred.reject(exists);
                         }
@@ -491,14 +584,12 @@ function findDuplicateDoc(moduleName, moduleDoc){
                         deferred.reject(exists);
                     }
                 }
-                //does not exist
+                //does not exist - similar to notFound. but it is not rejected based on design
                 else{
                     deferred.resolve();
                 }
             });
         }
-
-        
     }).catch(function(err){
         deferred.reject(err);
     });
@@ -519,6 +610,12 @@ function findDuplicateDoc(moduleName, moduleDoc){
 function updateFieldArray(moduleName, fieldArray){
     var deferred = Q.defer();
     moduleName = moduleName.toLowerCase();
+
+    //need to convert each 'id' property to an ObjectID
+    for(var i = 0; i < fieldArray.length; i++){
+        fieldArray[i].id = new ObjectID(fieldArray[i].id);
+    }
+    
 
     db.modules.update({name: moduleName}, {$set: {fields: fieldArray}}, function(err){
         if(err){
