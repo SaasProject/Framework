@@ -250,18 +250,6 @@
             getAssetUpdate();
         });
 
-/*
-            Function name: Show different field types
-            Author(s): Flamiano, Glenn
-            Date Modified: 01/26/2018
-            Description: To hide/show different input types
-            Parameter(s): none
-            Return: boolean
-        */
-        $scope.showInputType = function(data){
-            return InputTypeService.showInputTypes(data);
-        };
-
         /*
             Function name: Array remove element function
             Author(s): Flamiano, Glenn
@@ -282,7 +270,7 @@
             Parameter(s): fieldName, inputDate
             Return: update $scope.whouse
         */
-        $scope.pushDateToAllEntry = function(fieldName, inputDate) {
+        $scope.pushDateToAEntry = function(fieldName, inputDate) {
             $scope.whouse[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
@@ -302,7 +290,6 @@
             $scope.showMainFlash = false;
 
             var select = InputTypeService.declareSelected(selected, checkboxFields, selectedLength);
-            console.log(select);
             selected = select.selected;
             selectedLength = select.selectedLength;
         };
@@ -318,19 +305,19 @@
         */
         $scope.putToModel = function(option, fieldName){
             //console.log(option);
-            $scope.aDevices[fieldName] = option;
+            $scope.whouse[fieldName] = option;
         }
 
         /*
-            Function name: isChecked
+            Function name: isChoosed
             Author(s): Reccion, Jeremy
             Date Modified: 2018/01/31
             Description: Check an option of the checkbox if checked
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.isChecked = function(field_name, option){
-            return InputTypeService.isChecked(field_name, option, $scope.aDevices);
+        $scope.isChoosed = function(field_name, option){
+            return InputTypeService.isChoosed(field_name, option, $scope.whouse);
         };
 
 
@@ -342,8 +329,11 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushToAwhouse = function(fieldName, option){
-            $scope.aDevices[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        $scope.pushToAEntry = function(fieldName, option){
+            $scope.whouse[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        }; 
+        $scope.pushEditToAEntry = function(fieldName, option){
+            $scope.whouse[fieldName] = InputTypeService.pushEditToAllEntry(fieldName, option, selected);
         }; 
 
 
@@ -419,6 +409,9 @@
                 //when editing, non existing property may be undefined or ''
                 if(value.type == 'dropdown' && value.required && ($scope.whouse[value.name] == undefined || $scope.whouse[value.name] == '')){                    
                         $scope.whouse[value.name] = value.options[0];
+                }
+                if (value.type == 'date'){
+                    $scope.whouse[value.name] = new Date($scope.whouse[value.name]);
                 }
             });
         };

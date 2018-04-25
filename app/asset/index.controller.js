@@ -29,7 +29,7 @@
             };
         });
  
-    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableService, InputValidationService, $stateParams, $rootScope) {
+    function Controller($window, FlashService, $scope, $interval, $filter, socket, ModulesService, TableService, InputValidationService, $stateParams, $rootScope, InputTypeService) {
  
         /* Initialization of scope variables */
 		
@@ -334,86 +334,6 @@
         getAllWH();
 
         /*
-            Function name: Show different field types
-            Author(s): Flamiano, Glenn
-            Date Modified: 01/26/2018
-            Description: To hide/show different input types
-            Parameter(s): none
-            Return: boolean
-        */
-        $scope.showTextBox = function(data){
-            if(data == 'text'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showEmail = function(data){
-            if(data == 'email'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showNumber = function(data){
-            if(data == 'number'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showPassword = function(data){
-            if(data == 'password'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showTextArea = function(data){
-            if(data == 'textarea'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showCheckBox = function(data){
-            if(data == 'checkbox'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDropDown = function(data){
-            if(data == 'dropdown'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showRadio = function(data){
-            if(data == 'radio'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        $scope.showDate = function(data){
-            if(data == 'date'){
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        /*
             Function name: Array remove element function
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/24
@@ -422,35 +342,9 @@
             Return: size
         */
         Array.prototype.remove = function() {
-            var what, a = arguments, L = a.length, ax;
-            while (L && this.length) {
-                what = a[--L];
-                while ((ax = this.indexOf(what)) !== -1) {
-                    this.splice(ax, 1);
-                }
-            }
-            return this;
+            return InputTypeService.arrayRemove();
         };
 
-        /*
-            Function name: Format date
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/25
-            Description: To iformat a date and to be inserted to Asset scope
-            Parameter(s): none
-            Return: formatted date
-        */
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
 
         /*
             Function name: Insert formatted date to Selected scope
@@ -461,7 +355,7 @@
             Return: none
         */
         $scope.pushDateToAAssets = function(fieldName, inputDate) {
-            $scope.newAsset[fieldName] = formatDate(inputDate);
+            $scope.newAsset[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
         /*
@@ -478,11 +372,9 @@
         $scope.declareSelected = function(){
             $scope.showMainFlash = false;
             //for add/edit checkboxes
-            checkboxFields = document.getElementsByName("checkBoxInput");
-            for(var i=0;i<checkboxFields.length;i++){
-                selected[checkboxFields[i].className] = [];
-                selectedLength++;
-            }
+            var select = InputTypeService.declareSelected(selected, checkboxFields, selectedLength);
+            selected = select.selected;
+            selectedLength = select.selectedLength;
         };
 
         /*
@@ -509,30 +401,8 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.isChecked = function(field_name, option, type){
-            if(type == 'checkbox'){
-                //console.log(type);
-                if($scope.newAsset[field_name] == undefined) $scope.newAsset[field_name] = [];
-                var isChecked = ($scope.newAsset[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
-        };
-
-        /*
-            Function name: isRadioSelected
-            Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/31
-            Description: Check an option of the radio button if checked
-            Parameter(s): field.name, html input type
-            Return: none
-        */
-        $scope.isRadioSelected = function(field_name, option, type){
-            if(type == 'radio'){
-                //console.log(type);
-                if($scope.newAsset[field_name] == undefined) $scope.newAsset[field_name] = [];
-                var isChecked = ($scope.newAsset[field_name].indexOf(option) != -1) ? true : false;
-                return isChecked;
-            }
+        $scope.isChoosed = function(field_name, option){
+            return InputTypeService.isChoosed(field_name, option, $scope.newAsset);
         };
 
         /*
@@ -543,32 +413,9 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushToAAssets = function(fieldName, option){
-            var checkedOption = document.getElementsByName(option);
-            if(checkedOption[0].checked){
-                selected['checkBoxAdd '+fieldName].push(option);
-            }else{
-                selected['checkBoxAdd '+fieldName].remove(option);
-            }
-
-            $scope.newAsset[fieldName] = selected['checkBoxAdd '+fieldName];
+        $scope.pushToAEntry = function(fieldName, option){
+            $scope.newAsset[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
         };
-
-        /*$scope.pushEditToAAssets = function(fieldName, option){
-            //console.log('pushed '+fieldName+' '+option);
-            //selected.push(option);
-
-            var checkedOption = document.getElementById('edit '+option);
-            //console.log(option+' field is '+checkedOption.checked);
-            if(checkedOption.checked){
-                selected.push(option);
-            }else{
-                selected.remove(option);
-            }
-
-            //console.log('Selected options', selected);
-            $scope.newAsset[fieldName] = selected;
-        };*/
 
         /*
             Function name: Asset - add

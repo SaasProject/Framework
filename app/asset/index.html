@@ -25,47 +25,43 @@
 					<div ng-repeat = "field in fields">
                         <label for = "{{field.name}}"> {{field.name}} </label>
                         <span style = "color:red" ng-if="field.required">*</span>
-						<!--<input type = "{{field.type}}" id = "{{field.name}}" ng-model = "newAsset[field.name]" class = "form-control" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" required="{{field.required}}"><br>-->
-                        <!--<div ng-show="showCheckBox(field.type) && type != 'add'" ng-repeat="options in newAsset[field.name] track by $index" style="float:left">
-                            {{options}}.&nbsp;
-                        </div><br ng-show="showCheckBox(field.type) && !readOnly"><br ng-show="showCheckBox(field.type) && readOnly">-->
-                        <!--<p ng-show="showRadio(field.type) && type != 'add' && readOnly" ng-model="newAsset[field.name]">{{newAsset[field.name]}}</p>-->
-                        <p ng-show="showDate(field.type) && type != 'add' && readOnly" ng-model="newAsset[field.name]">{{newAsset[field.name]}}</p>
+                        <p ng-show="field.type=='date' && type != 'add' && readOnly" ng-model="newAsset[field.name]">{{newAsset[field.name]}}</p>
+                        <p ng-show="field.type=='date' && type != 'add' && readOnly && (newAsset[field.name]=='' || newAsset[field.name]==null)" ng-model="newAsset[field.name]">--/--/----</p>
 
                         <!--show textbox-->
-                        <input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
+                        <input data="{{field.type}}" type="text" ng-show="field.type=='text'" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
 
                         <!-- show email -->
-                        <input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
+                        <input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="field.type=='email'" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
 
                         <!-- show number -->
-                        <input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
+                        <input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="field.type=='number'" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
 
                         <!-- show password -->
-                        <input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
+                        <input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="field.type=='password'" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required>
 
                         <!-- show confirm password -->
-                        <label ng-show="showPassword(field.type)" for=field.name>Confirm {{field.name}}: </label>
-                        <input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control" ng-readonly="type != 'add' && (readOnly || field.name == 'asset_tag')">
+                        <label ng-show="field.type=='password'" for=field.name>Confirm {{field.name}}: </label>
+                        <input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="field.type=='password'" ng-model="confirmPassword[field.name]" class="form-control" ng-readonly="type != 'add' && (readOnly || field.name == 'asset_tag')">
 
                         <!-- show text area -->
-                        <textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+                        <textarea data="{{field.type}}" ng-show="field.type=='textarea'" ng-model="newAsset[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'asset_tag')" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
 
                         <!-- show checkbox -->
-                        <div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type) && !(type != 'add' && (field.name == 'asset_tag'))">
-                            <input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" ng-checked="isChecked(field.name, option, field.type)" data="{{option}}" ng-disabled="readOnly && type!='add'" ng-click="pushToAAssets(field.name, option)">{{option}}<br>
+                        <div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='checkbox' && !(type != 'add' && (field.name == 'asset_tag'))">
+                            <input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" ng-checked="isChoosed(field.name, option)" data="{{option}}" ng-disabled="readOnly && type!='add'" ng-click="pushToAEntry(field.name, option)">{{option}}<br>
                         </div>
 
                         <!-- show radio -->
-                        <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type) && !(type != 'add' && (field.name == 'asset_tag'))">
-                            <input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="readOnly && type!='add'" ng-hide = "" value="{{option}}" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
+                        <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio' && !(type != 'add' && (field.name == 'asset_tag'))">
+                            <input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="readOnly && type!='add'" ng-hide = "" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
                         </div>
 
                         <!-- show date -->
-                        <input data="{{field.type}}" type="date" ng-show="(showDate(field.type) && type == 'add') || (type != 'add' && readOnly == false && showDate(field.type))" ng-model="tempDate" ng-change="pushDateToAAssets(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
+                        <input data="{{field.type}}" type="{{field.type}}" ng-show="(field.type=='date' && type == 'add') || (type != 'add' && readOnly == false && field.type=='date')" ng-model="tempDate" ng-change="pushDateToAAssets(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
 
                         <!-- show dropdown -->
-                        <select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-disabled = "type != 'add' && (readOnly || field.name == 'asset_tag')" ng-model="newAsset[field.name]" ng-required="field.required">
+                        <select class="form-control" data="{{field.type}}" ng-show="field.type=='dropdown'" ng-disabled = "type != 'add' && (readOnly || field.name == 'asset_tag')" ng-model="newAsset[field.name]" ng-required="field.required">
                             <option value="" ng-if="!field.required"></option>
                             <!-- <option value="" ng-if="field.required" selected hidden></option> -->
                             <option ng-repeat="option in field.options" ng-if="field.name != 'location'">{{option}}</option>

@@ -201,18 +201,6 @@
         getAllFields();
 
         /*
-            Function name: Show different field types
-            Author(s): Flamiano, Glenn
-            Date Modified: 01/26/2018
-            Description: To hide/show different input types
-            Parameter(s): none
-            Return: boolean
-        */
-        $scope.showInputType = function(data){
-            return InputTypeService.showInputTypes(data);
-        };
-
-        /*
             Function name: Array remove element function
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/24
@@ -225,15 +213,15 @@
         };
 
         /*
-            Function name: Insert formatted date to $scope.aDevices
+            Function name: Insert formatted date to $scope.newUser
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/25
-            Description: To iformat a date and to be inserted to $scope.aDevices
+            Description: To iformat a date and to be inserted to $scope.newUser
             Parameter(s): none
             Return: none
         */
         $scope.pushDateToAllEntry = function(fieldName, inputDate) {
-            $scope.aDevices[fieldName] = InputTypeService.formatDate(inputDate);
+            $scope.newUser[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
 
@@ -267,19 +255,19 @@
             Return: none
         */
         $scope.putToModel = function(option, fieldName){
-            $scope.aDevices[fieldName] = option;
+            $scope.newUser[fieldName] = option;
         }
 
         /*
-            Function name: isChecked
+            Function name: isChoosed
             Author(s): Reccion, Jeremy
             Date Modified: 2018/01/31
             Description: Check an option of the checkbox if checked
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.isChecked = function(field_name, option){
-            return InputTypeService.isChecked(field_name, option, $scope.aDevices);
+        $scope.isChoosed = function(field_name, option){
+            return InputTypeService.isChoosed(field_name, option, $scope.newUser);
         };
 
 
@@ -291,8 +279,8 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushToANewUser = function(fieldName, option){
-            $scope.aDevices[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        $scope.pushToAEntry = function(fieldName, option){
+            $scope.newUser[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
         };
 
         

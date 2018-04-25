@@ -202,19 +202,6 @@
         }
         getAllWH();
 
-
-        /*
-            Function name: Show different field types
-            Author(s): Flamiano, Glenn
-            Date Modified: 01/26/2018
-            Description: To hide/show different input types
-            Parameter(s): none
-            Return: boolean
-        */
-        $scope.showInputType = function(data){
-            return InputTypeService.showInputTypes(data);
-        };
-
         /*
             Function name: Array remove element function
             Author(s): Flamiano, Glenn
@@ -235,7 +222,7 @@
             Parameter(s): none
             Return: none
         */
-        $scope.pushDateToAllEntry = function(fieldName, inputDate) {
+        $scope.pushDateToAEntry = function(fieldName, inputDate) {
             $scope.aDevices[fieldName] = InputTypeService.formatDate(inputDate);
         };
 
@@ -255,7 +242,6 @@
             $scope.showMainFlash = false;
 
             var select = InputTypeService.declareSelected(selected, checkboxFields, selectedLength);
-            console.log(select);
             selected = select.selected;
             selectedLength = select.selectedLength;
         };
@@ -281,8 +267,8 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.isChecked = function(field_name, option){
-            return InputTypeService.isChecked(field_name, option, $scope.aDevices);
+        $scope.isChoosed = function(field_name, option){
+            return InputTypeService.isChoosed(field_name, option, $scope.aDevices);
         };
 
 
@@ -294,8 +280,11 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushToADevices = function(fieldName, option){
+        $scope.pushToAEntry = function(fieldName, option){
             $scope.aDevices[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
+        };
+        $scope.pushEditToAEntry = function(fieldName, option){
+            $scope.aDevices[fieldName] = InputTypeService.pushEditToAllEntry(fieldName, option, selected);
         };
 
 
