@@ -1,4 +1,4 @@
-var config = require('config.json');
+var config = require('../config.json');
 var _ = require('lodash');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
@@ -6,7 +6,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 var fs=require('fs');
-var emailService = require('services/logs.service');
+var emailService = require('../services/logs.service');
 db.bind('logs');
 
 
@@ -16,7 +16,7 @@ var service = {};
 
 var displayDate;
 var start = new Date();
- var year = start.getFullYear();
+var year = start.getFullYear();
 var month = ''+(start.getMonth()+1);
 var date = ''+start.getDate();
 var hour = ''+start.getHours();
