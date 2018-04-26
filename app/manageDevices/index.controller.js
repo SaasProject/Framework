@@ -307,7 +307,6 @@
                     $scope.aDevices.msg2 = $rootScope.selectedLanguage.devices.labels.flash_taken_2;
                     ModulesService.addModuleDoc({moduleName: 'rfid_scanners', moduleDoc: $scope.aDevices})
                     .then(function () {
-                        initController();
                         $('#myModal').modal('hide');
                         FlashService.Success($rootScope.selectedLanguage.devices.labels.flash_add);
                         socket.emit('deviceChange');

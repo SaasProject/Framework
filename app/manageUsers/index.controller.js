@@ -357,7 +357,7 @@
 						.then(function () {
 							$('#myModal').modal('hide');
 							FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userAdded);
-							initController();
+							socket.emit('userChange');
 							resetModalFlash();
                         resetNewUser();
 					}).catch(function (error) {
@@ -459,6 +459,7 @@
                             initController();
                             $('#editModal').modal('hide');
                             FlashService.Success($rootScope.selectedLanguage.manageAccounts.flashMessages.userUpdated);
+                            socket.emit('userChange');
                         }).catch(function (error) {
                             FlashService.Error(error);
                         }); 

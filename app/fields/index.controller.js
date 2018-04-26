@@ -5,7 +5,7 @@
         .module('app')
         .controller('Fields.IndexController', Controller)
  
-    function Controller($scope, ModulesService, FlashService, $rootScope){
+    function Controller($scope, ModulesService, FlashService, $rootScope, socket){
         //$scope.newModule = {};
         $scope.module = {
             name: 'assets',
@@ -46,6 +46,11 @@
         }
 
         $scope.getModuleByName();
+
+        // get realtime changes
+        socket.on('fieldsChange', function(){
+            $scope.getModuleByName();
+        });
 
         /* ModulesService.getAllModules().then(function(modules){
             $scope.modules = modules;
@@ -147,7 +152,7 @@
                         ModulesService.addModuleField(forSave).then(function(){
                             //alert('field added');
                             FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.added);
-                            $scope.getModuleByName();
+                            socket.emit('fieldsChange');
                             $scope.newField = {
                                 name: '',
                                 required: false,
@@ -164,7 +169,7 @@
                         ModulesService.updateModuleField(forSave).then(function(){
                             //alert('field updated');
                             FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.updated);
-                            $scope.getModuleByName();
+                            socket.emit('fieldsChange');
                             $scope.newField = {
                                 name: '',
                                 required: false,
@@ -191,7 +196,7 @@
             ModulesService.deleteModuleField($scope.module.name, fieldObject.id).then(function(){
                 //alert('field deleted');
                 FlashService.Success($rootScope.selectedLanguage.fields.flashMessages.deleted);
-                $scope.getModuleByName();
+                socket.emit('fieldsChange');
             }).catch(function(err){
                 //alert('cannot delete field');
                 FlashService.Error($rootScope.selectedLanguage.fields.flashMessages.notDeleted);
