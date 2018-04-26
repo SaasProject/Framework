@@ -91,6 +91,9 @@ router.post('/', function (req, res) {
                             `;
 
                             var mailInfos = {};
+                            mailInfos.user = config.user;
+                            mailInfos.pass = config.pass;
+                            mailInfos.from = config.from;
                             mailInfos.to = req.body.email;
                             mailInfos.subject = "Recover Account";
                             mailInfos.text = "Your Password Request Recovery";

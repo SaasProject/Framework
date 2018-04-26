@@ -1,5 +1,6 @@
 var Q = require('q');
 var nodemailer = require('nodemailer');
+var config = require('../config.json');
 
 var service = {};
 
@@ -7,7 +8,7 @@ service.sendMail = sendMail;
 
 module.exports = service;
 
-function sendMail(mailInfos){
+function sendMail(req,res){
 
     var deferred = Q.defer();
 
@@ -16,22 +17,25 @@ function sendMail(mailInfos){
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'saasteamaws@gmail.com', // generated ethereal user
-            pass: '12angDum^^y'  // generated ethereal password
+            user: req.user, // generated ethereal user
+            pass: req.pass  // generated ethereal password
         }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: '"SaaS Team 👻" <saasteamaws@gmail.com>', // sender address
-        to: mailInfos.to, // list of receivers
-        subject: mailInfos.subject, // Subject line
-        text: mailInfos.text, // plain text body
-        html: mailInfos.html // html body
+        from: req.from, // sender address
+        to: req.to, // list of receivers
+        subject: req.subject, // Subject line
+        text: req.text, // plain text body
+        html: req.html // html body
     };
 
     // send mail with defined transport object
     transporter.sendMail(mailOptions, (error, info) => {
+        if (!checkMailOptions()){
+            deferred.reject("insufficient data");
+        }
         if (error) {
             deferred.reject(error);
         }
@@ -39,4 +43,22 @@ function sendMail(mailInfos){
     });
 
     return deferred.promise;
+
+    function checkMailOptions(){
+        var total=0;
+        if (req.subject){
+            total++;
+        }
+        if (req.text){
+            total++;
+        }
+        if (req.html){
+            total++;
+        }
+        if (total >= 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
