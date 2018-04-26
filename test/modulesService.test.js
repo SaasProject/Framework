@@ -66,7 +66,7 @@ describe('Modules Service', function(){
     });
     
     describe('getModuleByName()', function(){
-        
+         
         //get 'testmodule1' created from previous test case
         it('should get an existing "testmodule1" document from "modules" collection', function(){
             return ModulesService.getModuleByName('testmodule1').then(function(data){

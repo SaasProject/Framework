@@ -250,8 +250,8 @@ Parameters:
     from the specific module. may have '_id' property.
 
 Description:
-    checks if the module document's values have duplicates based from the specific module's fields
-
+    checks if the module document's values have duplicates based from the specific module's fields.
+ 
 Returns:
     if successful, returns nothing. 
     if a unique value exists, returns an error object with 'exists' set to true.
