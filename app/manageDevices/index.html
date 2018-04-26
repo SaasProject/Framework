@@ -189,7 +189,16 @@
 		</thread>
 		<tbody>
 			<tr ng-repeat="u in vm.device | orderObjectBy : column : reverse | filter : search | pagination: (currentPage - 1) * pageSize | limitTo: pageSize ">
-				<td class="cutOverflow" ng-repeat="field in fields">{{u[field.name]}}</td>
+				<td class="cutOverflow" ng-repeat="field in fields">
+					<div ng-show="field.type == 'checkbox'">
+                        <ul>
+                            <li ng-repeat="item in $parent.u[field.name] track by $index">{{item}}</li>
+                        </ul>                                
+                    </div>
+                    <div ng-if="field.type != 'checkbox'">
+                        {{(!$parent.u[field.name]) ? ($parent.u[field.name] = '') : $parent.u[field.name]}}
+                    </div>
+				</td>
 				<td>
 					<a><i class="fa fa-list-alt" aria-hidden="true" data-toggle = "modal" data-target = "#editModal" ng-click="editDevice(u._id); declareSelected()" data-toggle="tooltip" title="{{selectedLanguage.commons.viewDetails}}"></i><a>
 					|
