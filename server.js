@@ -44,9 +44,18 @@ io.on('connection', function(socket){
     socket.on('userChange', function(){
         io.emit('userChange');
     });
-    /* socket.on('fieldsChange', function(){
+    socket.on('assetChange', function(){
+        io.emit('assetChange');
+    });
+    socket.on('whouseChange', function(){
+        io.emit('whouseChange');
+    });
+    socket.on('deviceChange', function(){
+        io.emit('deviceChange');
+    });
+    socket.on('fieldsChange', function(){
         io.emit('fieldsChange');
-    }); */
+    });
     socket.on('languageChange', function(option){
         io.emit('languageChange', option);
     });

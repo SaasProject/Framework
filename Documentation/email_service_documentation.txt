@@ -2,13 +2,17 @@ Email Service Documentation
 
 Author: Jano Omugtong
 Date Created: April 06, 2018
-Last Updated: April 06, 2018
+Last Updated: April 26, 2018
 
 Description: Sends email
 
 Prerequisite npm packages:
 - nodemailer
 - q
+
+Other prerequisites:
+- config.json @ root directory
+    *note: you can get the user, pass and from of the mailInfos object from this file.
 
 Methods:
 - sendMail
@@ -18,14 +22,14 @@ How to use:
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: '...@gmail.com', // the email address that will send
-            pass: '[actualpassword]'  // the password of the email address
+            user: mailInfos.user, // the email address that will send
+            pass: mailInfos.pass  // the password of the email address
         }
     });
 
 // setup email data with unicode symbols
     let mailOptions = {
-        from: '...', // sender address
+        from: mailInfos.from, // sender address
         to: mailInfos.to, // list of receivers
         subject: mailInfos.subject, // Subject line
         text: mailInfos.text, // plain text body
@@ -46,7 +50,10 @@ How to use:
 
 Parameters:
     mailInfos: {
-        to: '',         // receivers
+        user: '',       // sender's email
+        pass: '',       // sender's password
+        from: '',       // sender's email as seen in inbox of receiver
+        to: '',         // receivers' email
         subject: '',    // subject line
         text: '',       // plain text body
         html: ''        // html body

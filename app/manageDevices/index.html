@@ -52,7 +52,7 @@
 
 				          	<!-- show radio -->
 				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
-				          		<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
+				          		<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 				          	</div>
 
 				          	<!-- show date -->
@@ -133,7 +133,7 @@
 				          	<!-- show radio -->
 				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
 				          		<div ng-hide="field.name == 'device_id'">
-				          			<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
+				          			<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
 				          		</div>
 				          	</div>
 

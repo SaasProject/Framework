@@ -210,9 +210,9 @@
             Parameter(s): none
             Return: size
         */
-        Array.prototype.remove = function() {
+        /*Array.prototype.remove = function() {
             return InputTypeService.arrayRemove();
-        };
+        };*/
 
         /*
             Function name: Insert formatted date to $scope.aDevices
@@ -275,8 +275,8 @@
         /*
             Function name: Insert checkbox checked values to
             Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add modal     //??? wrong description?
+            Date Modified: 2018/04/25
+            Description: To insert checkbox values to array
             Parameter(s): field.name, checkbox element
             Return: none
         */
@@ -307,7 +307,6 @@
                     $scope.aDevices.msg2 = $rootScope.selectedLanguage.devices.labels.flash_taken_2;
                     ModulesService.addModuleDoc({moduleName: 'rfid_scanners', moduleDoc: $scope.aDevices})
                     .then(function () {
-                        initController();
                         $('#myModal').modal('hide');
                         FlashService.Success($rootScope.selectedLanguage.devices.labels.flash_add);
                         socket.emit('deviceChange');

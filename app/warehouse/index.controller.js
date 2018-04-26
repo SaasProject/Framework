@@ -258,9 +258,9 @@
             Parameter(s): none
             Return: size
         */
-        Array.prototype.remove = function() {
+        /*Array.prototype.remove = function() {
             return InputTypeService.arrayRemove();
-        };
+        };*/
 
         /*
             Function name: Insert formatted date $scope.whouse
@@ -324,8 +324,8 @@
         /*
             Function name: Insert checkbox checked values to
             Author(s): Flamiano, Glenn
-            Date Modified: 2018/01/26
-            Description: Check all password inputs in add modal     //??? wrong description?
+            Date Modified: 2018/04/25
+            Description: To insert checkbox values to array
             Parameter(s): field.name, checkbox element
             Return: none
         */

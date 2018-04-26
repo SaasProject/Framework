@@ -65,13 +65,13 @@ describe('language service testing', function(){
             });
         });
 
-        it('should return an error', function(){
-            var qwe={params:{user:'nihongo'}};
+        it('should return an english pack', function(){
+            var qwe={params:{user:'asd'}};
         
             return languageService.getSpecificLanguage(qwe).then(function(data){
-                //console.log(Object.keys(data)[0]);
+                //expect(error).to.have.property('English');
             }).catch(function(error){
-                expect(data).to.have.property('English');
+                expect(error).to.have.property('English');
             })
         });
 
@@ -82,15 +82,6 @@ describe('language service testing', function(){
                 //console.log(Object.keys(data)[0]);
                 expect(data).to.have.property('日本語');
             });
-        });
-        it('should return an error', function(){
-            var qwe={params:{user:'日本語'}};
-        
-            return languageService.getSpecificLanguage(qwe).then(function(data){
-                //console.log(Object.keys(data)[0]);
-            }).catch(function(error){
-                expect(data).to.have.property('日本語');
-            })
         });
         
     });

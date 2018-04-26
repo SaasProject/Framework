@@ -140,7 +140,7 @@
 
                     <!-- show radio -->
                     <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
-                        <input class="{{option}}" type="radio" name="userRadioButton" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
+                        <input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" value="{{option}}" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
                     </div>
 
                     <!-- show date -->
