@@ -341,9 +341,9 @@
             Parameter(s): none
             Return: size
         */
-        Array.prototype.remove = function() {
+        /*Array.prototype.remove = function() {
             return InputTypeService.arrayRemove();
-        };
+        };*/
 
 
         /*

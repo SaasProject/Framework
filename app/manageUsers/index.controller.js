@@ -208,9 +208,9 @@
             Parameter(s): none
             Return: size
         */
-        Array.prototype.remove = function() {
+        /*Array.prototype.remove = function() {
             return InputTypeService.arrayRemove();
-        };
+        };*/
 
         /*
             Function name: Insert formatted date to $scope.newUser
@@ -256,6 +256,7 @@
         */
         $scope.putToModel = function(option, fieldName){
             $scope.newUser[fieldName] = option;
+            //console.log($scope.newUser[fieldName]);
         }
 
         /*
@@ -275,7 +276,8 @@
             Function name: Insert checkbox checked values to
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/26
-            Description: Check all password inputs in add modal     //??? wrong description?
+            Update Date: 2018/04/25
+            Description: insert checkbox values in add modal
             Parameter(s): field.name, checkbox element
             Return: none
         */
@@ -283,6 +285,18 @@
             $scope.newUser[fieldName] = InputTypeService.pushToAllEntry(fieldName, option, selected);
         };
 
+        /*
+            Function name: Insert checkbox checked values to
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/26
+            Update Date: 2018/04/25
+            Description: insert checkbox values in edit modal
+            Parameter(s): field.name, checkbox element
+            Return: none
+        */
+        $scope.pushEditToAEntry = function(fieldName, option){
+            $scope.newUser[fieldName] = InputTypeService.pushEditToAllEntry(fieldName, option, selected);
+        };
         
         /*
             Name: modify dropdown 

@@ -55,7 +55,7 @@
 
 						<!-- show radio -->
 						<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
-							<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
+							<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 						</div>
 
 						<!-- show date -->
@@ -130,14 +130,14 @@
 				          	<!-- show checkbox -->
 				          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='checkbox'">
 				          		<div ng-hide="field.name == 'email'">
-				          			<input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" ng-checked="isChoosed(field.name, option)" data="{{option}}" ng-disabled="unEditAble" ng-click="pushToAEntry(field.name, option)">{{option}}<br>
+				          			<input class="{{option}}" type="checkbox" name="{{'edit '+option}}" ng-model="optionSelected" ng-checked="isChoosed(field.name, option)" data="{{option}}" ng-disabled="unEditAble" ng-click="pushEditToAEntry(field.name, option)">{{option}}<br>
 				          		</div>
 				          	</div>
 
 				          	<!-- show radio -->
 				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
 				          		<div ng-hide="field.name == 'email'">
-				          			<input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
+				          			<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
 				          		</div>
 				          	</div>
 

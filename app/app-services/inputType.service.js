@@ -9,7 +9,7 @@
         var service = {};
  
         service.showInputTypes = showInputTypes;
-        service.arrayRemove = arrayRemove;
+        //service.arrayRemove = arrayRemove;
         service.formatDate = formatDate;
         service.pushToAllEntry = pushToAllEntry;
         service.pushEditToAllEntry = pushEditToAllEntry;
@@ -43,7 +43,7 @@
             }
         }
 
-        function arrayRemove() {
+        /*function arrayRemove() {
             var what, a = arguments, L = a.length, ax;
             while (L && this.length) {
                 what = a[--L];
@@ -52,7 +52,26 @@
                 }
             }
             return this;
-        }
+        }*/
+
+        /*
+            Function name: Array remove element function
+            Author(s): Flamiano, Glenn
+            Date Modified: 2018/01/24
+            Description: Remove and element in an array
+            Parameter(s): none
+            Return: size
+        */
+        Array.prototype.remove = function() {
+            var what, a = arguments, L = a.length, ax;
+            while (L && this.length) {
+                what = a[--L];
+                while ((ax = this.indexOf(what)) !== -1) {
+                    this.splice(ax, 1);
+                }
+            }
+            return this;
+        };
 
         /*
             Function name: Format date
@@ -75,7 +94,7 @@
         }
 
         function pushToAllEntry(fieldName, option, selected) {
-            console.log(selected);
+            //console.log(selected);
             var checkedOption = document.getElementsByName(option);
             if(checkedOption[0].checked){
                 selected['checkBoxAdd '+fieldName].push(option);
@@ -87,8 +106,9 @@
         }
 
         function pushEditToAllEntry(fieldName, option, selected) {
-            console.log(selected);
+            //console.log(selected);
             var checkedOption = document.getElementsByName('edit '+option);
+            //console.log(selected['checkBoxAdd '+fieldName]);
             if(checkedOption[0].checked){
                 selected['checkBoxAdd '+fieldName].push(option);
             }else{
