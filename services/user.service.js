@@ -291,16 +291,20 @@ function _delete(_id) {
         if (err) deferred.reject(err);
 
         //console.log(user.profilePicUrl);
+		if(user) {
+			fs.unlink('profile_pictures/'+user.profilePicUrl, function (err) {});
 
-        fs.unlink('profile_pictures/'+user.profilePicUrl, function (err) {});
-
-        db.users.remove(
-        { _id: mongo.helper.toObjectID(_id) },
-        function (err) {
-            if (err){};
+			db.users.remove(
+			{ _id: mongo.helper.toObjectID(_id) },
+			function (err) {
+				if (err){};
  
-            deferred.resolve();
-        });
+				deferred.resolve();
+			});
+		}
+		else {
+			deferred.reject({notFound:true});
+		}
 
     });
  

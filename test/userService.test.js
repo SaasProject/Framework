@@ -32,7 +32,8 @@ describe("User Service", function() {
             done();
         }, 300);
     });
-	
+
+//db should not have a user with email "jennyayala@yahoo.com"	
 describe('addUser', function(){
 	this.timeout(5000);
 	 it('should return nothing if data is saved in db', function(){		
@@ -103,14 +104,14 @@ describe('authenticate', function(){
 
 describe('resetPass', function(){
 
-    // it('should return the new password for the registered email', function(){
-		// var email = 'jenny.ayala@awsys-i.com';
+     it('should return the new password for the registered email', function(){
+		var email = 'jennyayala@yahoo.com';
 		
-        // return userService.resetPass(email).then(function(password){
-            // expect(password).to.be.a('string');
-			
-        // });
-    // });
+        return userService.resetPass(email).then(function(password){
+            expect(password).to.be.a('string');
+			console.log(password);
+        });
+    });
 	
 	it('should return nothing if email is not found in db', function(){
 		var email = 'saas@gmail.com';
