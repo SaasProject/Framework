@@ -387,7 +387,6 @@
             Return: none
         */
         $scope.putToModel = function(option, fieldName){
-            //console.log(option);
             $scope.newAsset[fieldName] = option;
         }
 

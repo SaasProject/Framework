@@ -87,6 +87,10 @@
         $scope.editField = function(aField){
             angular.copy(aField, $scope.newField);
             if($scope.hasOptions()){
+                var toRemove = aField.options.indexOf('N/A');
+                if (toRemove > -1) {
+                    aField.options.splice(toRemove, 1);
+                }
                 $scope.fieldOptions = aField.options.toString();
             }
             else{
@@ -138,7 +142,15 @@
                     
                     if($scope.hasOptions() && $scope.fieldOptions != ''){
                         $scope.newField.options = $scope.fieldOptions.split(',');
+                        if(!$scope.newField.required){
+                            $scope.newField.options.push('N/A');
+                            $scope.newField.options.sort(function(x,y){ return x == 'N/A' ? -1 : y == 'N/A' ? 1 : 0; });
+                        }
                         $scope.newField.options = removeArrayDuplicates($scope.newField.options);
+                        var index = $scope.newField.options.indexOf('');
+                        if (index > -1) {
+                          $scope.newField.options.splice(index, 1);
+                        }
                     }
 
                     var forSave = {

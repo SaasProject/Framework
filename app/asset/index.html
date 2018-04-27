@@ -54,7 +54,7 @@
 
                         <!-- show radio -->
                         <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio' && !(type != 'add' && (field.name == 'asset_tag'))">
-                            <input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="readOnly && type!='add'" ng-hide = "" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
+                            <input class="{{option}}" type="radio" name="{{field.name}} {{option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="readOnly && type!='add'" ng-hide = "" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
                         </div>
 
                         <!-- show date -->
@@ -181,7 +181,10 @@
                                 </ul>                                
                             </div>
                             <div ng-if="field.type != 'checkbox'">
-                                {{(!$parent.asset[field.name]) ? ($parent.asset[field.name] = '') : $parent.asset[field.name]}}
+                                <div ng-if="field.type == 'radio' && $parent.asset[field.name] == 'N/A'"></div>
+                                <div ng-if="(field.type != 'radio' && $parent.asset[field.name] != 'N/A') || (field.type == 'radio' && $parent.asset[field.name] != 'N/A')">
+                                    {{(!$parent.asset[field.name]) ? ($parent.asset[field.name] = '') : $parent.asset[field.name]}}
+                                </div>
                             </div>
                         </td>                        
                         <td>{{asset['updated_date']}}</td>

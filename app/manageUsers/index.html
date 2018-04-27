@@ -55,7 +55,7 @@
 
 						<!-- show radio -->
 						<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
-							<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
+							<input class="{{option}}" type="radio" name="{{field.name}} {{option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
 						</div>
 
 						<!-- show date -->
@@ -137,7 +137,7 @@
 				          	<!-- show radio -->
 				          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="field.type=='radio'">
 				          		<div ng-hide="field.name == 'email'">
-				          			<input class="{{option}}" type="radio" name="{{field.name+ +option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
+				          			<input class="{{option}}" type="radio" name="{{field.name}} {{option}}" ng-model="radioSelected" ng-click="putToModel(option, field.name)" ng-disabled="unEditAble" value="{{option}}" ng-checked="isChoosed(field.name, option)">{{option}}<br>
 				          		</div>
 				          	</div>
 
@@ -204,7 +204,10 @@
 						</ul>                                
 					</div>
 					<div ng-if="field.type != 'checkbox'">
-						{{(!$parent.u[field.name]) ? ($parent.u[field.name] = '') : $parent.u[field.name]}}
+						<div ng-if="field.type == 'radio' && $parent.u[field.name] == 'N/A'"></div>
+                        <div ng-if="(field.type != 'radio' && $parent.u[field.name] != 'N/A') || (field.type == 'radio' && $parent.u[field.name] != 'N/A')">
+							{{(!$parent.u[field.name]) ? ($parent.u[field.name] = '') : $parent.u[field.name]}}
+						</div>
 					</div>
 				</td>
 				<td>
