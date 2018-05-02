@@ -443,7 +443,7 @@
             for(var h in $scope.fields){
                 if($scope.fields[h].required==true){
                     requiredTextField++;
-                    if($scope.newUser[$scope.fields[h].name]===undefined){
+                    if($scope.newUser[$scope.fields[h].name]===undefined || $scope.newUser[$scope.fields[h].name]=== ''){
                         FlashService.Error($rootScope.selectedLanguage.commons.fmrequiredFields);
                     }else{
                         forDataBase++;
