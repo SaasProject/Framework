@@ -183,6 +183,9 @@ function insert(userParam){
                         `;
 
                     var mailInfos = {};
+                    mailInfos.user = config.user;
+                    mailInfos.pass = config.pass;
+                    mailInfos.from = config.from;
                     mailInfos.to = email;
                     mailInfos.subject = "Account Registered";
                     mailInfos.text = "Welcome to Saas Project";
