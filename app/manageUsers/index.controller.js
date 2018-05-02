@@ -334,8 +334,7 @@
             for(var h in $scope.fields){
                 if($scope.fields[h].required==true){
                     requiredTextField++;
-					 
-                    if($scope.newUser[$scope.fields[h].name]===undefined || $scope.newUser[$scope.fields[h].name]===null){
+                    if($scope.newUser[$scope.fields[h].name]===undefined || $scope.newUser[$scope.fields[h].name]==""){
 						if($scope.fields[h].name == 'email') {
 							FlashService.Error($rootScope.selectedLanguage.commons.invalidEmail);
 						}

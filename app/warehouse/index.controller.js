@@ -341,8 +341,10 @@
         $scope.addWH = function(isValid){
             $scope.showAddFlash = true;
             for (var i = 0; i < $scope.fieldsLength; i++){
-                if ($scope.fields[i].required && $scope.whouse[$scope.fields[i].name] == null){
-                    $scope.formValid = false;
+                if ($scope.fields[i].required){
+                    if($scope.whouse[$scope.fields[i].name] == undefined || $scope.whouse[$scope.fields[i].name] == ""){
+                        $scope.formValid = false;
+                    }
                 }
             }
             if(!$scope.formValid){
