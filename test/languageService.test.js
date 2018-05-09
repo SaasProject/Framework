@@ -46,7 +46,19 @@ describe('language service testing', function(){
                             .catch(function(error){
                                 //expect(data).to.have.property('English');
                             });
-        }); 
+        });
+
+        it('will return an english language pack if the default Language is not existing', function(){
+
+            languageService.getDefaultLanguage({})
+                            .then(function(data){
+                                expect(data).to.have.property('English');
+                            })
+                            .catch(function(error){
+                                //expect(data).to.have.property('English');
+                            });
+        });
+
     });
 
     describe('get specific language', function(){
