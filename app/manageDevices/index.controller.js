@@ -168,7 +168,7 @@
             Return: none
         */
         function initController() {
-            ModulesService.getAllModuleDocs('rfid_scanners').then(function (device) {
+            ModulesService.getAllModuleDocs('devices').then(function (device) {
 				vm.device = device;
                 $scope.allDevices = device;
                 $scope.deviceLength = Object.size(device);
@@ -176,7 +176,7 @@
 				$scope.loading = false;
 			});
 
-            ModulesService.getModuleByName('rfid_scanners').then(function(response){
+            ModulesService.getModuleByName('devices').then(function(response){
                 $scope.fields = response.fields;
                 $scope.id = response._id;
                 $scope.fieldsLength = Object.size(response.fields);
@@ -307,7 +307,7 @@
                     
                     $scope.aDevices.msg1 = $rootScope.selectedLanguage.devices.labels.flash_taken_1;
                     $scope.aDevices.msg2 = $rootScope.selectedLanguage.devices.labels.flash_taken_2;
-                    ModulesService.addModuleDoc({moduleName: 'rfid_scanners', moduleDoc: $scope.aDevices})
+                    ModulesService.addModuleDoc({moduleName: 'devices', moduleDoc: $scope.aDevices})
                     .then(function () {
                         $('#myModal').modal('hide');
                         FlashService.Success($rootScope.selectedLanguage.devices.labels.flash_add);
@@ -421,7 +421,7 @@
             }else{
                 if(InputValidationService.AllValid($rootScope.selectedLanguage.commons, $scope.fields, $scope.newAsset, $scope.confirmPassword)){
                     
-                    ModulesService.updateModuleDoc({moduleName: 'rfid_scanners', moduleDoc: $scope.aDevices})
+                    ModulesService.updateModuleDoc({moduleName: 'devices', moduleDoc: $scope.aDevices})
                         .then(function () {      
                             $scope.aDevices = {};
                             $('#editModal').modal('hide');
@@ -446,7 +446,7 @@
 
             if (confirm($rootScope.selectedLanguage.devices.labels.flash_confirm_1 + toDel.device_id + $rootScope.selectedLanguage.devices.labels.flash_confirm_2)){
 				
-            ModulesService.deleteModuleDoc('rfid_scanners', toDel._id)
+            ModulesService.deleteModuleDoc('devices', toDel._id)
                  .then(function () {
 					resetModalFlash();
                     FlashService.Success($rootScope.selectedLanguage.devices.labels.flash_delete);

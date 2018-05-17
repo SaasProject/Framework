@@ -90,6 +90,7 @@ var server = http.listen(5000, function () {
         socket = new JsonSocket(socket); 
         socket.on('message', function(message) {
             socket.on('error', ()=> {});
+            //console.log(message);
 
             var displayDate;
             var start = new Date();
@@ -114,7 +115,7 @@ var server = http.listen(5000, function () {
             var assetParam = message;
             var set;
             var assettg;
-            //console.log(assetParam);
+            console.log(assetParam);
 
             /*
                 Function name: Device Check Function
@@ -132,6 +133,7 @@ var server = http.listen(5000, function () {
                                 
                                 //console.log(assetParam.device_id+" isn't registered") 
                             }else{
+                                //console.log(result)
                                 searchForAssets();
                                 
                             }   

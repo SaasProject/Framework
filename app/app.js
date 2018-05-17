@@ -54,6 +54,9 @@
             })
             .state('assets', {
                 url: '/assets',
+                params: { 
+                    asset_tag: null
+                },
                 templateUrl: 'asset/index.html',
                 controller: 'Asset.IndexController',
                 data: { activeTab: 'assets' }
